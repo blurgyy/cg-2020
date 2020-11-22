@@ -11,7 +11,7 @@
 //  2. http://netpbm.sourceforge.net/doc/ppm.html#format
 // @param filename: name of the ppm image file
 // @param data: image data (of type CV_8UC3)
-void write_ppm(std::string const &filename, cv::Mat data);
+void write_ppm(std::string const &filename, cv::Mat const &data);
 
 #endif
 
