@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 add_library(wheels
     global.cpp
-    OBJ_Loader.hpp
+    Triangle.cpp
 )
 
 # Author: Blurgy <gy@blurgy.xyz>
