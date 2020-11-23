@@ -11,6 +11,7 @@ class Triangle {
 
   public:
     Triangle();
+    Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c);
 
     // returns spatial location of the vertex
     glm::vec3 a() const;
