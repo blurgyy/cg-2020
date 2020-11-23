@@ -1,6 +1,6 @@
 #include "OBJ_Loader.hpp"
-#include "global.hpp"
 #include "Scene.hpp"
+#include "global.hpp"
 
 #include <cstdio>
 #include <cstring>
@@ -36,11 +36,11 @@ int main(int argc, char **argv) {
 
     /****** Load model *****/
     objl::Loader loader;
-    printf(" [*] loading object fro file '%s' ..\n", objfile.c_str());
+    debugm("loading object from file '%s' ..\n", objfile.c_str());
     if (!loader.LoadFile(objfile)) {
-        fprintf(stderr, " [x] failed to load object %s\n", objfile.c_str());
+        errorm("failed to load object from '%s'\n", objfile.c_str());
     }
-    printf(" [v] object loaded\n");
+    printf("object loaded\n");
 
     /****** playground ******/
     printf("%lu meshes loaded\n", loader.LoadedMeshes.size());

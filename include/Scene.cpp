@@ -1,11 +1,12 @@
 #include "Scene.hpp"
+#include "global.hpp"
 
 #include <array>
 #include <cstdio>
 
 Scene::Scene() {}
 Scene::Scene(objl::Mesh const &mesh) {
-    printf("%lu vertices found in loaded mesh\n", mesh.Vertices.size());
+    debugm("%lu vertices found in loaded mesh\n", mesh.Vertices.size());
     for (int i = 0; i < mesh.Vertices.size(); i += 3) {
         std::array<glm::vec3, 3> face;
         for (int j = 0; j < 3; ++j) {
