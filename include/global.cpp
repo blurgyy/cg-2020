@@ -18,10 +18,9 @@ void write_ppm(std::string const &filename, cv::Mat const &data) {
 
     for (int i = 0; i < height; ++i) {
         uchar const *row = data.ptr(i);
-        for (int j = 0; j < width; ++j) {
+        for (int j = 0; j < width; j += 3) {
             // Note: cv::Mat with CV_8UC3 data type has channel order 'BGR'
-            f << (char)(row[j * 3 + 2]) << (char)(row[j * 3 + 1])
-              << (char)(row[j * 3 + 0]);
+            f << (char)(row[j + 2]) << (char)(row[j + 1]) << (char)(row[j]);
         }
     }
     f.close();
