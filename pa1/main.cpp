@@ -1,5 +1,6 @@
 #include "OBJ_Loader.hpp"
 #include "global.hpp"
+#include "Scene.hpp"
 
 #include <cstdio>
 #include <cstring>
@@ -19,7 +20,7 @@ void show_help(char *selfname) {
 int main(int argc, char **argv) {
     std::string objfile; // Path to the obj file
 
-    // Parse arguments
+    /****** Parse arguments ******/
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
             show_help(argv[0]);
@@ -33,12 +34,17 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    /****** Load model *****/
     objl::Loader loader;
     printf(" [*] loading object fro file '%s' ..\n", objfile.c_str());
     if (!loader.LoadFile(objfile)) {
         fprintf(stderr, " [x] failed to load object %s\n", objfile.c_str());
     }
     printf(" [v] object loaded\n");
+
+    /****** playground ******/
+    printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
+    Scene scene(loader.LoadedMeshes[0]);
 
     return 0;
 }
