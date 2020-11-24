@@ -11,7 +11,13 @@ class Triangle {
 
   public:
     Triangle();
-    Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c);
+    Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c,
+             glm::vec3 const &na = glm::vec3(0),
+             glm::vec3 const &nb = glm::vec3(0),
+             glm::vec3 const &nc = glm::vec3(0),
+             glm::vec3 const &ca = glm::vec3(0),
+             glm::vec3 const &cb = glm::vec3(0),
+             glm::vec3 const &cc = glm::vec3(0));
 
     // returns spatial location of the vertex
     glm::vec3 a() const;
