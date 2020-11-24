@@ -1,6 +1,10 @@
 #ifndef GLOBAL_HPP
 #define GLOBAL_HPP
 
+#include <string>
+
+#include <opencv2/opencv.hpp>
+
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
 #ifndef NDEBUG
@@ -17,10 +21,6 @@
         fprintf(stderr, " [X] %s::%d::%s(): " fmt, __FILE__, __LINE__,       \
                 __func__, ##__VA_ARGS__);                                    \
     } while (0)
-
-#include <string>
-
-#include <opencv2/opencv.hpp>
 
 // Write cv::Mat image data to a ppm file.
 // Reference:
