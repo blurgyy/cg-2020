@@ -14,6 +14,8 @@ class Scene {
     Scene();
     // Construct a scene with loaded mesh
     Scene(objl::Mesh const &mesh);
+    // Construct a scene with a list of triangles
+    Scene(std::vector<Triangle> const &tgs);
 
     void build_octtree();
 };

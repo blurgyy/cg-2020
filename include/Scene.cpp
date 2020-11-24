@@ -19,6 +19,7 @@ Scene::Scene(objl::Mesh const &mesh) {
     }
     printf("%lu triangles loaded into scene\n", triangles.size());
 }
+Scene::Scene(std::vector<Triangle> const &tgs) { triangles = tgs; }
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 23 2020, 15:38 [CST]
