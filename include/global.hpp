@@ -28,6 +28,14 @@
         exit(-1);                                                            \
     } while (0)
 
+// Type definitions
+typedef double flt;
+
+// Constants
+extern flt const pi;
+extern flt const twopi;
+extern flt const halfpi;
+
 // Write cv::Mat image data to a ppm file.
 // Reference:
 //  1. https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C.2B.2B

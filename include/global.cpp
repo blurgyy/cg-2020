@@ -3,6 +3,11 @@
 #include <cassert>
 #include <fstream>
 
+// Constants
+flt const pi     = std::acos(-1.0);
+flt const twopi  = pi * 2.0;
+flt const halfpi = pi / 2.0;
+
 void write_ppm(std::string const &filename, cv::Mat const &data) {
     // Only accepts 3-channel image
     assert(data.type() == CV_8UC3);
