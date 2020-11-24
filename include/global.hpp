@@ -8,6 +8,8 @@
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
 #ifndef NDEBUG
+#define DEBUGGING 0
+#else
 #define DEBUGGING -1
 #endif
 #define debugm(fmt, ...)                                                     \
@@ -18,8 +20,12 @@
     } while (0)
 #define errorm(fmt, ...)                                                     \
     do {                                                                     \
-        fprintf(stderr, " [X] %s::%d::%s(): " fmt, __FILE__, __LINE__,       \
-                __func__, ##__VA_ARGS__);                                    \
+        if (~DEBUGGING)                                                      \
+            fprintf(stderr, " [X] %s::%d::%s(): " fmt, __FILE__, __LINE__,   \
+                    __func__, ##__VA_ARGS__);                                \
+        else                                                                 \
+            fprintf(stderr, " [X] " fmt, ##__VA_ARGS__);                     \
+        exit(-1);                                                            \
     } while (0)
 
 // Write cv::Mat image data to a ppm file.

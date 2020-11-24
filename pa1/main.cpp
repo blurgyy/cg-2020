@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
         }
     }
     if (objfile.size() == 0) {
-        fprintf(stderr, " [x] No obj file specified\n");
+        errorm("No obj file specified\n");
         return 1;
     }
 
