@@ -4,12 +4,14 @@
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
 #ifndef NDEBUG
+#define DEBUGGING -1
+#endif
 #define debugm(fmt, ...)                                                     \
     do {                                                                     \
-        fprintf(stdout, " [*] %s::%d::%s(): " fmt, __FILE__, __LINE__,       \
-                __func__, ##__VA_ARGS__);                                    \
+        if (~DEBUGGING)                                                      \
+            fprintf(stdout, " [*] %s::%d::%s(): " fmt, __FILE__, __LINE__,   \
+                    __func__, ##__VA_ARGS__);                                \
     } while (0)
-#endif
 #define errorm(fmt, ...)                                                     \
     do {                                                                     \
         fprintf(stderr, " [X] %s::%d::%s(): " fmt, __FILE__, __LINE__,       \
