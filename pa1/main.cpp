@@ -1,5 +1,7 @@
 #include "OBJ_Loader.hpp"
 #include "Scene.hpp"
+#include "Triangle.hpp"
+#include "Zbuf.hpp"
 #include "global.hpp"
 
 #include <cstdio>
@@ -35,16 +37,28 @@ int main(int argc, char **argv) {
     }
 
     /****************************** Load model ******************************/
-    objl::Loader loader;
-    debugm("loading object from file '%s' ..\n", objfile.c_str());
-    if (!loader.LoadFile(objfile)) {
-        errorm("failed to load object from '%s'\n", objfile.c_str());
-    }
-    printf("object loaded\n");
+    // Uncomment below lines when testing is finished!
+    //objl::Loader loader;
+    //debugm("loading object from file '%s' ..\n", objfile.c_str());
+    //if (!loader.LoadFile(objfile)) {
+    //errorm("failed to load object from '%s'\n", objfile.c_str());
+    //}
+    //printf("object loaded\n");
+    // // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
-    printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
-    Scene scene(loader.LoadedMeshes[0]);
+    // Scene scene(loader.LoadedMeshes[0]);
+    glm::vec3 v1(-1, -1, -1);
+    glm::vec3 v2(0, 2, -1);
+    glm::vec3 v3(1, 0, -1);
+    Triangle  t(v1, v2, v3);
+
+    std::vector<Triangle> prims{t};
+    Scene                 scene(prims);
+
+    Zbuf zbuf(scene);
+
+    zbuf.naive();
 
     return 0;
 }
