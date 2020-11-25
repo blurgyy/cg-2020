@@ -24,14 +24,14 @@ unsigned char const &Color::b() const { return this->blue; }
 
 // struct Image
 Image::Image() {}
-Image::Image(unsigned int const &width, unsigned int const &height)
-    : w(width), h(height) {
-    data = std::vector<Color>(w * h);
+Image::Image(unsigned int const &height, unsigned int const &width)
+    : h(height), w(width) {
+    data = std::vector<Color>(h * w);
 }
-void Image::init(const unsigned int &width, const unsigned int &height) {
-    this->w = width;
+void Image::init(const unsigned int &height, const unsigned int &width) {
     this->h = height;
-    data    = std::vector<Color>(w * h);
+    this->w = width;
+    data    = std::vector<Color>(h * w);
 }
 Color &Image::operator()(unsigned int const &i, unsigned int const &j) {
     return this->data[i * h + j];
@@ -67,7 +67,8 @@ void write_ppm(std::string const &filename, Image const &img) {
     int           width        = img.w;
     // Magic number (P6), width, height, maximum color value,
     // seperated with whitespaces.
-    sprintf(ppm_head, "P6\n%d %d\n255\n", width, height);
+    // sprintf(ppm_head, "P6\n%d %d\n255\n", width, height); // fixme
+    sprintf(ppm_head, "P6\n%d %d\n255\n", height, width);
     f << ppm_head;
 
     for (int i = 0; i < img.data.size(); ++i) {

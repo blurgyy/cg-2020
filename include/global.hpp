@@ -2,7 +2,9 @@
 #define GLOBAL_HPP
 
 #include <string>
+#include <vector>
 
+#include <glm/glm.hpp>
 #include <opencv2/opencv.hpp>
 
 // message functions `debugm` (debug messages), `errorm` (error messages)
@@ -56,10 +58,10 @@ struct Color {
 
 struct Image {
     Image();
-    Image(unsigned int const &width, unsigned int const &height);
+    Image(unsigned int const &height, unsigned int const &width);
 
     // Initialize data array
-    void init(unsigned int const &width, unsigned int const &height);
+    void init(unsigned int const &height, unsigned int const &width);
     // Color &operator[](unsigned int const &id);
     Color &operator()(unsigned int const &i, unsigned int const &j);
 
@@ -84,6 +86,36 @@ void write_ppm(std::string const &filename, cv::Mat const &data);
 // @param filename: name of the ppm image file
 // @param img: image data (of type Image)
 void write_ppm(std::string const &filename, Image const &img);
+
+/*** debugging ***/
+inline void output(glm::mat4 const &x) {
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            printf("%f ", x[i][j]);
+        }
+        printf("\n");
+    }
+}
+inline void output(glm::mat3 const &x) {
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            printf("%f ", x[i][j]);
+        }
+        printf("\n");
+    }
+}
+inline void output(glm::vec4 const &x) {
+    for (int i = 0; i < 4; ++i) {
+        printf("%f ", x[i]);
+    }
+    printf("\n");
+}
+inline void output(glm::vec3 const &x) {
+    for (int i = 0; i < 3; ++i) {
+        printf("%f ", x[i]);
+    }
+    printf("\n");
+}
 
 #endif
 
