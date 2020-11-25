@@ -48,8 +48,8 @@ int main(int argc, char **argv) {
 
     /****************************** playground ******************************/
     // The single triangle to be rendered
-    glm::vec3             v1(0, 2, -5);
-    glm::vec3             v2(-1, -1, -5);
+    glm::vec3             v1(0, 1, -5);
+    glm::vec3             v2(-1, 0, -5);
     glm::vec3             v3(1, 0, -5);
     Triangle              t(v1, v2, v3);
     std::vector<Triangle> prims{t};
@@ -61,14 +61,16 @@ int main(int argc, char **argv) {
     int width  = 640;
     int height = 480;
     // Create a renderer on scene
-    Zbuf zbuf(scene, width, height);
+    Zbuf zbuf(scene, height, width);
+    // errorm("zbuf.img's size is height-%d, width-%d\n", zbuf.img.h,
+    // zbuf.img.w);
     // Camera extrinsincs
     glm::vec3 eye(0, 0, 0);
     glm::vec3 gaze(0, 0, -1);
     glm::vec3 up(0, 1, 0);
-    flt       fovy         = 75;
+    flt       fovy         = 45;
     flt       aspect_ratio = 1.0 * height / width;
-    flt       znear        = -1;
+    flt       znear        = -.1;
     flt       zfar         = -50;
     // Initialize camera
     zbuf.init_cam(eye, fovy, aspect_ratio, znear, zfar, gaze, up);
