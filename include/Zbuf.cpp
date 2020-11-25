@@ -3,15 +3,23 @@
 
 Zbuf::Zbuf() { init(); }
 Zbuf::Zbuf(Scene const &s) : scene(s) { init(); }
-void Zbuf::init() { cam_initialized = false; }
+Zbuf::Zbuf(Scene const &s, unsigned int const &width,
+           unsigned int const &height)
+    : scene(s) {
+    init();
+    init_viewport(width, height);
+}
 
-void Zbuf::set_cam(glm::vec3 const &ey, flt const &fovy,
-                   flt const &aspect_ratio, flt const &near, flt const &far,
-                   glm::vec3 const &gaze, glm::vec3 const &up) {
-    cam.init(ey, fovy, aspect_ratio, near, far, gaze, up);
+void Zbuf::init() {
+    cam_initialized = mvp_initialized = viewport_initialized = false;
+}
+
+void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
+                    flt const &aspect_ratio, flt const &znear,
+                    flt const &zfar, glm::vec3 const &gaze,
+                    glm::vec3 const &up) {
+    cam.init(ey, fovy, aspect_ratio, znear, zfar, gaze, up);
     cam_initialized = true;
-    // cam_initialized = cam.init(ey, fovy, aspect_ratio, near, far, gaze,
-    // up);
 }
 
 void Zbuf::init_mvp(glm::mat4 const &model) {
@@ -69,10 +77,38 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     projection  = ortho_scale * ortho_trans * persp_ortho;
 
     // Set mvp
-    mvp = projection * view * model;
+    mvp             = projection * view * model;
+    mvp_initialized = true;
 }
 
-void Zbuf::naive() {}
+void Zbuf::init_viewport(const unsigned int &width,
+                         const unsigned int &height) {
+    this->w = width;
+    this->h = height;
+    // clang-format off
+    flt viewport_value[] = {
+        w/2.0,     0, 0, 0,
+            0, h/2.0, 0, 0,
+            0,     0, 1, 0,
+            0,     0, 0, 1,
+    };
+    // clang-format on
+    viewport             = glm::make_mat4(viewport_value);
+    viewport_initialized = true;
+}
+
+void Zbuf::naive() {
+    if (!cam_initialized) {
+        errorm("Camera position is not initilized\n");
+    }
+    if (!mvp_initialized) {
+        errorm("Transformation matrices are not initialized\n");
+    }
+    if (!viewport_initialized) {
+        errorm("Viewport size is not initialized\n");
+    }
+
+}
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 24 2020, 12:15 [CST]
