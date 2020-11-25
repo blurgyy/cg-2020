@@ -2,25 +2,25 @@
 
 Camera::Camera() {}
 Camera::Camera(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
-               flt const &near, flt const &far, glm::vec3 const &gaze,
+               flt const &znear, flt const &zfar, glm::vec3 const &gaze,
                glm::vec3 const &up)
     : e(pos), g(gaze), t(up),      // Extrinsincs
       fov(fovy), ar(aspect_ratio), // Intrinsincs
-      near(near), far(far)         // Intrinsincs
+      near(znear), far(zfar)       // Intrinsincs
 {}
 
 void Camera::init(const glm::vec3 &pos, const flt &fovy,
-                  const flt &aspect_ratio, const flt &near, const flt &far,
+                  const flt &aspect_ratio, const flt &znear, const flt &zfar,
                   glm::vec3 const &gaze, glm::vec3 const &up) {
     // Extrinsincs
-    e = pos;
-    g = gaze;
-    t = up;
+    this->e = pos;
+    this->g = gaze;
+    this->t = up;
     // Intrinsincs
-    fov        = fovy;
-    ar         = aspect_ratio;
-    this->near = near;
-    this->far  = far;
+    this->fov  = fovy;
+    this->ar   = aspect_ratio;
+    this->near = znear;
+    this->far  = zfar;
 }
 
 glm::vec3 Camera::pos() const { return e; }

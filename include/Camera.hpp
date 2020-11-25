@@ -19,12 +19,12 @@ class Camera {
   public:
     Camera();
     Camera(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
-           flt const &near, flt const &far,
+           flt const &znear, flt const &zfar,
            glm::vec3 const &gaze = glm::vec3(0, 0, -1),
            glm::vec3 const &up   = glm::vec3(0, 1, 0));
 
     void init(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
-              flt const &near, flt const &far,
+              flt const &znear, flt const &zfar,
               glm::vec3 const &gaze = glm::vec3(0, 0, -1),
               glm::vec3 const &up   = glm::vec3(0, 1, 0));
 
