@@ -1,6 +1,8 @@
 #ifndef TRIANGLE_HPP
 #define TRIANGLE_HPP
 
+#include <array>
+
 #include "global.hpp"
 
 #include <glm/glm.hpp>
@@ -47,6 +49,25 @@ class Triangle {
     glm::vec3 nc() const;
 
   public: // Operator overrides
+    Triangle operator*(glm::mat4 const &m) const {
+        // Assign color values and indices of each vertex to the returned
+        // triangle.  Positions of vertices are overwritten, normal directons
+        // of vertices doesn't matter.
+        Triangle ret(*this);
+
+        for (int i = 0; i < 3; ++i) {
+            auto const &v            = ret.vtx[i];
+            flt         homo_value[] = {v.x, v.y, v.z, 1};
+            glm::vec4   homo         = glm::make_vec4(homo_value);
+
+            homo         = homo * m;
+            ret.vtx[i].x = homo.x / homo.w;
+            ret.vtx[i].y = homo.y / homo.w;
+            ret.vtx[i].z = homo.z / homo.w;
+        }
+
+        return ret;
+    }
     friend Triangle operator*(glm::mat4 const &m, Triangle const &self) {
         // Assign color values and indices of each vertex to the returned
         // triangle.  Positions of vertices are overwritten, normal directons
