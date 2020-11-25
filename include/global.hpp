@@ -35,6 +35,7 @@ typedef double flt;
 extern flt const pi;
 extern flt const twopi;
 extern flt const halfpi;
+extern flt const piover180;
 
 // Write cv::Mat image data to a ppm file.
 // Reference:

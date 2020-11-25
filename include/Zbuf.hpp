@@ -36,9 +36,9 @@ class Zbuf {
                  glm::vec3 const &u = glm::vec3(0, 1, 0));
 
     // Set mvp transformation matrix
-    // @param _model: Model's transformation matrix, uses identity if not
-    //                specified
-    void init_mvp(glm::mat4 const &_model = glm::identity<glm::mat4>());
+    // @param model: Model's transformation matrix, uses identity if not
+    //               specified.
+    void init_mvp(glm::mat4 const &model = glm::identity<glm::mat4>());
 
     void naive(); // Naive z-buffer
 };

@@ -14,12 +14,12 @@ void Zbuf::set_cam(glm::vec3 const &ey, flt const &fovy,
     // up);
 }
 
-void Zbuf::init_mvp(glm::mat4 const &_model) {
+void Zbuf::init_mvp(glm::mat4 const &model) {
     if (!cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
     // Set model matrix
-    model = _model;
+    this->model = model;
 
     // Set view matrix, according to camera information
     glm::vec3 right = glm::cross(cam.gaze(), cam.up());
@@ -39,7 +39,7 @@ void Zbuf::init_mvp(glm::mat4 const &_model) {
     glm::mat4 ortho_scale; // Scales the rectangular box to the canonical cube
     flt       n            = cam.znear();
     flt       f            = cam.zfar();
-    flt       fovy         = cam.fovy() / 180 * pi;
+    flt       fovy         = cam.fovy() * piover180;
     flt       aspect_ratio = cam.aspect_ratio();
     flt       screen_top   = std::tan(fovy / 2) * fabs(n);
     flt       screen_right = screen_top / aspect_ratio;
