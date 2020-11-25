@@ -17,6 +17,8 @@ class Scene {
     // Construct a scene with a list of triangles
     Scene(std::vector<Triangle> const &tgs);
 
+    std::vector<Triangle> const &primitives() const;
+
     void build_octtree();
 };
 

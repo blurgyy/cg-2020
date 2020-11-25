@@ -21,5 +21,9 @@ Scene::Scene(objl::Mesh const &mesh) {
 }
 Scene::Scene(std::vector<Triangle> const &tgs) { triangles = tgs; }
 
+std::vector<Triangle> const &Scene::primitives() const {
+    return this->triangles;
+}
+
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 23 2020, 15:38 [CST]
