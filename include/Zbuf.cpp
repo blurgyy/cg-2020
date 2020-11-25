@@ -53,10 +53,10 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     flt       screen_right = screen_top / aspect_ratio;
     // clang-format off
     flt po_value[] = { // values for persp_ortho
-        n,    0,     0,      0,
-        0,    n,     0,      0,
-        0,    0, n + f, -n * f,
-        0,    0,     1,      0,
+        n, 0,   0,    0,
+        0, n,   0,    0,
+        0, 0, n+f, -n*f,
+        0, 0,   1,    0,
     };
     flt ot_value[] = { // values for ortho_trans
         1, 0, 0,        0,
@@ -67,7 +67,7 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     flt os_value[] = { // values for ortho_scale
         1/screen_right,            0,           0, 0,
                      0, 1/screen_top,           0, 0,
-                     0,            0, fabs(f-n)/2, 0,
+                     0,            0, 1/fabs(f-n), 0,
                      0,            0,           0, 1
     };
     // clang-format on
