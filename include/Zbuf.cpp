@@ -21,7 +21,7 @@ void Zbuf::init_mvp(glm::mat4 const &_model) {
     // Set model matrix
     model = _model;
 
-    /**/
+    // Set view matrix, according to camera information
     glm::vec3 right = glm::cross(cam.gaze(), cam.up());
     // clang-format off
     flt view_value[] = {
@@ -31,16 +31,19 @@ void Zbuf::init_mvp(glm::mat4 const &_model) {
                     0,             0,             0, 1,
     };
     // clang-format on
-    // Set view matrix, according to camera information
     view = glm::make_mat4(view_value);
 
     // Set projection matrix, according to fov, aspect ratio, etc.
-    glm::vec4 persp_ortho; // Squeezes the frustum into a rectangular box
-    glm::vec4 ortho_trans; // Centers the rectangular box at origin
-    glm::vec4 ortho_scale; // Scales the rectangular box to the canonical cube
+    glm::mat4 persp_ortho; // Squeezes the frustum into a rectangular box
+    glm::mat4 ortho_trans; // Centers the rectangular box at origin
+    glm::mat4 ortho_scale; // Scales the rectangular box to the canonical cube
+    flt       n            = cam.znear();
+    flt       f            = cam.zfar();
+    flt       fovy         = cam.fovy() / 180 * pi;
+    flt       aspect_ratio = cam.aspect_ratio();
+    flt       screen_top   = std::tan(fovy / 2) * fabs(n);
+    flt       screen_right = screen_top / aspect_ratio;
     // clang-format off
-    flt n = cam.znear();
-    flt f = cam.zfar();
     flt po_value[] = { // values for persp_ortho
         n,    0,     0,      0,
         0,    n,     0,      0,
@@ -48,12 +51,25 @@ void Zbuf::init_mvp(glm::mat4 const &_model) {
         0,    0,     1,      0,
     };
     flt ot_value[] = { // values for ortho_trans
-
+        1, 0, 0,        0,
+        0, 1, 0,        0,
+        0, 0, 1, -(n+f)/2,
+        0, 0, 0,        1,
     };
     flt os_value[] = { // values for ortho_scale
-
+        1/screen_right,            0,           0, 0,
+                     0, 1/screen_top,           0, 0,
+                     0,            0, fabs(f-n)/2, 0,
+                     0,            0,           0, 1
     };
     // clang-format on
+    persp_ortho = glm::make_mat4(po_value);
+    ortho_trans = glm::make_mat4(ot_value);
+    ortho_scale = glm::make_mat4(os_value);
+    projection  = ortho_scale * ortho_trans * persp_ortho;
+
+    // Set mvp
+    mvp = projection * view * model;
 }
 
 void Zbuf::naive() {}
