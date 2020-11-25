@@ -12,10 +12,10 @@
 
 void show_help(char *selfname) {
     printf("%s: zbuffer demo\n\n", selfname);
-    printf("    usage:\n");
-    printf("        -h|--help               print this message\n");
-    printf(
-        "        -o|--object <file>      load .obj file stored in <file>\n");
+    printf("    usage: %s [-h|--help] <objfile>\n", selfname);
+    printf("\n");
+    printf("    options:\n");
+    printf("        -h|--help:              Show this message and quit\n");
     printf("\n");
 }
 
