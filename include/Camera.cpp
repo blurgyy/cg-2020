@@ -23,7 +23,6 @@ void Camera::init(const glm::vec3 &pos, const flt &fovy,
     this->far  = far;
 }
 
-// Get
 glm::vec3 Camera::pos() const { return e; }
 glm::vec3 Camera::gaze() const { return g; }
 glm::vec3 Camera::up() const { return t; }

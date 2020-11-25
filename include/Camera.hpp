@@ -28,14 +28,20 @@ class Camera {
               glm::vec3 const &gaze = glm::vec3(0, 0, -1),
               glm::vec3 const &up   = glm::vec3(0, 1, 0));
 
-    // Get
+    // Get Position
     glm::vec3 pos() const;
+    // Get Direction (gaze)
     glm::vec3 gaze() const;
+    // Get Direction (up)
     glm::vec3 up() const;
-    flt       fovy() const;
-    flt       aspect_ratio() const;
-    flt       znear() const;
-    flt       zfar() const;
+    // Get Field of view (Vertical, in degrees)
+    flt fovy() const;
+    // Get \frac{height}{width}
+    flt aspect_ratio() const;
+    // Get Near clipping plane's z coordinate
+    flt znear() const;
+    // Get Far clipping plane's z coordinate
+    flt zfar() const;
 };
 
 #endif
