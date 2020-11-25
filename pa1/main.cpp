@@ -47,16 +47,33 @@ int main(int argc, char **argv) {
     // // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
-    // Scene scene(loader.LoadedMeshes[0]);
-    glm::vec3 v1(-1, -1, -1);
-    glm::vec3 v2(0, 2, -1);
-    glm::vec3 v3(1, 0, -1);
-    Triangle  t(v1, v2, v3);
-
+    // The single triangle to be rendered
+    glm::vec3             v1(-1, -1, -1);
+    glm::vec3             v2(0, 2, -1);
+    glm::vec3             v3(1, 0, -1);
+    Triangle              t(v1, v2, v3);
     std::vector<Triangle> prims{t};
-    Scene                 scene(prims);
 
-    Zbuf zbuf(scene);
+    // Load the triangle into scene
+    Scene scene(prims);
+
+    // Screen (viewport) size
+    int width  = 640;
+    int height = 480;
+    // Create a renderer on scene
+    Zbuf zbuf(scene, width, height);
+    // Camera extrinsincs
+    glm::vec3 eye(0, 0, 0);
+    glm::vec3 gaze(0, 0, -1);
+    glm::vec3 up(0, 1, 0);
+    flt       fovy         = 75;
+    flt       aspect_ratio = 1.0 * height / width;
+    flt       znear        = -1;
+    flt       zfar         = -50;
+    // Initialize camera
+    zbuf.init_cam(eye, fovy, aspect_ratio, znear, zfar, gaze, up);
+
+    zbuf.init_mvp(glm::identity<glm::mat4>()); // Use no model transformation
 
     zbuf.naive();
 
