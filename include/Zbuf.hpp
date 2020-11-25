@@ -49,8 +49,8 @@ class Zbuf {
     // Initialize a zbuffer object with given scene
     Zbuf(Scene const &s);
     // Initialize a zbuffer object with given viewport size
-    Zbuf(Scene const &s, unsigned int const &width,
-         unsigned int const &height);
+    Zbuf(Scene const &s, unsigned int const &height,
+         unsigned int const &width);
     // Set default values
     void init();
 
@@ -64,7 +64,7 @@ class Zbuf {
     //               specified.
     void init_mvp(glm::mat4 const &model = glm::identity<glm::mat4>());
     // Set viewport transformation matrix
-    void init_viewport(unsigned int const &width, unsigned int const &height);
+    void init_viewport(unsigned int const &height, unsigned int const &width);
 
     // Render scene
     void render();
