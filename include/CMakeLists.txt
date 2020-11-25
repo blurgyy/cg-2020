@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.18)
 
 add_library(wheels
-    global.cpp
-    Triangle.cpp
+    Camera.cpp
     Scene.cpp
+    Triangle.cpp
     Zbuf.cpp
+    global.cpp
 )
 
 # Author: Blurgy <gy@blurgy.xyz>

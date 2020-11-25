@@ -1,6 +1,7 @@
 #ifndef ZBUF_HPP
 #define ZBUF_HPP
 
+#include "Camera.hpp"
 #include "Scene.hpp"
 #include "global.hpp"
 
@@ -11,12 +12,8 @@ class Zbuf {
   private:
     Scene scene; // Scene to be rendered
 
-    glm::vec3 eye;          // Camera position
-    glm::vec3 gaze;         // Camera's gaze direction
-    glm::vec3 up;           // Camera's top direction
-    flt       fov;          // Field of view (Vertical, in degrees)
-    flt       aspect_ratio; // \frac{height}{width}
-    bool      eye_initialized;
+    Camera cam;
+    bool   cam_initialized;
 
     glm::mat4 model; // Transform the model to the next timestep
     glm::mat4 view;  // Transform the camera to origin, model moves with it
@@ -33,17 +30,15 @@ class Zbuf {
     // Set default values
     void init();
 
-    void set_cam(glm::vec3 const &ey, flt const &_fov, flt const &ar,
+    void set_cam(glm::vec3 const &ey, flt const &fovy,
+                 flt const &aspect_ratio, flt const &near, flt const &far,
                  glm::vec3 const &g = glm::vec3(0, 0, -1),
                  glm::vec3 const &u = glm::vec3(0, 1, 0));
 
     // Set mvp transformation matrix
-    // @param   near: Near clipping plane's z coordinate
-    // @param    far: Far clipping plane's z coordinate
     // @param _model: Model's transformation matrix, uses identity if not
-    // specified
-    void init_mvp(flt const &near, flt const &far,
-                  glm::mat4 const &_model = glm::identity<glm::mat4>());
+    //                specified
+    void init_mvp(glm::mat4 const &_model = glm::identity<glm::mat4>());
 
     void naive(); // Naive z-buffer
 };
