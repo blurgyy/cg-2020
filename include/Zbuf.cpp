@@ -93,11 +93,12 @@ void Zbuf::init_viewport(const unsigned int &width,
             0,     0, 0, 1,
     };
     // clang-format on
-    viewport             = glm::make_mat4(viewport_value);
+    viewport = glm::make_mat4(viewport_value);
+    img.init(this->w, this->h);
     viewport_initialized = true;
 }
 
-void Zbuf::naive() {
+void Zbuf::render() {
     if (!cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
@@ -107,7 +108,53 @@ void Zbuf::naive() {
     if (!viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
+    for (Triangle const &t : scene.primitives()) {
+        // If the triangle is facing -z direction, skip it (face culling).
+        if (t.facing.z <= 0) {
+            continue;
+        }
+        // Screen-space coordinates
+        Triangle o = viewport * mvp * t;
+        debugm("original: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n", t.a().x, t.a().y,
+               t.b().x, t.b().y, t.c().x, t.c().y);
+        debugm("screen space: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n", o.a().x, o.a().y,
+               o.b().x, o.b().y, o.c().x, o.c().y);
+        // Draw triangle
+        draw_triangle_naive(o);
+    }
+}
 
+// private:
+bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
+    glm::vec2 pixel(x, y);
+    glm::vec3 v[3];
+    flt       z[3];
+    v[0] = glm::vec3((t.a().x - pixel.x), (t.a().y - pixel.y), 0);
+    v[1] = glm::vec3((t.b().x - pixel.x), (t.b().y - pixel.y), 0);
+    v[2] = glm::vec3((t.c().x - pixel.x), (t.c().y - pixel.y), 0);
+    z[0] = glm::cross(v[0], v[1]).z;
+    z[1] = glm::cross(v[1], v[2]).z;
+    z[2] = glm::cross(v[2], v[0]).z;
+    return glm::sign(z[1] * z[0]) == glm::sign(z[2] * z[0]);
+}
+
+void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
+                     Color const &color) {
+    // errorm("Setting pixel (%u, %u)\n", x, y);
+    img(x, y) = color;
+}
+
+void Zbuf::draw_triangle_naive(Triangle const &t) {
+    // todo: AABB
+    // Brute force through all pixels
+    for (int i = 0; i < this->h; ++i) {
+        for (int j = 0; j < this->w; ++j) {
+            // todo: AA
+            if (inside(.5 + i, .5 + j, t)) {
+                set_pixel(i, j);
+            }
+        }
+    }
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

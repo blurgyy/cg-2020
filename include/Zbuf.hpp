@@ -31,6 +31,19 @@ class Zbuf {
                            // canonical cube to screen size on xOy plane
     bool viewport_initialized;
 
+  private:
+    // Check if screen space coordinate (x, y) is inside the triangle t,
+    // coordinates of vertices of triangle t should be in screen space, too.
+    bool inside(flt x, flt y, Triangle const &t) const;
+    // Triangle t has screen space (x,y) coordinates
+    void draw_triangle_naive(Triangle const &t);
+    // Set pixel at coordinate (x, y)
+    void set_pixel(unsigned int const &x, unsigned int const &y,
+                   Color const &color = Color(255));
+
+  public:
+    Image img;
+
   public:
     Zbuf();
     // Initialize a zbuffer object with given scene
@@ -53,7 +66,8 @@ class Zbuf {
     // Set viewport transformation matrix
     void init_viewport(unsigned int const &width, unsigned int const &height);
 
-    void naive(); // Naive z-buffer
+    // Render scene
+    void render();
 };
 
 #endif

@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
         }
     }
     if (objfile.size() == 0) {
-        errorm("No obj file specified\n");
-        return 1;
+        // errorm("No obj file specified\n");
+        // return 1;
     }
 
     /****************************** Load model ******************************/
@@ -48,9 +48,9 @@ int main(int argc, char **argv) {
 
     /****************************** playground ******************************/
     // The single triangle to be rendered
-    glm::vec3             v1(-1, -1, -1);
-    glm::vec3             v2(0, 2, -1);
-    glm::vec3             v3(1, 0, -1);
+    glm::vec3             v1(0, 2, -5);
+    glm::vec3             v2(-1, -1, -5);
+    glm::vec3             v3(1, 0, -5);
     Triangle              t(v1, v2, v3);
     std::vector<Triangle> prims{t};
 
@@ -75,7 +75,9 @@ int main(int argc, char **argv) {
 
     zbuf.init_mvp(glm::identity<glm::mat4>()); // Use no model transformation
 
-    zbuf.naive();
+    zbuf.render();
+
+    write_ppm("testfile.ppm", zbuf.img);
 
     return 0;
 }
