@@ -39,7 +39,7 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     // output(model);
 
     // Set view matrix, according to camera information
-    glm::vec3 right = glm::cross(cam.gaze(), cam.up());
+    glm::vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
     // clang-format off
     flt trans_value[] = {
         1, 0, 0, -cam.pos().x,

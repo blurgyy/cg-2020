@@ -4,9 +4,9 @@ Camera::Camera() {}
 Camera::Camera(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
                flt const &znear, flt const &zfar, glm::vec3 const &gaze,
                glm::vec3 const &up)
-    : e(pos), g(gaze), t(up),      // Extrinsincs
-      fov(fovy), ar(aspect_ratio), // Intrinsincs
-      near(znear), far(zfar)       // Intrinsincs
+    : e(pos), g(glm::normalize(gaze)), t(glm::normalize(up)), // Extrinsincs
+      fov(fovy), ar(aspect_ratio),                            // Intrinsincs
+      near(znear), far(zfar)                                  // Intrinsincs
 {}
 
 void Camera::init(const glm::vec3 &pos, const flt &fovy,
@@ -14,8 +14,8 @@ void Camera::init(const glm::vec3 &pos, const flt &fovy,
                   glm::vec3 const &gaze, glm::vec3 const &up) {
     // Extrinsincs
     this->e = pos;
-    this->g = gaze;
-    this->t = up;
+    this->g = glm::normalize(gaze);
+    this->t = glm::normalize(up);
     // Intrinsincs
     this->fov  = fovy;
     this->ar   = aspect_ratio;
