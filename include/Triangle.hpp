@@ -58,6 +58,10 @@ class Triangle {
                       // projection onto the xOy plane
 
     bool contains(flt x, flt y) const;
+    // When calling this function, make sure the triangle has **view-space**
+    // coordinates (as opposed to screen-space coordinates).
+    Color color_at(flt const &ca, flt const &cb, flt const &cc,
+                   flt const &z_viewspace) const;
 
   public: // Operator overrides
     Triangle                  operator*(glm::mat4 const &m) const;

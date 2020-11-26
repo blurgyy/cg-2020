@@ -56,6 +56,32 @@ bool Triangle::contains(flt x, flt y) const {
            glm::sign(z[1]) == glm::sign(z[2]);
 }
 
+Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
+                         flt const &z_viewspace) const {
+    Color a = this->col[0];
+    Color b = this->col[1];
+    Color c = this->col[2];
+    debugm("color-a: [%u, %u, %u]\n", a.r(), a.g(), a.b());
+    debugm("color-b: [%u, %u, %u]\n", b.r(), b.g(), b.b());
+    debugm("color-c: [%u, %u, %u]\n", c.r(), c.g(), c.b());
+    flt az            = this->vtx[0].z;
+    flt bz            = this->vtx[1].z;
+    flt cz            = this->vtx[2].z;
+    flt zv_reciprocal = 1.0 / z_viewspace;
+    debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz, z_viewspace);
+    // r
+    flt red =
+        (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) / zv_reciprocal;
+    // g
+    flt green = (ca * a.green / az + cb * b.green / bz + cc * c.green / cz) /
+                zv_reciprocal;
+    // b
+    flt blue = (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
+               zv_reciprocal;
+    debugm("red %f, green %f, blue %f\n", red, green, blue);
+    return Color(red, green, blue);
+}
+
 /*** Operator overrides ***/
 // Matrix left multiplication.
 // Caveat: glm implements matrix multiplication in reversed order.
@@ -64,6 +90,10 @@ Triangle Triangle::operator*(glm::mat4 const &m) const {
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
     Triangle ret(*this);
+    // debugm("*this has color (%u, %u, %u) on first vert\n", this->col[0].r(),
+    // this->col[0].g(), this->col[0].b());
+    // errorm("ret has color (%u, %u, %u) on first vert\n", ret.col[0].r(),
+    // ret.col[0].g(), ret.col[0].b());
     for (int i = 0; i < 3; ++i) {
         auto const &v            = ret.vtx[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
