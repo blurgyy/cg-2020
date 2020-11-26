@@ -8,14 +8,14 @@ Triangle::Triangle(std::array<glm::vec3, 3> const &vtx,
                                                                     col[1],
                                                                     col[2]} {
     // Initialize facing direction
-    facing = glm::cross(vtx[1] - vtx[0], vtx[2] - vtx[1]);
+    facing = glm::normalize(glm::cross(vtx[1] - vtx[0], vtx[2] - vtx[1]));
 }
 Triangle::Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c,
                    glm::vec3 const &na, glm::vec3 const &nb,
                    glm::vec3 const &nc, Color const &ca, Color const &cb,
                    Color const &cc)
     : vtx{a, b, c}, nor{na, nb, nc}, col{ca, cb, cc} {
-    facing = glm::cross(vtx[1] - vtx[0], vtx[2] - vtx[1]);
+    facing = glm::normalize(glm::cross(vtx[1] - vtx[0], vtx[2] - vtx[1]));
 }
 
 glm::vec3 Triangle::a() const { return vtx[0]; }
