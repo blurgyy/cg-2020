@@ -34,14 +34,20 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     // Set view matrix, according to camera information
     glm::vec3 right = glm::cross(cam.gaze(), cam.up());
     // clang-format off
-    flt view_value[] = {
+    flt trans_value[] = {
+        1, 0, 0, -cam.pos().x,
+        0, 1, 0, -cam.pos().y,
+        0, 0, 1, -cam.pos().z,
+        0, 0, 0,            1,
+    };
+    flt rot_value[] = {
               right.x,       right.y,       right.z, 0,
            cam.up().x,    cam.up().y,    cam.up().z, 0,
         -cam.gaze().x, -cam.gaze().y, -cam.gaze().z, 0,
                     0,             0,             0, 1,
     };
     // clang-format on
-    view = glm::make_mat4(view_value);
+    view = glm::make_mat4(trans_value) * glm::make_mat4(rot_value);
     debugm("view matrix is\n");
     output(view);
 
@@ -108,6 +114,7 @@ void Zbuf::init_viewport(const unsigned int &height,
     // 0,     0, 1, 0,
     // 0,     0, 0, 1,
     // };
+    // Todo: use single initilization array
     flt vtrans_value[] = {
         1, 0, 0, 1,
         0, 1, 0, 1,
