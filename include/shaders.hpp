@@ -4,13 +4,17 @@
 #include "Triangle.hpp"
 #include "global.hpp"
 
-// std::function<Color(Triangle const &t, Triangle const &v, flt x, flt y)>
-// frag_shader;
+namespace shdr {
 
 // Normal shader
-Color normal_shader(Triangle const &t, Triangle const &v, flt x, flt y);
-Color vertex_interpolation_shader(Triangle const &t, Triangle const &v, flt x,
-                                  flt y);
+Color normal_shader(Triangle const &t, Triangle const &v, flt const &x,
+                    flt const &y);
+
+// Interpolate colors on vertices with barycentric coordinates
+Color vertex_interpolation_shader(Triangle const &t, Triangle const &v,
+                                  flt const &x, flt const &y);
+
+}; // namespace shdr
 
 #endif
 

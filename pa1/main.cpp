@@ -21,12 +21,20 @@ void show_help(char *selfname) {
 
 int main(int argc, char **argv) {
     std::string objfile; // Path to the obj file
+    std::function<Color(Triangle const &, Triangle const &, flt const &,
+                        flt const &)>
+        selected_fragment_shader = shdr::normal_shader;
 
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
             show_help(argv[0]);
             return 0;
+        } else if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "--normal")) {
+            selected_fragment_shader = shdr::normal_shader;
+        } else if (!strcmp(argv[i], "-i") ||
+                   !strcmp(argv[i], "--interpolation")) {
+            selected_fragment_shader = shdr::vertex_interpolation_shader;
         } else {
             objfile = argv[i];
         }
@@ -38,28 +46,28 @@ int main(int argc, char **argv) {
 
     /****************************** Load model ******************************/
     // Uncomment below lines when testing is finished!
-    //objl::Loader loader;
-    //debugm("loading object from file '%s' ..\n", objfile.c_str());
-    //if (!loader.LoadFile(objfile)) {
-    //errorm("failed to load object from '%s'\n", objfile.c_str());
+    // objl::Loader loader;
+    // debugm("loading object from file '%s' ..\n", objfile.c_str());
+    // if (!loader.LoadFile(objfile)) {
+    // errorm("failed to load object from '%s'\n", objfile.c_str());
     //}
-    //printf("object loaded\n");
+    // printf("object loaded\n");
     // Scene scene(loader.LoadedMeshes[0]);
     // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
     // The first triangle to be rendered
-    glm::vec3 v11(0, 2, -5);
+    glm::vec3 v11(0, 2, -6);
     glm::vec3 v12(-1, -1, -5);
-    glm::vec3 v13(0, 0, -5);
+    glm::vec3 v13(0, 0, -4);
     Triangle  t1(v11, v12, v13);
     t1.col[0] = Color(29, 135, 96);
     t1.col[1] = Color(209, 232, 5);
     t1.col[2] = Color(32, 192, 21);
     // The second triangle to be rendered
-    glm::vec3 v21(-1, 1, -4);
+    glm::vec3 v21(-1, 1, -3);
     glm::vec3 v22(0, 0, -4);
-    glm::vec3 v23(1, 0, -4);
+    glm::vec3 v23(1, 0, -5);
     Triangle  t2(v21, v22, v23);
     t2.col[0] = Color(41, 23, 206);
     t2.col[1] = Color(160, 163, 83);
@@ -76,7 +84,7 @@ int main(int argc, char **argv) {
     Zbuf zbuf(scene, height, width);
 
     // Set fragment shader
-    zbuf.set_shader(vertex_interpolation_shader);
+    zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
     glm::vec3 eye(0, 0, 0);
