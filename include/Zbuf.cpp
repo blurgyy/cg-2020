@@ -159,6 +159,8 @@ void Zbuf::render() {
         errorm("Viewport size is not initialized\n");
     }
     for (Triangle const &v : scene.primitives()) {
+        // errorm("v from scene has color (%u, %u, %u) on first vert\n",
+        // v.col[0].r(), v.col[0].g(), v.col[0].b());
         // If the triangle is facing -z direction, skip it (face culling).
         if (v.facing.z <= 0) {
             continue;
@@ -219,10 +221,16 @@ void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
                 auto [ca, cb, cc] = t % glm::vec3(x, y, 0);
+                // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
+                // z value in view-space
                 flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
                 if (real_z > this->z(i, j)) {
+                    // Calculate interpolated color with given triangle's 3
+                    // vertices.
+                    // Note: t and v shall have same color values by now.
+                    Color icol    = v.color_at(ca, cb, cc, real_z);
                     this->z(i, j) = real_z;
-                    this->set_pixel(i, j);
+                    this->set_pixel(i, j, icol);
                 }
             }
         }

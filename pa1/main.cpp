@@ -47,10 +47,13 @@ int main(int argc, char **argv) {
 
     /****************************** playground ******************************/
     // The single triangle to be rendered
-    glm::vec3             v1(0, 2, -5);
-    glm::vec3             v2(-1, -1, -5);
-    glm::vec3             v3(0, 0, -5);
-    Triangle              t(v1, v2, v3);
+    glm::vec3 v1(0, 2, -5);
+    glm::vec3 v2(-1, -1, -5);
+    glm::vec3 v3(0, 0, -5);
+    Triangle  t(v1, v2, v3);
+    t.col[0] = Color(29, 135, 96);
+    t.col[1] = Color(209, 232, 5);
+    t.col[2] = Color(32, 192, 21);
     std::vector<Triangle> prims{t};
 
     // Load the triangle into scene
