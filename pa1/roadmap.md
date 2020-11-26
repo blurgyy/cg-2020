@@ -10,10 +10,11 @@
 
 ## Steps
 
-- [ ] Test
-  1. - [ ] create a simple triangle
-  2. - [ ] load the triangle into a Scene object
-  3. - [ ] render the scene
+- [x] Transformation
+  1. - [x] create a simple triangle
+  2. - [x] load the triangle into a Scene object
+  3. - [x] render the scene
+- [ ] Barycentric coordinates
 
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Nov 23 2020, 15:18 [CST]
