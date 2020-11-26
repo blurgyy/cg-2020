@@ -159,7 +159,7 @@ void Zbuf::render() {
         errorm("Viewport size is not initialized\n");
     }
     for (Triangle const &v : scene.primitives()) {
-        // errorm("v from scene has color (%u, %u, %u) on first vert\n",
+        // debugm("v from scene has color (%u, %u, %u) on first vert\n",
         // v.col[0].r(), v.col[0].g(), v.col[0].b());
         // If the triangle is facing -z direction, skip it (face culling).
         if (v.facing.z <= 0) {

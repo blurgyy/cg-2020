@@ -46,15 +46,23 @@ int main(int argc, char **argv) {
     // // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
-    // The single triangle to be rendered
-    glm::vec3 v1(0, 2, -5);
-    glm::vec3 v2(-1, -1, -5);
-    glm::vec3 v3(0, 0, -5);
-    Triangle  t(v1, v2, v3);
-    t.col[0] = Color(29, 135, 96);
-    t.col[1] = Color(209, 232, 5);
-    t.col[2] = Color(32, 192, 21);
-    std::vector<Triangle> prims{t};
+    // The first triangle to be rendered
+    glm::vec3 v11(0, 2, -5);
+    glm::vec3 v12(-1, -1, -5);
+    glm::vec3 v13(0, 0, -5);
+    Triangle  t1(v11, v12, v13);
+    t1.col[0] = Color(29, 135, 96);
+    t1.col[1] = Color(209, 232, 5);
+    t1.col[2] = Color(32, 192, 21);
+    // The second triangle to be rendered
+    glm::vec3 v21(-1, 1, -4);
+    glm::vec3 v22(0, 0, -4);
+    glm::vec3 v23(1, 0, -4);
+    Triangle  t2(v21, v22, v23);
+    t2.col[0] = Color(41, 23, 206);
+    t2.col[1] = Color(160, 163, 83);
+    t2.col[2] = Color(149, 149, 224);
+    std::vector<Triangle> prims{t1, t2};
 
     // Load the triangle into scene
     Scene scene(prims);
