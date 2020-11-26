@@ -155,14 +155,14 @@ void Zbuf::render() {
     if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
-    for (Triangle const &t : scene.primitives()) {
+    for (Triangle const &v : scene.primitives()) {
         // If the triangle is facing -z direction, skip it (face culling).
-        if (t.facing.z <= 0) {
+        if (v.facing.z <= 0) {
             continue;
         }
         // Screen-space coordinates
         // Triangle o(viewport * mvp * t);
-        Triangle o(t * mvp * viewport);
+        Triangle t(v * mvp * viewport);
         // debugm("viewport here is\n");
         // output(viewport);
         // debugm("mvp is\n");
@@ -175,7 +175,7 @@ void Zbuf::render() {
         // debugm("screen space: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
         // o.a().x, o.a().y, o.b().x, o.b().y, o.c().x, o.c().y);
         // Draw triangle
-        this->draw_triangle_naive(o);
+        this->draw_triangle_naive(t, v);
     }
 }
 
@@ -198,7 +198,7 @@ flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
     return this->depth_buffer[w * y + x];
 }
 
-void Zbuf::draw_triangle_naive(Triangle const &t) {
+void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
     // AABB
     int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
     int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;

@@ -41,8 +41,10 @@ class Zbuf {
     // corner of the image.
     void set_pixel(unsigned int const &x, unsigned int const &y,
                    Color const &color = Color(255));
-    // Triangle t has screen space (x,y) coordinates
-    void draw_triangle_naive(Triangle const &t);
+    // Naive z-buffer implementation.
+    // @param t: Triangle with screen space (x,y) coordinates
+    // @param v: Triangle with view space coordinates
+    void draw_triangle_naive(Triangle const &t, Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
     flt &      z(unsigned int const &x, unsigned int const &y);
