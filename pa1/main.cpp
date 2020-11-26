@@ -15,7 +15,10 @@ void show_help(char *selfname) {
     printf("    usage: %s [-h|--help] <objfile>\n", selfname);
     printf("\n");
     printf("    options:\n");
-    printf("        -h|--help:              Show this message and quit\n");
+    printf("        -h|--help               Show this message and quit\n");
+    printf("        -n|--normal             Use normal fragment shader\n");
+    printf("        -i|--interpolation      Use interpolation fragment "
+           "shader\n");
     printf("\n");
 }
 
