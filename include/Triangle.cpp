@@ -70,14 +70,15 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     flt zv_reciprocal = 1.0 / z_viewspace;
     // debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz, z_viewspace);
     // r
-    flt red =
-        (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) / zv_reciprocal;
+    flt red = .5 + (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) /
+                       zv_reciprocal;
     // g
-    flt green = (ca * a.green / az + cb * b.green / bz + cc * c.green / cz) /
-                zv_reciprocal;
+    flt green =
+        .5 + (ca * a.green / az + cb * b.green / bz + cc * c.green / cz) /
+                 zv_reciprocal;
     // b
-    flt blue = (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
-               zv_reciprocal;
+    flt blue = .5 + (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
+                        zv_reciprocal;
     // debugm("red %f, green %f, blue %f\n", red, green, blue);
     return Color(red, green, blue);
 }
@@ -90,10 +91,10 @@ Triangle Triangle::operator*(glm::mat4 const &m) const {
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
     Triangle ret(*this);
-    // debugm("*this has color (%u, %u, %u) on first vert\n", this->col[0].r(),
-    // this->col[0].g(), this->col[0].b());
-    // errorm("ret has color (%u, %u, %u) on first vert\n", ret.col[0].r(),
-    // ret.col[0].g(), ret.col[0].b());
+    // debugm("*this has color (%u, %u, %u) on first vert\n",
+    // this->col[0].r(), this->col[0].g(), this->col[0].b()); errorm("ret has
+    // color (%u, %u, %u) on first vert\n", ret.col[0].r(), ret.col[0].g(),
+    // ret.col[0].b());
     for (int i = 0; i < 3; ++i) {
         auto const &v            = ret.vtx[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
