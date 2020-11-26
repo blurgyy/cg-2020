@@ -43,46 +43,47 @@ int main(int argc, char **argv) {
         }
     }
     if (objfile.size() == 0) {
-        // errorm("No obj file specified\n");
-        // return 1;
+        errorm("No obj file specified\n");
     }
 
     /****************************** Load model ******************************/
     // Uncomment below lines when testing is finished!
-    // objl::Loader loader;
-    // debugm("loading object from file '%s' ..\n", objfile.c_str());
-    // if (!loader.LoadFile(objfile)) {
-    // errorm("failed to load object from '%s'\n", objfile.c_str());
-    //}
-    // printf("object loaded\n");
-    // Scene scene(loader.LoadedMeshes[0]);
+    objl::Loader loader;
+    debugm("loading object from file '%s' ..\n", objfile.c_str());
+    if (!loader.LoadFile(objfile)) {
+        errorm("failed to load object from '%s'\n", objfile.c_str());
+    }
+    printf("object loaded\n");
+    Scene scene(loader.LoadedMeshes[0]);
     // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
-    // The first triangle to be rendered
-    glm::vec3 v11(0, 2, -6);
-    glm::vec3 v12(-1, -1, -5);
-    glm::vec3 v13(0, 0, -4);
-    Triangle  t1(v11, v12, v13);
-    t1.col[0] = Color(29, 135, 96);
-    t1.col[1] = Color(209, 232, 5);
-    t1.col[2] = Color(32, 192, 21);
-    // The second triangle to be rendered
-    glm::vec3 v21(-1, 1, -3);
-    glm::vec3 v22(0, 0, -4);
-    glm::vec3 v23(1, 0, -5);
-    Triangle  t2(v21, v22, v23);
-    t2.col[0] = Color(41, 23, 206);
-    t2.col[1] = Color(160, 163, 83);
-    t2.col[2] = Color(149, 149, 224);
-    std::vector<Triangle> prims{t1, t2};
+    // // The first triangle to be rendered
+    // glm::vec3 v11(0, 2, -6);
+    // glm::vec3 v12(-1, -1, -5);
+    // glm::vec3 v13(0, 0, -4);
+    // Triangle  t1(v11, v12, v13);
+    // t1.col[0] = Color(29, 135, 96);
+    // t1.col[1] = Color(209, 232, 5);
+    // t1.col[2] = Color(32, 192, 21);
+    // // The second triangle to be rendered
+    // glm::vec3 v21(-1, 1, -3);
+    // glm::vec3 v22(0, 0, -4);
+    // glm::vec3 v23(1, 0, -5);
+    // Triangle  t2(v21, v22, v23);
+    // t2.col[0] = Color(41, 23, 206);
+    // t2.col[1] = Color(160, 163, 83);
+    // t2.col[2] = Color(149, 149, 224);
+    // std::vector<Triangle> prims{t1, t2};
 
-    // Load the triangle into scene
-    Scene scene(prims);
+    // // Load the triangle into scene
+    // Scene scene(prims);
 
     // Screen (viewport) size
-    int width  = 640;
-    int height = 480;
+    // int width  = 640;
+    // int height = 480;
+    int width  = 1024;
+    int height = 768;
     // Create a renderer on scene
     Zbuf zbuf(scene, height, width);
 
@@ -90,9 +91,10 @@ int main(int argc, char **argv) {
     zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
-    glm::vec3 eye(0, 0, 0);
-    glm::vec3 gaze(0, 0, -1);
-    glm::vec3 up(0, 1, 0);
+    glm::vec3 eye(-3, 5, 10);
+    // glm::vec3 gaze(0, 0, -1);
+    glm::vec3 gaze = glm::normalize(-eye);
+    glm::vec3 up(2, 3, -.9);
     flt       fovy         = 45;
     flt       aspect_ratio = 1.0 * height / width;
     flt       znear        = -.1;
