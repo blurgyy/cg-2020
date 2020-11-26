@@ -2,6 +2,7 @@
 #define TRIANGLE_HPP
 
 #include <array>
+#include <tuple>
 
 #include "global.hpp"
 
@@ -16,6 +17,11 @@ class Triangle {
                       // glm::cross(v[1] - v[0], v[2] - v[1]);
     glm::vec3 nor[3]; // Normal directions of the 3 vertices
     Color     col[3]; // Color values of the 3 vertices
+
+    flt A; // Area of the triangle's orthographic projection onto xOy
+
+  private:
+    void _init();
 
   public:
     Triangle();
@@ -48,45 +54,10 @@ class Triangle {
     glm::vec3 nb() const;
     glm::vec3 nc() const;
 
+    flt area() const;
+
   public: // Operator overrides
-    Triangle operator*(glm::mat4 const &m) const {
-        // Assign color values and indices of each vertex to the returned
-        // triangle.  Positions of vertices are overwritten, normal directons
-        // of vertices doesn't matter.
-        Triangle ret(*this);
-
-        for (int i = 0; i < 3; ++i) {
-            auto const &v            = ret.vtx[i];
-            flt         homo_value[] = {v.x, v.y, v.z, 1};
-            glm::vec4   homo         = glm::make_vec4(homo_value);
-
-            homo         = homo * m;
-            ret.vtx[i].x = homo.x / homo.w;
-            ret.vtx[i].y = homo.y / homo.w;
-            ret.vtx[i].z = homo.z / homo.w;
-        }
-
-        return ret;
-    }
-    friend Triangle operator*(glm::mat4 const &m, Triangle const &self) {
-        // Assign color values and indices of each vertex to the returned
-        // triangle.  Positions of vertices are overwritten, normal directons
-        // of vertices doesn't matter.
-        Triangle ret(self);
-
-        for (int i = 0; i < 3; ++i) {
-            auto const &v            = self.vtx[i];
-            flt         homo_value[] = {v.x, v.y, v.z, 1};
-            glm::vec4   homo         = glm::make_vec4(homo_value);
-
-            homo         = m * homo;
-            ret.vtx[i].x = homo.x / homo.w;
-            ret.vtx[i].y = homo.y / homo.w;
-            ret.vtx[i].z = homo.z / homo.w;
-        }
-
-        return ret;
-    }
+    Triangle        operator*(glm::mat4 const &m) const;
 };
 
 #endif
