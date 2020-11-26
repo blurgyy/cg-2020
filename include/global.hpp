@@ -41,6 +41,7 @@ extern flt const pi;
 extern flt const twopi;
 extern flt const halfpi;
 extern flt const piover180;
+extern flt const epsilon;
 
 // Structs
 struct Color {
