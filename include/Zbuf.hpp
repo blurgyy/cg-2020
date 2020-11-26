@@ -31,15 +31,22 @@ class Zbuf {
                            // canonical cube to screen size on xOy plane
     bool viewport_initialized;
 
+    std::vector<flt> depth_buffer;
+
   private:
     // Check if screen space coordinate (x, y) is inside the triangle t,
     // coordinates of vertices of triangle t should be in screen space, too.
     bool inside(flt x, flt y, Triangle const &t) const;
-    // Triangle t has screen space (x,y) coordinates
-    void draw_triangle_naive(Triangle const &t);
-    // Set pixel at coordinate (x, y)
+    // Set image pixel at coordinate (x, y), origin is located at left-bottom
+    // corner of the image.
     void set_pixel(unsigned int const &x, unsigned int const &y,
                    Color const &color = Color(255));
+    // Triangle t has screen space (x,y) coordinates
+    void draw_triangle_naive(Triangle const &t);
+    // Depth buffer value at image coordinate (x, y), origin is located at
+    // left-bottom corner of the image.
+    flt &      z(unsigned int const &x, unsigned int const &y);
+    flt const &z(unsigned int const &x, unsigned int const &y) const;
 
   public:
     Image img;

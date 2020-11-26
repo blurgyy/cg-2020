@@ -187,12 +187,21 @@ void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
     img(x, y) = color;
 }
 
+flt &Zbuf::z(unsigned int const &x, unsigned int const &y) {
+    return depth_buffer[w * y + x];
+}
+
+flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
+    return depth_buffer[w * y + x];
+}
+
 void Zbuf::draw_triangle_naive(Triangle const &t) {
+    // AABB
     int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
     int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
     int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
     int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
-    if (xmin < 0 || ymin < 0 || xmax >= w || ymax >= h) {
+    if (xmin < 0 || ymin < 0 || xmax > w || ymax > h) {
         return;
     }
     for (int j = ymin; j < ymax; ++j) {
