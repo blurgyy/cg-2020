@@ -18,8 +18,6 @@ class Triangle {
     glm::vec3 nor[3]; // Normal directions of the 3 vertices
     Color     col[3]; // Color values of the 3 vertices
 
-    flt A; // Area of the triangle's orthographic projection onto xOy
-
   private:
     void _init();
 
@@ -44,22 +42,25 @@ class Triangle {
                  Color(0),
              });
 
-    // returns spatial location of the vertex
-    glm::vec3 a() const;
-    glm::vec3 b() const;
-    glm::vec3 c() const;
+    glm::vec3 a() const; // returns spatial location of the first vertex
+    glm::vec3 b() const; // returns spatial location of the second vertex
+    glm::vec3 c() const; // returns spatial location of the third vertex
 
-    // returns normal direction of the corresponding vertex
-    glm::vec3 na() const;
-    glm::vec3 nb() const;
-    glm::vec3 nc() const;
+    glm::vec3 na() const; // returns normal direction of the first vertex
+    glm::vec3 nb() const; // returns normal direction of the second vertex
+    glm::vec3 nc() const; // returns normal direction of the third vertex
 
-    flt area() const;
+    Color ca() const; // returns color value of the first vertex
+    Color cb() const; // returns color value of the second vertex
+    Color cc() const; // returns color value of the third vertex
+
+    flt area() const; // returns area of the triangle's orthographic
+                      // projection onto the xOy plane
 
     bool contains(flt x, flt y) const;
 
   public: // Operator overrides
-    Triangle operator*(glm::mat4 const &m) const;
+    Triangle                  operator*(glm::mat4 const &m) const;
     std::tuple<flt, flt, flt> operator%(glm::vec3 const &pos) const;
 };
 

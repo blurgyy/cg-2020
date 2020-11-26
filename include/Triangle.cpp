@@ -25,7 +25,23 @@ glm::vec3 Triangle::na() const { return this->nor[0]; }
 glm::vec3 Triangle::nb() const { return this->nor[1]; }
 glm::vec3 Triangle::nc() const { return this->nor[2]; }
 
-flt Triangle::area() const { return this->A; }
+Color Triangle::ca() const { return this->col[0]; }
+Color Triangle::cb() const { return this->col[1]; }
+Color Triangle::cc() const { return this->col[2]; }
+
+flt Triangle::area() const {
+    // clang-format off
+    flt det_value[] = {
+        this->vtx[0].x, this->vtx[1].x, this->vtx[2].x,
+        this->vtx[0].y, this->vtx[1].y, this->vtx[2].y,
+                     1,              1,              1,
+    };
+    // clang-format on
+
+    // Calculate area of a 2D triangle (with homogeneous coordinates)
+    glm::mat3 det = glm::make_mat3(det_value);
+    return fabs(glm::determinant(det));
+}
 
 bool Triangle::contains(flt x, flt y) const {
     glm::vec3 v[3];
@@ -87,26 +103,20 @@ std::tuple<flt, flt, flt> Triangle::operator%(glm::vec3 const &pos) const {
 
     Triangle ta(pos, this->vtx[1], this->vtx[2]);
     Triangle tb(pos, this->vtx[0], this->vtx[2]);
-    Triangle tc(pos, this->vtx[0], this->vtx[1]);
-    flt      ca = ta.area() / this->area();
-    flt      cb = tb.area() / this->area();
-    flt      cc = tc.area() / this->area();
+    debugm("pos (%f, %f, %f)\n", pos.x, pos.y, pos.z);
+    debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x, vtx[0].y,
+           vtx[0].z);
+    debugm("total area %f\n", this->area());
+    debugm("aarea %f\n", ta.area());
+    debugm("barea %f\n", tb.area());
+    flt ca = ta.area() / this->area();
+    flt cb = tb.area() / this->area();
+    flt cc = 1 - ca - cb;
     return {ca, cb, cc};
 }
 
 // private
 void Triangle::_init() {
-    // clang-format off
-    flt det_value[] = {
-        this->vtx[0].x, this->vtx[1].x, this->vtx[2].x,
-        this->vtx[0].y, this->vtx[1].y, this->vtx[2].y,
-                     1,              1,              1,
-    };
-    // clang-format on
-
-    // Calculate area of a 2D triangle (with homogeneous coordinates)
-    glm::mat3 det = glm::make_mat3(det_value);
-    this->A       = glm::determinant(det);
     // Initialize facing direction
     this->facing = glm::normalize(
         glm::cross(this->vtx[1] - this->vtx[0], this->vtx[2] - this->vtx[1]));
