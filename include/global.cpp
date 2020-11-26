@@ -26,19 +26,19 @@ unsigned char const &Color::b() const { return this->blue; }
 Image::Image() {}
 Image::Image(unsigned int const &height, unsigned int const &width)
     : h(height), w(width) {
-    data = std::vector<Color>(h * w);
+    this->data = std::vector<Color>(h * w);
 }
 void Image::init(const unsigned int &height, const unsigned int &width) {
-    this->h = height;
-    this->w = width;
-    data    = std::vector<Color>(h * w);
+    this->h    = height;
+    this->w    = width;
+    this->data = std::vector<Color>(this->h * this->w);
 }
 Color &Image::operator()(unsigned int const &x, unsigned int const &y) {
-    return data[w * y + x];
+    return this->data[this->w * y + x];
 }
 Color const &Image::operator()(unsigned int const &x,
                                unsigned int const &y) const {
-    return data[w * y + x];
+    return this->data[this->w * y + x];
 }
 
 void write_ppm(std::string const &filename, Image const &img) {

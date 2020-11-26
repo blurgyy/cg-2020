@@ -23,13 +23,13 @@ void Camera::init(const glm::vec3 &pos, const flt &fovy,
     this->far  = zfar;
 }
 
-glm::vec3 Camera::pos() const { return e; }
-glm::vec3 Camera::gaze() const { return g; }
-glm::vec3 Camera::up() const { return t; }
-flt       Camera::fovy() const { return fov; }
-flt       Camera::aspect_ratio() const { return ar; }
-flt       Camera::znear() const { return near; }
-flt       Camera::zfar() const { return far; }
+glm::vec3 Camera::pos() const { return this->e; }
+glm::vec3 Camera::gaze() const { return this->g; }
+glm::vec3 Camera::up() const { return this->t; }
+flt       Camera::fovy() const { return this->fov; }
+flt       Camera::aspect_ratio() const { return this->ar; }
+flt       Camera::znear() const { return this->near; }
+flt       Camera::zfar() const { return this->far; }
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 25 2020, 11:31 [CST]

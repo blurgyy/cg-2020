@@ -8,18 +8,18 @@ Scene::Scene() {}
 Scene::Scene(objl::Mesh const &mesh) {
     debugm("%lu vertices found in loaded mesh\n", mesh.Vertices.size());
     for (int i = 0; i < mesh.Vertices.size(); i += 3) {
-        std::array<glm::vec3, 3> face;
+        std::array<glm::vec3, 3> verts;
         for (int j = 0; j < 3; ++j) {
             glm::vec3 vertex(mesh.Vertices[i + j].Position.X,
                              mesh.Vertices[i + j].Position.Y,
                              mesh.Vertices[i + j].Position.Z);
-            face[j] = vertex;
+            verts[j] = vertex;
         }
-        triangles.emplace_back(face[0], face[1], face[2]);
+        this->triangles.emplace_back(verts[0], verts[1], verts[2]);
     }
     msg("Loaded %lu triangles into scene\n", triangles.size());
 }
-Scene::Scene(std::vector<Triangle> const &tgs) { triangles = tgs; }
+Scene::Scene(std::vector<Triangle> const &tgs) { this->triangles = tgs; }
 
 std::vector<Triangle> const &Scene::primitives() const {
     return this->triangles;

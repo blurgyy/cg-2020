@@ -59,7 +59,7 @@ class Zbuf {
     Zbuf(Scene const &s, unsigned int const &height,
          unsigned int const &width);
     // Set default values
-    void init();
+    void _init();
 
     // Set camera's {ex,in}trinsincs
     void init_cam(glm::vec3 const &ey, flt const &fovy,

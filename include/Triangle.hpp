@@ -59,7 +59,8 @@ class Triangle {
     bool contains(flt x, flt y) const;
 
   public: // Operator overrides
-    Triangle        operator*(glm::mat4 const &m) const;
+    Triangle operator*(glm::mat4 const &m) const;
+    std::tuple<flt, flt, flt> operator%(glm::vec3 const &pos) const;
 };
 
 #endif

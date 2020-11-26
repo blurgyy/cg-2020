@@ -1,33 +1,35 @@
 #include "Zbuf.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-Zbuf::Zbuf() { init(); }
-Zbuf::Zbuf(Scene const &s) : scene(s) { init(); }
+Zbuf::Zbuf() { this->_init(); }
+Zbuf::Zbuf(Scene const &s) : scene(s) { this->_init(); }
 Zbuf::Zbuf(Scene const &s, unsigned int const &height,
            unsigned int const &width)
     : scene(s) {
-    init();
-    init_viewport(height, width);
+    this->_init();
+    this->init_viewport(height, width);
 }
 
-void Zbuf::init() {
-    cam_initialized = mvp_initialized = viewport_initialized = false;
+void Zbuf::_init() {
+    this->cam_initialized      = false;
+    this->mvp_initialized      = false;
+    this->viewport_initialized = false;
 }
 
 void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
                     flt const &aspect_ratio, flt const &znear,
                     flt const &zfar, glm::vec3 const &gaze,
                     glm::vec3 const &up) {
-    cam.init(ey, fovy, aspect_ratio, znear, zfar, gaze, up);
-    cam_initialized = true;
+    this->cam.init(ey, fovy, aspect_ratio, znear, zfar, gaze, up);
+    this->cam_initialized = true;
 }
 void Zbuf::init_cam(Camera const &camera) {
-    cam             = camera;
-    cam_initialized = true;
+    this->cam             = camera;
+    this->cam_initialized = true;
 }
 
 void Zbuf::init_mvp(glm::mat4 const &model) {
-    if (!cam_initialized) {
+    if (!this->cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
     // Set model matrix
@@ -51,7 +53,7 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
                     0,             0,             0, 1,
     };
     // clang-format on
-    view = glm::make_mat4(trans_value) * glm::make_mat4(rot_value);
+    this->view = glm::make_mat4(trans_value) * glm::make_mat4(rot_value);
     // debugm("view matrix is\n");
     // output(view);
 
@@ -59,11 +61,11 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     glm::mat4 persp_ortho; // Squeezes the frustum into a rectangular box
     glm::mat4 ortho_trans; // Centers the rectangular box at origin
     glm::mat4 ortho_scale; // Scales the rectangular box to the canonical cube
-    flt       n    = cam.znear();
-    flt       f    = cam.zfar();
-    flt       fovy = cam.fovy() * piover180;
+    flt       n    = this->cam.znear();
+    flt       f    = this->cam.zfar();
+    flt       fovy = this->cam.fovy() * piover180;
     // debugm("cam.fovy is %f degrees, aka %f rad\n", cam.fovy(), fovy);
-    flt aspect_ratio = cam.aspect_ratio();
+    flt aspect_ratio = this->cam.aspect_ratio();
     // debugm("aspect ratios is %f\n", aspect_ratio);
     flt screen_top   = std::tan(fovy / 2) * fabs(n);
     flt screen_right = screen_top / aspect_ratio;
@@ -97,14 +99,14 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     // debugm("orthographic translation matrix is\n");
     // output(ortho_trans);
     // projection = ortho_scale * ortho_trans * persp_ortho;
-    projection = persp_ortho * ortho_trans * ortho_scale;
+    this->projection = persp_ortho * ortho_trans * ortho_scale;
     // debugm("orthographic scaling matrix is\n");
     // output(ortho_scale);
 
     // Set mvp
     // mvp             = projection * view * model;
-    mvp             = model * view * projection;
-    mvp_initialized = true;
+    this->mvp             = model * view * projection;
+    this->mvp_initialized = true;
 }
 
 void Zbuf::init_viewport(const unsigned int &height,
@@ -135,21 +137,22 @@ void Zbuf::init_viewport(const unsigned int &height,
     glm::mat4 vtrans = glm::make_mat4(vtrans_value);
     glm::mat4 vscale = glm::make_mat4(vscale_value);
     // viewport         = vscale * vtrans;
-    viewport = vtrans * vscale;
+    this->viewport = vtrans * vscale;
     // debugm("viewport matrix is xxxxx\n");
     // output(viewport);
     img.init(this->h, this->w);
-    viewport_initialized = true;
+    this->depth_buffer         = std::vector<flt>(this->h * this->w);
+    this->viewport_initialized = true;
 }
 
 void Zbuf::render() {
-    if (!cam_initialized) {
+    if (!this->cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
-    if (!mvp_initialized) {
+    if (!this->mvp_initialized) {
         errorm("Transformation matrices are not initialized\n");
     }
-    if (!viewport_initialized) {
+    if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
     for (Triangle const &t : scene.primitives()) {
@@ -172,7 +175,7 @@ void Zbuf::render() {
         // debugm("screen space: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
         // o.a().x, o.a().y, o.b().x, o.b().y, o.c().x, o.c().y);
         // Draw triangle
-        draw_triangle_naive(o);
+        this->draw_triangle_naive(o);
     }
 }
 
@@ -184,15 +187,15 @@ bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
 void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
                      Color const &color) {
     // errorm("Setting pixel (%u, %u)\n", x, y);
-    img(x, y) = color;
+    this->img(x, y) = color;
 }
 
 flt &Zbuf::z(unsigned int const &x, unsigned int const &y) {
-    return depth_buffer[w * y + x];
+    return this->depth_buffer[w * y + x];
 }
 
 flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
-    return depth_buffer[w * y + x];
+    return this->depth_buffer[w * y + x];
 }
 
 void Zbuf::draw_triangle_naive(Triangle const &t) {
@@ -207,8 +210,10 @@ void Zbuf::draw_triangle_naive(Triangle const &t) {
     for (int j = ymin; j < ymax; ++j) {
         for (int i = xmin; i < xmax; ++i) {
             // todo: AA
-            if (inside(.5 + i, .5 + j, t)) {
-                set_pixel(i, j);
+            flt x = .5 + i;
+            flt y = .5 + j;
+            if (this->inside(x, y, t)) {
+                this->set_pixel(i, j);
             }
         }
     }
