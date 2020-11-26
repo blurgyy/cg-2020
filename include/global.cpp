@@ -65,6 +65,7 @@ void write_ppm(std::string const &filename, cv::Mat const &data) {
 }
 
 void write_ppm(std::string const &filename, Image const &img) {
+    msg("Writing image (%dx%d) to %s ..\n", img.w, img.h, filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
     char          ppm_head[50] = {0};
     int           height       = img.h;
@@ -83,6 +84,7 @@ void write_ppm(std::string const &filename, Image const &img) {
         }
     }
     f.close();
+    msg("Render result saved in %s\n", filename.c_str());
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

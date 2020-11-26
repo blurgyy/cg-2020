@@ -17,7 +17,7 @@ Scene::Scene(objl::Mesh const &mesh) {
         }
         triangles.emplace_back(face[0], face[1], face[2]);
     }
-    printf("%lu triangles loaded into scene\n", triangles.size());
+    msg("Loaded %lu triangles into scene\n", triangles.size());
 }
 Scene::Scene(std::vector<Triangle> const &tgs) { triangles = tgs; }
 

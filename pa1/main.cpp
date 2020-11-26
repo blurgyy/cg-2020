@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
 
     zbuf.init_mvp(glm::identity<glm::mat4>()); // Use no model transformation
 
+    msg("Rendering scene ..\n");
     zbuf.render();
 
     write_ppm("testfile.ppm", zbuf.img);

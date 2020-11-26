@@ -10,24 +10,28 @@
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
 #ifndef NDEBUG
-#define DEBUGGING 0
-#else
 #define DEBUGGING -1
+#else
+#define DEBUGGING 0
 #endif
 #define debugm(fmt, ...)                                                     \
     do {                                                                     \
-        if (~DEBUGGING)                                                      \
+        if (DEBUGGING)                                                       \
             fprintf(stdout, " [*] %s::%d::%s(): " fmt, __FILE__, __LINE__,   \
                     __func__, ##__VA_ARGS__);                                \
     } while (0)
 #define errorm(fmt, ...)                                                     \
     do {                                                                     \
-        if (~DEBUGGING)                                                      \
+        if (DEBUGGING)                                                       \
             fprintf(stderr, " [X] %s::%d::%s(): " fmt, __FILE__, __LINE__,   \
                     __func__, ##__VA_ARGS__);                                \
         else                                                                 \
             fprintf(stderr, " [X] " fmt, ##__VA_ARGS__);                     \
         exit(-1);                                                            \
+    } while (0)
+#define msg(fmt, ...)                                                        \
+    do {                                                                     \
+        fprintf(stdout, " [v] " fmt, ##__VA_ARGS__);                         \
     } while (0)
 
 // Type definitions
