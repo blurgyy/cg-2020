@@ -61,14 +61,14 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     Color a = this->col[0];
     Color b = this->col[1];
     Color c = this->col[2];
-    debugm("color-a: [%u, %u, %u]\n", a.r(), a.g(), a.b());
-    debugm("color-b: [%u, %u, %u]\n", b.r(), b.g(), b.b());
-    debugm("color-c: [%u, %u, %u]\n", c.r(), c.g(), c.b());
+    // debugm("color-a: [%u, %u, %u]\n", a.r(), a.g(), a.b());
+    // debugm("color-b: [%u, %u, %u]\n", b.r(), b.g(), b.b());
+    // debugm("color-c: [%u, %u, %u]\n", c.r(), c.g(), c.b());
     flt az            = this->vtx[0].z;
     flt bz            = this->vtx[1].z;
     flt cz            = this->vtx[2].z;
     flt zv_reciprocal = 1.0 / z_viewspace;
-    debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz, z_viewspace);
+    // debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz, z_viewspace);
     // r
     flt red =
         (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) / zv_reciprocal;
@@ -78,7 +78,7 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     // b
     flt blue = (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
                zv_reciprocal;
-    debugm("red %f, green %f, blue %f\n", red, green, blue);
+    // debugm("red %f, green %f, blue %f\n", red, green, blue);
     return Color(red, green, blue);
 }
 
@@ -133,12 +133,12 @@ std::tuple<flt, flt, flt> Triangle::operator%(glm::vec3 const &pos) const {
 
     Triangle ta(pos, this->vtx[1], this->vtx[2]);
     Triangle tb(pos, this->vtx[0], this->vtx[2]);
-    debugm("pos (%f, %f, %f)\n", pos.x, pos.y, pos.z);
-    debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x, vtx[0].y,
-           vtx[0].z);
-    debugm("total area %f\n", this->area());
-    debugm("aarea %f\n", ta.area());
-    debugm("barea %f\n", tb.area());
+    // debugm("pos (%f, %f, %f)\n", pos.x, pos.y, pos.z);
+    // debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x, vtx[0].y,
+    // vtx[0].z);
+    // debugm("total area %f\n", this->area());
+    // debugm("aarea %f\n", ta.area());
+    // debugm("barea %f\n", tb.area());
     flt ca = ta.area() / this->area();
     flt cb = tb.area() / this->area();
     flt cc = 1 - ca - cb;
