@@ -10,10 +10,11 @@ Zbuf::Zbuf(Scene const &s, unsigned int const &height,
     this->init_viewport(height, width);
 }
 
-void Zbuf::_init() {
-    this->cam_initialized      = false;
-    this->mvp_initialized      = false;
-    this->viewport_initialized = false;
+void Zbuf::set_shader(
+    std::function<Color(Triangle const &t, Triangle const &v, flt const &x,
+                        flt const &y)>
+        shader_func) {
+    this->frag_shader = shader_func;
 }
 
 void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
@@ -185,6 +186,13 @@ void Zbuf::render() {
 }
 
 // private:
+void Zbuf::_init() {
+    this->cam_initialized      = false;
+    this->mvp_initialized      = false;
+    this->viewport_initialized = false;
+    this->frag_shader          = nullptr;
+}
+
 bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
     return t.contains(x, y);
 }
@@ -228,7 +236,8 @@ void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
                     // Calculate interpolated color with given triangle's 3
                     // vertices.
                     // Note: t and v shall have same color values by now.
-                    Color icol    = v.color_at(ca, cb, cc, real_z);
+                    // Color icol    = v.color_at(ca, cb, cc, real_z);
+                    Color icol    = this->frag_shader(t, v, x, y);
                     this->z(i, j) = real_z;
                     this->set_pixel(i, j, icol);
                 }

@@ -3,6 +3,7 @@
 #include "Triangle.hpp"
 #include "Zbuf.hpp"
 #include "global.hpp"
+#include "shaders.hpp"
 
 #include <cstdio>
 #include <cstring>
@@ -43,7 +44,8 @@ int main(int argc, char **argv) {
     //errorm("failed to load object from '%s'\n", objfile.c_str());
     //}
     //printf("object loaded\n");
-    // // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
+    // Scene scene(loader.LoadedMeshes[0]);
+    // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
     // The first triangle to be rendered
@@ -72,6 +74,9 @@ int main(int argc, char **argv) {
     int height = 480;
     // Create a renderer on scene
     Zbuf zbuf(scene, height, width);
+
+    // Set fragment shader
+    zbuf.set_shader(vertex_interpolation_shader);
 
     // Camera extrinsincs
     glm::vec3 eye(0, 0, 0);

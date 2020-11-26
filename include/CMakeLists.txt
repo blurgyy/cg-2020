@@ -6,6 +6,7 @@ add_library(wheels
     Triangle.cpp
     Zbuf.cpp
     global.cpp
+    shaders.cpp
 )
 
 # Author: Blurgy <gy@blurgy.xyz>

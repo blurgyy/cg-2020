@@ -1,6 +1,8 @@
 #ifndef ZBUF_HPP
 #define ZBUF_HPP
 
+#include <functional>
+
 #include "Camera.hpp"
 #include "Scene.hpp"
 #include "global.hpp"
@@ -34,6 +36,8 @@ class Zbuf {
     std::vector<flt> depth_buffer;
 
   private:
+    // Set default values
+    void _init();
     // Check if screen space coordinate (x, y) is inside the triangle t,
     // coordinates of vertices of triangle t should be in screen space, too.
     bool inside(flt x, flt y, Triangle const &t) const;
@@ -41,6 +45,12 @@ class Zbuf {
     // corner of the image.
     void set_pixel(unsigned int const &x, unsigned int const &y,
                    Color const &color = Color(255));
+    // Active fragment shader function.  Triangle t has screen coordinates,
+    // triangle v has view-space coordinates, (x, y) is the center of the
+    // pixel to be shaded.
+    std::function<Color(Triangle const &t, Triangle const &v, flt const &x,
+                        flt const &y)>
+        frag_shader;
     // Naive z-buffer implementation.
     // @param t: Triangle with screen space (x,y) coordinates
     // @param v: Triangle with view space coordinates
@@ -60,9 +70,10 @@ class Zbuf {
     // Initialize a zbuffer object with given viewport size
     Zbuf(Scene const &s, unsigned int const &height,
          unsigned int const &width);
-    // Set default values
-    void _init();
 
+    // Set fragment shader
+    void set_shader(std::function<Color(Triangle const &t, Triangle const &v,
+                                        flt const &x, flt const &y)>);
     // Set camera's {ex,in}trinsincs
     void init_cam(glm::vec3 const &ey, flt const &fovy,
                   flt const &aspect_ratio, flt const &znear, flt const &zfar,
