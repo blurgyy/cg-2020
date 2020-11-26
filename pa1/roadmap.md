@@ -14,7 +14,8 @@
   1. - [x] create a simple triangle
   2. - [x] load the triangle into a Scene object
   3. - [x] render the scene
-- [ ] Barycentric coordinates
+- [x] Barycentric coordinates
+- [ ] Normal fragment shader
 
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Nov 23 2020, 15:18 [CST]
