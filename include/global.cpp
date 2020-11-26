@@ -33,8 +33,12 @@ void Image::init(const unsigned int &height, const unsigned int &width) {
     this->w = width;
     data    = std::vector<Color>(h * w);
 }
-Color &Image::operator()(unsigned int const &i, unsigned int const &j) {
-    return this->data[i * h + j];
+Color &Image::operator()(unsigned int const &x, unsigned int const &y) {
+    return data[w * y + x];
+}
+Color const &Image::operator()(unsigned int const &x,
+                               unsigned int const &y) const {
+    return data[w * y + x];
 }
 
 void write_ppm(std::string const &filename, cv::Mat const &data) {
@@ -67,13 +71,16 @@ void write_ppm(std::string const &filename, Image const &img) {
     int           width        = img.w;
     // Magic number (P6), width, height, maximum color value,
     // seperated with whitespaces.
-    // sprintf(ppm_head, "P6\n%d %d\n255\n", width, height); // fixme
-    sprintf(ppm_head, "P6\n%d %d\n255\n", height, width);
+    sprintf(ppm_head, "P6\n%d %d\n255\n", width, height);
     f << ppm_head;
 
-    for (int i = 0; i < img.data.size(); ++i) {
-        Color const &col = img.data[i];
-        f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
+    // for (int i = 0; i < img.data.size(); ++i) {
+    // for (int j = 0; j < img.h; ++j) {
+    for (int j = img.h - 1; j >= 0; --j) {
+        for (int i = 0; i < img.w; ++i) {
+            Color const &col = img(i, j);
+            f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
+        }
     }
     f.close();
 }

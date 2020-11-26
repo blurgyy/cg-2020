@@ -45,9 +45,9 @@ struct Color {
           unsigned char const &b);
     Color(unsigned char const &x);
 
-    unsigned char &r();
-    unsigned char &g();
-    unsigned char &b();
+    unsigned char &      r();
+    unsigned char &      g();
+    unsigned char &      b();
     unsigned char const &r() const;
     unsigned char const &g() const;
     unsigned char const &b() const;
@@ -63,7 +63,9 @@ struct Image {
     // Initialize data array
     void init(unsigned int const &height, unsigned int const &width);
     // Color &operator[](unsigned int const &id);
-    Color &operator()(unsigned int const &i, unsigned int const &j);
+    Color &      operator()(unsigned int const &x, unsigned int const &y);
+    Color const &operator()(unsigned int const &x,
+                            unsigned int const &y) const;
 
     // Store color in this array
     std::vector<Color> data;

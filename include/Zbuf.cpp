@@ -195,17 +195,21 @@ void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
 void Zbuf::draw_triangle_naive(Triangle const &t) {
     // todo: AABB
     // Brute force through all pixels
-    for (int i = 0; i < this->h; ++i) {
-        for (int j = 0; j < this->w; ++j) {
+    // errorm("triangle coordinates: (%.2f, %.2f), (%.2f, %.2f) (%.2f,
+    // %.2f)\n", t.a().x, t.a().y, t.b().x, t.b().y, t.c().x, t.c().y);
+    for (int j = 0; j < this->h; ++j) {
+        for (int i = 0; i < this->w; ++i) {
             // debugm("processing pixel (%d, %d)\n", i, j);
             // todo: AA
             if (inside(.5 + i, .5 + j, t)) {
+                // if (inside(.5 + (h - i - 1), .5 + j, t)) {
                 // debugm("pixel (%.2f, %.2f) is inside triangle\n",
                 // (i+.5-.5*h)/h, (j+.5-.5*w)/w);
                 debugm("pixel (%d, %d) is inside triangle\n", i, j);
                 // char x;
                 // scanf("%c", &x);
                 set_pixel(i, j);
+                // set_pixel(j, h - i - 1);
             }
         }
     }

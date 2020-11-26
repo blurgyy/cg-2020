@@ -48,9 +48,9 @@ int main(int argc, char **argv) {
 
     /****************************** playground ******************************/
     // The single triangle to be rendered
-    glm::vec3             v1(0, 1, -5);
-    glm::vec3             v2(-1, 0, -5);
-    glm::vec3             v3(1, 0, -5);
+    glm::vec3             v1(0, 2, -5);
+    glm::vec3             v2(-1, -1, -5);
+    glm::vec3             v3(0, 0, -5);
     Triangle              t(v1, v2, v3);
     std::vector<Triangle> prims{t};
 
