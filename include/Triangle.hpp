@@ -56,6 +56,8 @@ class Triangle {
 
     flt area() const;
 
+    bool contains(flt x, flt y) const;
+
   public: // Operator overrides
     Triangle        operator*(glm::mat4 const &m) const;
 };

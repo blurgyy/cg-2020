@@ -27,6 +27,19 @@ glm::vec3 Triangle::nc() const { return nor[2]; }
 
 flt Triangle::area() const { return A; }
 
+bool Triangle::contains(flt x, flt y) const {
+    glm::vec3 v[3];
+    flt       z[3];
+    v[0] = glm::vec3((vtx[0].x - x), (vtx[0].y - y), 0);
+    v[1] = glm::vec3((vtx[1].x - x), (vtx[1].y - y), 0);
+    v[2] = glm::vec3((vtx[2].x - x), (vtx[2].y - y), 0);
+    z[0] = glm::cross(v[0], v[1]).z;
+    z[1] = glm::cross(v[1], v[2]).z;
+    z[2] = glm::cross(v[2], v[0]).z;
+    return glm::sign(z[0]) == glm::sign(z[1]) &&
+           glm::sign(z[1]) == glm::sign(z[2]);
+}
+
 /*** Operator overrides ***/
 // Matrix left multiplication.
 // Caveat: glm implements matrix multiplication in reversed order.
@@ -68,6 +81,9 @@ Triangle operator*(glm::mat4 const &m, Triangle const &t) {
 }
 // Calculate barycentric coordinates of point 'pos' in triangle 't'
 std::tuple<flt, flt, flt> operator%(glm::vec3 const &pos, Triangle const &t) {
+    // Point position `pos` should be inside the triangle `t`
+    assert(t.contains(pos.x, pos.y));
+
     Triangle ta(pos, t.b(), t.c());
     Triangle tb(pos, t.a(), t.c());
     Triangle tc(pos, t.a(), t.b());

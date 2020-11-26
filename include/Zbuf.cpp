@@ -178,23 +178,7 @@ void Zbuf::render() {
 
 // private:
 bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
-    // glm::vec2 pixel(x, y);
-    glm::vec3 v[3];
-    flt       z[3];
-    v[0] = glm::vec3((t.a().x - x), (t.a().y - y), 0);
-    v[1] = glm::vec3((t.b().x - x), (t.b().y - y), 0);
-    v[2] = glm::vec3((t.c().x - x), (t.c().y - y), 0);
-    // for (int i = 0; i < 3; ++i) {
-    // debugm("checking vertex-%d\n", i);
-    // output(v[i]);
-    // }
-    // errorm();
-    z[0] = glm::cross(v[0], v[1]).z;
-    z[1] = glm::cross(v[1], v[2]).z;
-    z[2] = glm::cross(v[2], v[0]).z;
-    // return glm::sign(z[1] * z[0]) == glm::sign(z[2] * z[0]);
-    return glm::sign(z[0]) == glm::sign(z[1]) &&
-           glm::sign(z[1]) == glm::sign(z[2]);
+    return t.contains(x, y);
 }
 
 void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
