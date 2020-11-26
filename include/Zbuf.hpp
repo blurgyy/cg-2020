@@ -59,6 +59,8 @@ class Zbuf {
                   flt const &aspect_ratio, flt const &znear, flt const &zfar,
                   glm::vec3 const &g = glm::vec3(0, 0, -1),
                   glm::vec3 const &u = glm::vec3(0, 1, 0));
+    // Use given camera
+    void init_cam(Camera const &cam);
     // Set mvp transformation matrix
     // @param model: Model's transformation matrix, uses identity if not
     //               specified.

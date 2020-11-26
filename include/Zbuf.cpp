@@ -21,6 +21,10 @@ void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
     cam.init(ey, fovy, aspect_ratio, znear, zfar, gaze, up);
     cam_initialized = true;
 }
+void Zbuf::init_cam(Camera const &camera) {
+    cam = camera;
+    cam_initialized = true;
+}
 
 void Zbuf::init_mvp(glm::mat4 const &model) {
     if (!cam_initialized) {

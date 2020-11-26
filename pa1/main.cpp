@@ -62,8 +62,7 @@ int main(int argc, char **argv) {
     int height = 480;
     // Create a renderer on scene
     Zbuf zbuf(scene, height, width);
-    // errorm("zbuf.img's size is height-%d, width-%d\n", zbuf.img.h,
-    // zbuf.img.w);
+
     // Camera extrinsincs
     glm::vec3 eye(0, 0, 0);
     glm::vec3 gaze(0, 0, -1);
@@ -72,8 +71,11 @@ int main(int argc, char **argv) {
     flt       aspect_ratio = 1.0 * height / width;
     flt       znear        = -.1;
     flt       zfar         = -50;
+    // Camera
+    Camera camera(eye, fovy, aspect_ratio, znear, zfar, gaze, up);
+
     // Initialize camera
-    zbuf.init_cam(eye, fovy, aspect_ratio, znear, zfar, gaze, up);
+    zbuf.init_cam(camera);
 
     zbuf.init_mvp(glm::identity<glm::mat4>()); // Use no model transformation
 
