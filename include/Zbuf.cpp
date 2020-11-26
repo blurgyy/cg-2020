@@ -141,7 +141,10 @@ void Zbuf::init_viewport(const unsigned int &height,
     // debugm("viewport matrix is xxxxx\n");
     // output(viewport);
     img.init(this->h, this->w);
-    this->depth_buffer         = std::vector<flt>(this->h * this->w);
+    // Initilize the depth buffer, initial values are infinitely far (negative
+    // infinity).
+    this->depth_buffer = std::vector<flt>(
+        this->h * this->w, -std::numeric_limits<double>::infinity());
     this->viewport_initialized = true;
 }
 
@@ -213,7 +216,14 @@ void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
             flt x = .5 + i;
             flt y = .5 + j;
             if (this->inside(x, y, t)) {
-                this->set_pixel(i, j);
+                // Screen space barycentric coordinates of (x, y) inside
+                // triangle t.
+                auto [ca, cb, cc] = t % glm::vec3(x, y, 0);
+                flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
+                if (real_z > this->z(i, j)) {
+                    this->z(i, j) = real_z;
+                    this->set_pixel(i, j);
+                }
             }
         }
     }
