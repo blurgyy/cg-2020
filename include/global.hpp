@@ -5,7 +5,6 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-#include <opencv2/opencv.hpp>
 
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
@@ -76,14 +75,6 @@ struct Image {
     // Width and height
     unsigned int w, h;
 };
-
-// Write cv::Mat image data to a ppm file.
-// Reference:
-//  1. https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C.2B.2B
-//  2. http://netpbm.sourceforge.net/doc/ppm.html#format
-// @param filename: name of the ppm image file
-// @param data: image data (of type CV_8UC3)
-void write_ppm(std::string const &filename, cv::Mat const &data);
 
 // Write struct `Image` image data to a ppm file.
 // Reference:

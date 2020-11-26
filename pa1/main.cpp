@@ -8,7 +8,6 @@
 #include <cstring>
 
 #include <glm/glm.hpp>
-#include <opencv2/opencv.hpp>
 
 void show_help(char *selfname) {
     printf("%s: zbuffer demo\n\n", selfname);
