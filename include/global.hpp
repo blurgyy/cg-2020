@@ -42,6 +42,7 @@ extern flt const twopi;
 extern flt const halfpi;
 extern flt const piover180;
 
+// Structs
 struct Color {
     Color();
     Color(unsigned char const &r, unsigned char const &g,

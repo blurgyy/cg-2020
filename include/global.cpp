@@ -13,7 +13,7 @@ flt const piover180 = pi / 180.0;
 Color::Color() : red(0), green(0), blue(0) {}
 Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
-    : red(0), green(0), blue(0) {}
+    : red(r), green(g), blue(b) {}
 Color::Color(unsigned char const &x) : red(x), green(x), blue(x) {}
 unsigned char &      Color::r() { return this->red; }
 unsigned char &      Color::g() { return this->green; }
