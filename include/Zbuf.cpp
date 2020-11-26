@@ -22,7 +22,7 @@ void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
     cam_initialized = true;
 }
 void Zbuf::init_cam(Camera const &camera) {
-    cam = camera;
+    cam             = camera;
     cam_initialized = true;
 }
 
@@ -167,8 +167,8 @@ void Zbuf::render() {
         // debugm("viewport @ mvp is\n");
         // output(viewport * mvp);
         // output(mvp * viewport);
-        // debugm("original: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n", t.a().x,
-        // t.a().y, t.b().x, t.b().y, t.c().x, t.c().y);
+        // debugm("original: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
+        // t.a().x, t.a().y, t.b().x, t.b().y, t.c().x, t.c().y);
         // debugm("screen space: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
         // o.a().x, o.a().y, o.b().x, o.b().y, o.c().x, o.c().y);
         // Draw triangle
@@ -204,23 +204,18 @@ void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
 }
 
 void Zbuf::draw_triangle_naive(Triangle const &t) {
-    // todo: AABB
-    // Brute force through all pixels
-    // errorm("triangle coordinates: (%.2f, %.2f), (%.2f, %.2f) (%.2f,
-    // %.2f)\n", t.a().x, t.a().y, t.b().x, t.b().y, t.c().x, t.c().y);
-    for (int j = 0; j < this->h; ++j) {
-        for (int i = 0; i < this->w; ++i) {
-            // debugm("processing pixel (%d, %d)\n", i, j);
+    int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
+    int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
+    int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
+    int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
+    if (xmin < 0 || ymin < 0 || xmax >= w || ymax >= h) {
+        return;
+    }
+    for (int j = ymin; j < ymax; ++j) {
+        for (int i = xmin; i < xmax; ++i) {
             // todo: AA
             if (inside(.5 + i, .5 + j, t)) {
-                // if (inside(.5 + (h - i - 1), .5 + j, t)) {
-                // debugm("pixel (%.2f, %.2f) is inside triangle\n",
-                // (i+.5-.5*h)/h, (j+.5-.5*w)/w);
-                // debugm("pixel (%d, %d) is inside triangle\n", i, j);
-                // char x;
-                // scanf("%c", &x);
                 set_pixel(i, j);
-                // set_pixel(j, h - i - 1);
             }
         }
     }
