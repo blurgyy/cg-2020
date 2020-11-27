@@ -8,9 +8,11 @@
 #include <cstdio>
 #include <cstring>
 
-void show_help(char *selfname) {
+void show_help(char const *selfname) {
     printf("%s: zbuffer demo\n\n", selfname);
-    printf("    usage: %s [-h|--help] <objfile>\n", selfname);
+    // printf("    usage: %s [-h|--help] <objfile>\n", selfname);
+    printf("    usage: %s [-n|--normal] [-i|--interpolation]\n", selfname);
+    printf("                   [-r|--resolution WxH] <objfile>\n");
     printf("\n");
     printf("    options:\n");
     printf("        -h|--help               Show this message and quit\n");
@@ -29,7 +31,7 @@ int main(int argc, char **argv) {
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
-            show_help(argv[0]);
+            show_help("zbuffer");
             return 0;
         } else if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "--normal")) {
             selected_fragment_shader = shdr::normal_shader;
@@ -41,7 +43,8 @@ int main(int argc, char **argv) {
         }
     }
     if (objfile.size() == 0) {
-        errorm("No obj file specified\n");
+        show_help("zbuffer");
+        return 0;
     }
 
     /****************************** Load model ******************************/
@@ -91,12 +94,12 @@ int main(int argc, char **argv) {
     // Camera extrinsincs
     vec3 eye(-3, 5, 10);
     // vec3 gaze(0, 0, -1);
-    vec3      gaze = glm::normalize(-eye);
-    vec3      up(2, 3, -.9);
-    flt       fovy         = 45;
-    flt       aspect_ratio = 1.0 * height / width;
-    flt       znear        = -.1;
-    flt       zfar         = -50;
+    vec3 gaze = glm::normalize(-eye);
+    vec3 up(2, 3, -.9);
+    flt  fovy         = 45;
+    flt  aspect_ratio = 1.0 * height / width;
+    flt  znear        = -.1;
+    flt  zfar         = -50;
     // Camera
     Camera camera(eye, fovy, aspect_ratio, znear, zfar, gaze, up);
 
