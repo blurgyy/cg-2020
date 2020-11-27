@@ -80,8 +80,8 @@ int main(int argc, char **argv) {
     // Screen (viewport) size
     // int width  = 640;
     // int height = 480;
-    int width  = 1024;
-    int height = 768;
+    int width  = 1920;
+    int height = 1080;
     // Create a renderer on scene
     Zbuf zbuf(scene, height, width);
 
