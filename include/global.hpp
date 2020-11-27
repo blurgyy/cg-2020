@@ -35,6 +35,10 @@
 
 // Type definitions
 typedef double flt;
+typedef glm::vec3 vec3;
+typedef glm::vec4 vec4;
+typedef glm::mat3 mat3;
+typedef glm::mat4 mat4;
 
 // Constants
 extern flt const pi;
@@ -87,7 +91,7 @@ struct Image {
 void write_ppm(std::string const &filename, Image const &img);
 
 /*** debugging ***/
-inline void output(glm::mat4 const &x) {
+inline void output(mat4 const &x) {
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             printf("%f ", x[i][j]);
@@ -95,7 +99,7 @@ inline void output(glm::mat4 const &x) {
         printf("\n");
     }
 }
-inline void output(glm::mat3 const &x) {
+inline void output(mat3 const &x) {
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
             printf("%f ", x[i][j]);
@@ -103,13 +107,13 @@ inline void output(glm::mat3 const &x) {
         printf("\n");
     }
 }
-inline void output(glm::vec4 const &x) {
+inline void output(vec4 const &x) {
     for (int i = 0; i < 4; ++i) {
         printf("%f ", x[i]);
     }
     printf("\n");
 }
-inline void output(glm::vec3 const &x) {
+inline void output(vec3 const &x) {
     for (int i = 0; i < 3; ++i) {
         printf("%f ", x[i]);
     }

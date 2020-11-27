@@ -17,10 +17,9 @@ void Zbuf::set_shader(
     this->frag_shader = shader_func;
 }
 
-void Zbuf::init_cam(glm::vec3 const &ey, flt const &fovy,
-                    flt const &aspect_ratio, flt const &znear,
-                    flt const &zfar, glm::vec3 const &gaze,
-                    glm::vec3 const &up) {
+void Zbuf::init_cam(vec3 const &ey, flt const &fovy, flt const &aspect_ratio,
+                    flt const &znear, flt const &zfar, vec3 const &gaze,
+                    vec3 const &up) {
     this->cam.init(ey, fovy, aspect_ratio, znear, zfar, gaze, up);
     this->cam_initialized = true;
 }
@@ -29,7 +28,7 @@ void Zbuf::init_cam(Camera const &camera) {
     this->cam_initialized = true;
 }
 
-void Zbuf::init_mvp(glm::mat4 const &model) {
+void Zbuf::init_mvp(mat4 const &model) {
     if (!this->cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
@@ -39,7 +38,7 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     // output(model);
 
     // Set view matrix, according to camera information
-    glm::vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
+    vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
     // clang-format off
     flt trans_value[] = {
         1, 0, 0, -cam.pos().x,
@@ -59,9 +58,9 @@ void Zbuf::init_mvp(glm::mat4 const &model) {
     // output(view);
 
     // Set projection matrix, according to fov, aspect ratio, etc.
-    glm::mat4 persp_ortho; // Squeezes the frustum into a rectangular box
-    glm::mat4 ortho_trans; // Centers the rectangular box at origin
-    glm::mat4 ortho_scale; // Scales the rectangular box to the canonical cube
+    mat4      persp_ortho; // Squeezes the frustum into a rectangular box
+    mat4      ortho_trans; // Centers the rectangular box at origin
+    mat4      ortho_scale; // Scales the rectangular box to the canonical cube
     flt       n    = this->cam.znear();
     flt       f    = this->cam.zfar();
     flt       fovy = this->cam.fovy() * piover180;
@@ -135,8 +134,8 @@ void Zbuf::init_viewport(const unsigned int &height,
             0,     0, 0, 1,
     };
     // clang-format on
-    glm::mat4 vtrans = glm::make_mat4(vtrans_value);
-    glm::mat4 vscale = glm::make_mat4(vscale_value);
+    mat4 vtrans = glm::make_mat4(vtrans_value);
+    mat4 vscale = glm::make_mat4(vscale_value);
     // viewport         = vscale * vtrans;
     this->viewport = vtrans * vscale;
     // debugm("viewport matrix is xxxxx\n");
@@ -229,7 +228,7 @@ void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
             if (this->inside(x, y, t)) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
-                auto [ca, cb, cc] = t % glm::vec3(x, y, 0);
+                auto [ca, cb, cc] = t % vec3(x, y, 0);
                 // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
                 // z value in view-space
                 flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);

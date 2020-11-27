@@ -1,29 +1,28 @@
 #include "Triangle.hpp"
 
 Triangle::Triangle() {}
-Triangle::Triangle(std::array<glm::vec3, 3> const &vtx,
-                   std::array<glm::vec3, 3> const &nor,
-                   std::array<Color, 3> const &    col)
+Triangle::Triangle(std::array<vec3, 3> const & vtx,
+                   std::array<vec3, 3> const & nor,
+                   std::array<Color, 3> const &col)
     : vtx{vtx[0], vtx[1], vtx[2]}, nor{nor[0], nor[1], nor[2]}, col{col[0],
                                                                     col[1],
                                                                     col[2]} {
     this->_init();
 }
-Triangle::Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c,
-                   glm::vec3 const &na, glm::vec3 const &nb,
-                   glm::vec3 const &nc, Color const &ca, Color const &cb,
-                   Color const &cc)
+Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
+                   vec3 const &na, vec3 const &nb, vec3 const &nc,
+                   Color const &ca, Color const &cb, Color const &cc)
     : vtx{a, b, c}, nor{na, nb, nc}, col{ca, cb, cc} {
     this->_init();
 }
 
-glm::vec3 Triangle::a() const { return this->vtx[0]; }
-glm::vec3 Triangle::b() const { return this->vtx[1]; }
-glm::vec3 Triangle::c() const { return this->vtx[2]; }
+vec3 Triangle::a() const { return this->vtx[0]; }
+vec3 Triangle::b() const { return this->vtx[1]; }
+vec3 Triangle::c() const { return this->vtx[2]; }
 
-glm::vec3 Triangle::na() const { return this->nor[0]; }
-glm::vec3 Triangle::nb() const { return this->nor[1]; }
-glm::vec3 Triangle::nc() const { return this->nor[2]; }
+vec3 Triangle::na() const { return this->nor[0]; }
+vec3 Triangle::nb() const { return this->nor[1]; }
+vec3 Triangle::nc() const { return this->nor[2]; }
 
 Color Triangle::ca() const { return this->col[0]; }
 Color Triangle::cb() const { return this->col[1]; }
@@ -39,16 +38,16 @@ flt Triangle::area() const {
     // clang-format on
 
     // Calculate area of a 2D triangle (with homogeneous coordinates)
-    glm::mat3 det = glm::make_mat3(det_value);
+    mat3 det = glm::make_mat3(det_value);
     return fabs(glm::determinant(det));
 }
 
 bool Triangle::contains(flt x, flt y) const {
-    glm::vec3 v[3];
+    vec3      v[3];
     flt       z[3];
-    v[0] = glm::vec3((this->vtx[0].x - x), (this->vtx[0].y - y), 0);
-    v[1] = glm::vec3((this->vtx[1].x - x), (this->vtx[1].y - y), 0);
-    v[2] = glm::vec3((this->vtx[2].x - x), (this->vtx[2].y - y), 0);
+    v[0] = vec3((this->vtx[0].x - x), (this->vtx[0].y - y), 0);
+    v[1] = vec3((this->vtx[1].x - x), (this->vtx[1].y - y), 0);
+    v[2] = vec3((this->vtx[2].x - x), (this->vtx[2].y - y), 0);
     z[0] = glm::cross(v[0], v[1]).z;
     z[1] = glm::cross(v[1], v[2]).z;
     z[2] = glm::cross(v[2], v[0]).z;
@@ -86,7 +85,7 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
 /*** Operator overrides ***/
 // Matrix left multiplication.
 // Caveat: glm implements matrix multiplication in reversed order.
-Triangle Triangle::operator*(glm::mat4 const &m) const {
+Triangle Triangle::operator*(mat4 const &m) const {
     // Assign color values and indices of each vertex to the returned
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
@@ -98,7 +97,7 @@ Triangle Triangle::operator*(glm::mat4 const &m) const {
     for (int i = 0; i < 3; ++i) {
         auto const &v            = ret.vtx[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
-        glm::vec4   homo         = glm::make_vec4(homo_value);
+        vec4        homo         = glm::make_vec4(homo_value);
 
         homo         = homo * m;
         ret.vtx[i].x = homo.x / homo.w;
@@ -109,7 +108,7 @@ Triangle Triangle::operator*(glm::mat4 const &m) const {
 }
 // Matrix right multiplication.
 // Caveat: glm implements matrix multiplication in reversed order.
-Triangle operator*(glm::mat4 const &m, Triangle const &t) {
+Triangle operator*(mat4 const &m, Triangle const &t) {
     // Assign color values and indices of each vertex to the returned
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
@@ -117,7 +116,7 @@ Triangle operator*(glm::mat4 const &m, Triangle const &t) {
     for (int i = 0; i < 3; ++i) {
         auto const &v            = t.vtx[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
-        glm::vec4   homo         = glm::make_vec4(homo_value);
+        vec4        homo         = glm::make_vec4(homo_value);
 
         homo         = m * homo;
         ret.vtx[i].x = homo.x / homo.w;
@@ -127,8 +126,8 @@ Triangle operator*(glm::mat4 const &m, Triangle const &t) {
     return ret;
 }
 // Calculate barycentric coordinates of point 'pos' in triangle 't'
-std::tuple<flt, flt, flt> Triangle::operator%(glm::vec3 const &pos) const {
-    // std::tuple<flt, flt, flt> operator%(glm::vec3 const &pos, Triangle
+std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
+    // std::tuple<flt, flt, flt> operator%(vec3 const &pos, Triangle
     // const &t) { Point position `pos` should be inside the triangle `t`
     assert(this->contains(pos.x, pos.y));
 

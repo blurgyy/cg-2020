@@ -6,16 +6,15 @@
 
 #include "global.hpp"
 
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 class Triangle {
   public:
-    glm::vec3 vtx[3]; // Spatial coordinate of the 3 vertices, in
+    vec3 vtx[3];      // Spatial coordinate of the 3 vertices, in
                       // counter-clockwise order
-    glm::vec3 facing; // Facing direction (for face culling), computed by:
+    vec3 facing;      // Facing direction (for face culling), computed by:
                       // glm::cross(v[1] - v[0], v[2] - v[1]);
-    glm::vec3 nor[3]; // Normal directions of the 3 vertices
+    vec3      nor[3]; // Normal directions of the 3 vertices
     Color     col[3]; // Color values of the 3 vertices
 
   private:
@@ -24,17 +23,16 @@ class Triangle {
   public:
     Triangle();
     // Assumes indices is {0, 1, 2}
-    Triangle(glm::vec3 const &a, glm::vec3 const &b, glm::vec3 const &c,
-             glm::vec3 const &na = glm::vec3(0),
-             glm::vec3 const &nb = glm::vec3(0),
-             glm::vec3 const &nc = glm::vec3(0), Color const &ca = Color(0),
+    Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
+             vec3 const &na = vec3(0), vec3 const &nb = vec3(0),
+             vec3 const &nc = vec3(0), Color const &ca = Color(0),
              Color const &cb = Color(0), Color const &cc = Color(0));
-    Triangle(std::array<glm::vec3, 3> const &vtx,
-             std::array<glm::vec3, 3> const &nor =
+    Triangle(std::array<vec3, 3> const &vtx,
+             std::array<vec3, 3> const &nor =
                  {
-                     glm::vec3(0),
-                     glm::vec3(0),
-                     glm::vec3(0),
+                     vec3(0),
+                     vec3(0),
+                     vec3(0),
                  },
              std::array<Color, 3> const &col = {
                  Color(0),
@@ -42,13 +40,13 @@ class Triangle {
                  Color(0),
              });
 
-    glm::vec3 a() const; // returns spatial location of the first vertex
-    glm::vec3 b() const; // returns spatial location of the second vertex
-    glm::vec3 c() const; // returns spatial location of the third vertex
+    vec3 a() const; // returns spatial location of the first vertex
+    vec3 b() const; // returns spatial location of the second vertex
+    vec3 c() const; // returns spatial location of the third vertex
 
-    glm::vec3 na() const; // returns normal direction of the first vertex
-    glm::vec3 nb() const; // returns normal direction of the second vertex
-    glm::vec3 nc() const; // returns normal direction of the third vertex
+    vec3 na() const; // returns normal direction of the first vertex
+    vec3 nb() const; // returns normal direction of the second vertex
+    vec3 nc() const; // returns normal direction of the third vertex
 
     Color ca() const; // returns color value of the first vertex
     Color cb() const; // returns color value of the second vertex
@@ -64,8 +62,8 @@ class Triangle {
                    flt const &z_viewspace) const;
 
   public: // Operator overrides
-    Triangle                  operator*(glm::mat4 const &m) const;
-    std::tuple<flt, flt, flt> operator%(glm::vec3 const &pos) const;
+    Triangle                  operator*(mat4 const &m) const;
+    std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
 
 #endif

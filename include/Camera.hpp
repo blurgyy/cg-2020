@@ -2,14 +2,13 @@
 #define CAM_HPP
 
 #include "global.hpp"
-#include <glm/glm.hpp>
 
 class Camera {
   private:
     // Extrinsincs
-    glm::vec3 e; // Position
-    glm::vec3 g; // Direction (gaze)
-    glm::vec3 t; // Direction (up)
+    vec3 e; // Position
+    vec3 g; // Direction (gaze)
+    vec3 t; // Direction (up)
 
     // Intrinsincs
     flt fov;       // Field of view (Vertical, in degrees)
@@ -18,22 +17,21 @@ class Camera {
 
   public:
     Camera();
-    Camera(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
+    Camera(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
            flt const &znear, flt const &zfar,
-           glm::vec3 const &gaze = glm::vec3(0, 0, -1),
-           glm::vec3 const &up   = glm::vec3(0, 1, 0));
+           vec3 const &gaze = vec3(0, 0, -1), vec3 const &up = vec3(0, 1, 0));
 
-    void init(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
+    void init(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
               flt const &znear, flt const &zfar,
-              glm::vec3 const &gaze = glm::vec3(0, 0, -1),
-              glm::vec3 const &up   = glm::vec3(0, 1, 0));
+              vec3 const &gaze = vec3(0, 0, -1),
+              vec3 const &up   = vec3(0, 1, 0));
 
     // Get Position
-    glm::vec3 pos() const;
+    vec3 pos() const;
     // Get Direction (gaze)
-    glm::vec3 gaze() const;
+    vec3 gaze() const;
     // Get Direction (up)
-    glm::vec3 up() const;
+    vec3 up() const;
     // Get Field of view (Vertical, in degrees)
     flt fovy() const;
     // Get \frac{height}{width}

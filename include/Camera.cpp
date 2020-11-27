@@ -1,17 +1,17 @@
 #include "Camera.hpp"
 
 Camera::Camera() {}
-Camera::Camera(glm::vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
-               flt const &znear, flt const &zfar, glm::vec3 const &gaze,
-               glm::vec3 const &up)
+Camera::Camera(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
+               flt const &znear, flt const &zfar, vec3 const &gaze,
+               vec3 const &up)
     : e(pos), g(glm::normalize(gaze)), t(glm::normalize(up)), // Extrinsincs
       fov(fovy), ar(aspect_ratio),                            // Intrinsincs
       near(znear), far(zfar)                                  // Intrinsincs
 {}
 
-void Camera::init(const glm::vec3 &pos, const flt &fovy,
-                  const flt &aspect_ratio, const flt &znear, const flt &zfar,
-                  glm::vec3 const &gaze, glm::vec3 const &up) {
+void Camera::init(const vec3 &pos, const flt &fovy, const flt &aspect_ratio,
+                  const flt &znear, const flt &zfar, vec3 const &gaze,
+                  vec3 const &up) {
     // Extrinsincs
     this->e = pos;
     this->g = glm::normalize(gaze);
@@ -23,9 +23,9 @@ void Camera::init(const glm::vec3 &pos, const flt &fovy,
     this->far  = zfar;
 }
 
-glm::vec3 Camera::pos() const { return this->e; }
-glm::vec3 Camera::gaze() const { return this->g; }
-glm::vec3 Camera::up() const { return this->t; }
+vec3      Camera::pos() const { return this->e; }
+vec3      Camera::gaze() const { return this->g; }
+vec3      Camera::up() const { return this->t; }
 flt       Camera::fovy() const { return this->fov; }
 flt       Camera::aspect_ratio() const { return this->ar; }
 flt       Camera::znear() const { return this->near; }
