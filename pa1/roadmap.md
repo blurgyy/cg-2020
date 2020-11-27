@@ -17,6 +17,7 @@
 - [x] Barycentric coordinates
 - [x] Normal fragment shader
 - [ ] Read obj's normal values
+- [ ] Hierarchical z-buffer value checking
 
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Nov 23 2020, 15:18 [CST]
