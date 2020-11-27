@@ -10,9 +10,18 @@
 #include <cstring>
 
 void show_help(char const *selfname) {
-    printf("%s: zbuffer demo\n\n", selfname);
+    int l = strlen(selfname);
+    int o;
+    for (o = l - 1; o >= 0; --o) {
+        if (selfname[o] == '/') {
+            break;
+        }
+    }
+    ++o;
+    printf("%s: zbuffer demo\n\n", selfname + o);
     // printf("    usage: %s [-h|--help] <objfile>\n", selfname);
-    printf("    usage: %s [-n|--normal] [-i|--interpolation]\n", selfname);
+    printf("    usage: %s [-n|--normal] [-i|--interpolation]\n",
+           selfname + o);
     printf("                   [-r|--resolution WxH] <objfile>\n");
     printf("\n");
     printf("    options:\n");
@@ -37,7 +46,7 @@ int main(int argc, char **argv) {
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
-            show_help("zbuffer");
+            show_help(argv[0]);
             return 0;
         } else if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "--normal")) {
             selected_fragment_shader = shdr::normal_shader;
@@ -70,7 +79,7 @@ int main(int argc, char **argv) {
         }
     }
     if (objfile.size() == 0) {
-        show_help("zbuffer");
+        show_help(argv[0]);
         return 0;
     }
 
