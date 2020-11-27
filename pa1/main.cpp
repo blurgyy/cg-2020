@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     if (!loader.LoadFile(objfile)) {
         errorm("failed to load object from '%s'\n", objfile.c_str());
     }
-    printf("object loaded\n");
+    msg("object loaded\n");
     Scene scene(loader.LoadedMeshes[0]);
     // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
