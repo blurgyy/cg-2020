@@ -5,6 +5,7 @@
 #include "global.hpp"
 #include "shaders.hpp"
 
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 
@@ -19,6 +20,8 @@ void show_help(char const *selfname) {
     printf("        -n|--normal             Use normal fragment shader\n");
     printf("        -i|--interpolation      Use interpolation fragment "
            "shader\n");
+    printf("        -r|--resolution <WxH>   Use given resolution, default: "
+           "1920x1080\n");
     printf("\n");
 }
 
@@ -27,6 +30,9 @@ int main(int argc, char **argv) {
     std::function<Color(Triangle const &, Triangle const &, flt const &,
                         flt const &)>
         selected_fragment_shader = shdr::normal_shader;
+    // Resolution
+    int width  = 1920;
+    int height = 1080;
 
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
@@ -38,6 +44,27 @@ int main(int argc, char **argv) {
         } else if (!strcmp(argv[i], "-i") ||
                    !strcmp(argv[i], "--interpolation")) {
             selected_fragment_shader = shdr::vertex_interpolation_shader;
+        } else if (!strcmp(argv[i], "-r") ||
+                   !strcmp(argv[i], "--resolution")) {
+            ++i;
+            int reslen = strlen(argv[i]);
+            int split  = -1;
+            for (int j = 0; j < reslen; ++j) {
+                if (split == -1 && argv[i][j] == 'x') {
+                    split = j;
+                } else if (!std::isdigit(argv[i][j])) {
+                    split = -1;
+                    break;
+                }
+            }
+            if (split == -1) {
+                continue;
+            } else {
+                argv[i][split] = '\0';
+                width          = atoi(argv[i]);
+                height         = atoi(argv[i] + split + 1);
+                // debugm("width is %d, height is %d\n", width, height);
+            }
         } else {
             objfile = argv[i];
         }
@@ -80,11 +107,6 @@ int main(int argc, char **argv) {
     // // Load the triangle into scene
     // Scene scene(prims);
 
-    // Screen (viewport) size
-    // int width  = 640;
-    // int height = 480;
-    int width  = 1920;
-    int height = 1080;
     // Create a renderer on scene
     Zbuf zbuf(scene, height, width);
 
