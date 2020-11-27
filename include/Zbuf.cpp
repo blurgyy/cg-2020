@@ -162,8 +162,9 @@ void Zbuf::render() {
     for (Triangle const &v : scene.primitives()) {
         // debugm("v from scene has color (%u, %u, %u) on first vert\n",
         // v.col[0].r(), v.col[0].g(), v.col[0].b());
-        // If the triangle is facing -z direction, skip it (face culling).
-        if (v.facing.z <= 0) {
+        // If the triangle has same facing direction as camera's gaze
+        // direction, skip it (face culling).
+        if (glm::dot(v.facing, cam.gaze()) >= 0) {
             continue;
         }
         // Screen-space coordinates
