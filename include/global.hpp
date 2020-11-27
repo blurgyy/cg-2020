@@ -79,7 +79,7 @@ struct Image {
     // Store color in this array
     std::vector<Color> data;
     // Width and height
-    unsigned int w, h;
+    unsigned int h, w;
 };
 
 // Write struct `Image` image data to a ppm file.
