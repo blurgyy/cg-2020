@@ -20,5 +20,9 @@
 - [ ] Read obj's normal values
 - [ ] Hierarchical z-buffer value checking
 
+## Optional
+
+- [ ] omp
+
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Nov 23 2020, 15:18 [CST]
