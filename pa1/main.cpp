@@ -56,6 +56,9 @@ int main(int argc, char **argv) {
         } else if (!strcmp(argv[i], "-r") ||
                    !strcmp(argv[i], "--resolution")) {
             ++i;
+            if (i >= argc) {
+                break;
+            }
             int reslen = strlen(argv[i]);
             int split  = -1;
             for (int j = 0; j < reslen; ++j) {
