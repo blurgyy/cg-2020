@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
         errorm("Failed to load object from '%s'\n", objfile.c_str());
     }
     msg("Object loaded\n");
-    Scene scene(loader.LoadedMeshes[0]);
+    Scene world(loader.LoadedMeshes[0]);
     // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
     /****************************** playground ******************************/
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
     // Scene scene(prims);
 
     // Create a renderer on scene
-    Zbuf zbuf(scene, height, width);
+    Zbuf zbuf(world, height, width);
 
     // Set fragment shader
     zbuf.set_shader(selected_fragment_shader);
