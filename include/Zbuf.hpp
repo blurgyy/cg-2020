@@ -50,9 +50,8 @@ class Zbuf {
                         flt const &y)>
         frag_shader;
     // Naive z-buffer implementation.
-    // @param t: Triangle with screen space (x,y) coordinates
-    // @param v: Triangle with view space coordinates
-    void draw_triangle_naive(Triangle const &t, Triangle const &v);
+    // @param v: Triangle with view-space coordinates
+    void draw_triangle_naive(Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
     flt &      z(unsigned int const &x, unsigned int const &y);

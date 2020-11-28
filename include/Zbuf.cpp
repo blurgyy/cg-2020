@@ -158,30 +158,10 @@ void Zbuf::render() {
     if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
+    scene.to_viewspace(mvp, cam.gaze());
     for (Triangle const &v : scene.primitives()) {
-        // debugm("v from scene has color (%u, %u, %u) on first vert\n",
-        // v.col[0].r(), v.col[0].g(), v.col[0].b());
-        // If the triangle has same facing direction as camera's gaze
-        // direction, skip it (face culling).
-        if (glm::dot(v.facing, cam.gaze()) >= 0) {
-            continue;
-        }
-        // Screen-space coordinates
-        // Triangle o(viewport * mvp * t);
-        Triangle t(v * mvp * viewport);
-        // debugm("viewport here is\n");
-        // output(viewport);
-        // debugm("mvp is\n");
-        // output(mvp);
-        // debugm("viewport @ mvp is\n");
-        // output(viewport * mvp);
-        // output(mvp * viewport);
-        // debugm("original: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
-        // t.a().x, t.a().y, t.b().x, t.b().y, t.c().x, t.c().y);
-        // debugm("screen space: (%.2f, %.2f), (%.2f, %.2f) (%.2f, %.2f)\n",
-        // o.a().x, o.a().y, o.b().x, o.b().y, o.c().x, o.c().y);
         // Draw triangle
-        this->draw_triangle_naive(t, v);
+        this->draw_triangle_naive(v);
     }
 }
 
@@ -211,7 +191,9 @@ flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
     return this->depth_buffer[w * y + x];
 }
 
-void Zbuf::draw_triangle_naive(Triangle const &t, Triangle const &v) {
+void Zbuf::draw_triangle_naive(Triangle const &v) {
+    // Triangle with screen-space coordinates
+    Triangle t(v * viewport);
     // AABB
     int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
     int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
