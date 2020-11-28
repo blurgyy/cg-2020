@@ -38,6 +38,9 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
         }
         viewspace_triangles.push_back(t * mvp);
     }
+    debugm("real world: %zu triangles, viewspace: %zu triangles\n",
+           this->realworld_triangles.size(),
+           this->viewspace_triangles.size());
 }
 
 // private:
