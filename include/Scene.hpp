@@ -1,5 +1,4 @@
-#ifndef SCENE_HPP
-#define SCENE_HPP
+#pragma once
 
 #include "OBJ_Loader.hpp"
 #include "Triangle.hpp"
@@ -21,8 +20,6 @@ class Scene {
 
     void build_octtree();
 };
-
-#endif
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 23 2020, 15:34 [CST]

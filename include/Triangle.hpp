@@ -1,5 +1,4 @@
-#ifndef TRIANGLE_HPP
-#define TRIANGLE_HPP
+#pragma once
 
 #include <array>
 #include <tuple>
@@ -65,8 +64,6 @@ class Triangle {
     Triangle                  operator*(mat4 const &m) const;
     std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
-
-#endif
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 23 2020, 13:20 [CST]

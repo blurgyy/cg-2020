@@ -1,5 +1,4 @@
-#ifndef CAM_HPP
-#define CAM_HPP
+#pragma once
 
 #include "global.hpp"
 
@@ -41,8 +40,6 @@ class Camera {
     // Get Far clipping plane's z coordinate
     flt zfar() const;
 };
-
-#endif
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 25 2020, 11:27 [CST]

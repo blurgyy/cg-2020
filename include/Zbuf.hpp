@@ -1,5 +1,4 @@
-#ifndef ZBUF_HPP
-#define ZBUF_HPP
+#pragma once
 
 #include <functional>
 
@@ -90,8 +89,6 @@ class Zbuf {
     // Render scene
     void render();
 };
-
-#endif
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 24 2020, 12:14 [CST]

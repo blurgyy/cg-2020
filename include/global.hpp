@@ -1,5 +1,4 @@
-#ifndef GLOBAL_HPP
-#define GLOBAL_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -119,8 +118,6 @@ inline void output(vec3 const &x) {
     }
     printf("\n");
 }
-
-#endif
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 18 2020, 17:36 [CST]
