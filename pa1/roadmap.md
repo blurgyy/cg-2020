@@ -7,6 +7,7 @@
     projection
 - [ ] Hierarchical z-buffer
 - [ ] OctTree construction
+- [ ] Scan conversion
 
 ## Steps
 
