@@ -88,9 +88,9 @@ int main(int argc, char **argv) {
     objl::Loader loader;
     debugm("loading object from file '%s' ..\n", objfile.c_str());
     if (!loader.LoadFile(objfile)) {
-        errorm("failed to load object from '%s'\n", objfile.c_str());
+        errorm("Failed to load object from '%s'\n", objfile.c_str());
     }
-    msg("object loaded\n");
+    msg("Object loaded\n");
     Scene scene(loader.LoadedMeshes[0]);
     // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
 
