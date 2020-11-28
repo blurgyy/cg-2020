@@ -140,7 +140,8 @@ int main(int argc, char **argv) {
     // Initialize camera
     zbuf.init_cam(camera);
 
-    zbuf.init_mvp(glm::identity<mat4>()); // Use no model transformation
+    // Use no model transformation
+    zbuf.set_model_transformation(glm::identity<mat4>());
 
     msg("Rendering scene ..\n");
     zbuf.render();

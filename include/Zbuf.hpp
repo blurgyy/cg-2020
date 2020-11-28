@@ -82,7 +82,7 @@ class Zbuf {
     // Set mvp transformation matrix
     // @param model: Model's transformation matrix, uses identity if not
     //               specified.
-    void init_mvp(mat4 const &model = glm::identity<mat4>());
+    void set_model_transformation(mat4 const &model = glm::identity<mat4>());
     // Set viewport transformation matrix
     void init_viewport(unsigned int const &height, unsigned int const &width);
 

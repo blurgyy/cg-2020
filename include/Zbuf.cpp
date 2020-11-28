@@ -28,7 +28,7 @@ void Zbuf::init_cam(Camera const &camera) {
     this->cam_initialized = true;
 }
 
-void Zbuf::init_mvp(mat4 const &model) {
+void Zbuf::set_model_transformation(mat4 const &model) {
     if (!this->cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
@@ -58,12 +58,12 @@ void Zbuf::init_mvp(mat4 const &model) {
     // output(view);
 
     // Set projection matrix, according to fov, aspect ratio, etc.
-    mat4      persp_ortho; // Squeezes the frustum into a rectangular box
-    mat4      ortho_trans; // Centers the rectangular box at origin
-    mat4      ortho_scale; // Scales the rectangular box to the canonical cube
-    flt       n    = this->cam.znear();
-    flt       f    = this->cam.zfar();
-    flt       fovy = this->cam.fovy() * piover180;
+    mat4 persp_ortho; // Squeezes the frustum into a rectangular box
+    mat4 ortho_trans; // Centers the rectangular box at origin
+    mat4 ortho_scale; // Scales the rectangular box to the canonical cube
+    flt  n    = this->cam.znear();
+    flt  f    = this->cam.zfar();
+    flt  fovy = this->cam.fovy() * piover180;
     // debugm("cam.fovy is %f degrees, aka %f rad\n", cam.fovy(), fovy);
     flt aspect_ratio = this->cam.aspect_ratio();
     // debugm("aspect ratios is %f\n", aspect_ratio);
