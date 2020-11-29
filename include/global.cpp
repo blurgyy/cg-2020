@@ -53,11 +53,10 @@ void write_ppm(std::string const &filename, Image const &img) {
     sprintf(ppm_head, "P6\n%d %d\n255\n", width, height);
     f << ppm_head;
 
-    // for (int i = 0; i < img.data.size(); ++i) {
-    // for (int j = 0; j < img.h; ++j) {
-    for (int j = img.h - 1; j >= 0; --j) {
-        for (int i = 0; i < img.w; ++i) {
-            Color const &col = img(i, j);
+    // for (size_t j = img.h - 1; j >= 0; --j) {
+    for (size_t j = 0; j < img.h; ++j) {
+        for (size_t i = 0; i < img.w; ++i) {
+            Color const &col = img(i, img.h - 1 - j);
             f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
         }
     }

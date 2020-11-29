@@ -262,7 +262,8 @@ inline Vector3 GenTriNormal(Vector3 t1, Vector3 t2, Vector3 t3) {
 }
 
 // Check to see if a Vector3 Point is within a 3 Vector3 Triangle
-inline bool inTriangle(Vector3 point, Vector3 tri1, Vector3 tri2, Vector3 tri3) {
+inline bool inTriangle(Vector3 point, Vector3 tri1, Vector3 tri2,
+                       Vector3 tri3) {
     // Test to see if it is within an infinite prism that the triangle
     // outlines.
     bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) &&
@@ -294,7 +295,7 @@ inline void split(const std::string &in, std::vector<std::string> &out,
 
     std::string temp;
 
-    for (int i = 0; i < int(in.size()); i++) {
+    for (size_t i = 0; i < in.size(); i++) {
         std::string test = in.substr(i, token.size());
 
         if (test == token) {
@@ -512,7 +513,7 @@ class Loader {
                                       curline);
 
                 // Add Vertices
-                for (int i = 0; i < int(vVerts.size()); i++) {
+                for (size_t i = 0; i < vVerts.size(); i++) {
                     Vertices.push_back(vVerts[i]);
 
                     LoadedVertices.push_back(vVerts[i]);
@@ -523,7 +524,7 @@ class Loader {
                 VertexTriangluation(iIndices, vVerts);
 
                 // Add Indices
-                for (int i = 0; i < int(iIndices.size()); i++) {
+                for (size_t i = 0; i < iIndices.size(); i++) {
                     unsigned int indnum =
                         (unsigned int)((Vertices.size()) - vVerts.size()) +
                         iIndices[i];
@@ -578,7 +579,7 @@ class Loader {
                 std::string pathtomat = "";
 
                 if (temp.size() != 1) {
-                    for (int i = 0; i < temp.size() - 1; i++) {
+                    for (size_t i = 0; i < temp.size() - 1; i++) {
                         pathtomat += temp[i] + "/";
                     }
                 }
@@ -614,12 +615,12 @@ class Loader {
         file.close();
 
         // Set Materials for each Mesh
-        for (int i = 0; i < MeshMatNames.size(); i++) {
+        for (size_t i = 0; i < MeshMatNames.size(); i++) {
             std::string matname = MeshMatNames[i];
 
             // Find corresponding material name in loaded materials
             // when found copy material variables into mesh material
-            for (int j = 0; j < LoadedMaterials.size(); j++) {
+            for (size_t j = 0; j < LoadedMaterials.size(); j++) {
                 if (LoadedMaterials[j].name == matname) {
                     LoadedMeshes[i].MeshMaterial = LoadedMaterials[j];
                     break;
@@ -659,7 +660,7 @@ class Loader {
         bool noNormal = false;
 
         // For every given vertex do this
-        for (int i = 0; i < int(sface.size()); i++) {
+        for (size_t i = 0; i < sface.size(); i++) {
             // See What type the vertex is.
             int vtype;
 
@@ -740,7 +741,7 @@ class Loader {
 
             Vector3 normal = math::CrossV3(A, B);
 
-            for (int i = 0; i < int(oVerts.size()); i++) {
+            for (size_t i = 0; i < oVerts.size(); i++) {
                 oVerts[i].Normal = normal;
             }
         }
@@ -769,7 +770,7 @@ class Loader {
 
         while (true) {
             // For every vertex
-            for (int i = 0; i < int(tVerts.size()); i++) {
+            for (size_t i = 0; i < tVerts.size(); i++) {
                 // pPrev = the previous vertex in the list
                 Vertex pPrev;
                 if (i == 0) {
@@ -793,7 +794,7 @@ class Loader {
                 // if so this is the last triangle
                 if (tVerts.size() == 3) {
                     // Create a triangle from pCur, pPrev, pNext
-                    for (int j = 0; j < int(tVerts.size()); j++) {
+                    for (size_t j = 0; j < tVerts.size(); j++) {
                         if (iVerts[j].Position == pCur.Position)
                             oIndices.push_back(j);
                         if (iVerts[j].Position == pPrev.Position)
@@ -807,7 +808,7 @@ class Loader {
                 }
                 if (tVerts.size() == 4) {
                     // Create a triangle from pCur, pPrev, pNext
-                    for (int j = 0; j < int(iVerts.size()); j++) {
+                    for (size_t j = 0; j < iVerts.size(); j++) {
                         if (iVerts[j].Position == pCur.Position)
                             oIndices.push_back(j);
                         if (iVerts[j].Position == pPrev.Position)
@@ -817,7 +818,7 @@ class Loader {
                     }
 
                     Vector3 tempVec;
-                    for (int j = 0; j < int(tVerts.size()); j++) {
+                    for (size_t j = 0; j < tVerts.size(); j++) {
                         if (tVerts[j].Position != pCur.Position &&
                             tVerts[j].Position != pPrev.Position &&
                             tVerts[j].Position != pNext.Position) {
@@ -827,7 +828,7 @@ class Loader {
                     }
 
                     // Create a triangle from pCur, pPrev, pNext
-                    for (int j = 0; j < int(iVerts.size()); j++) {
+                    for (size_t j = 0; j < iVerts.size(); j++) {
                         if (iVerts[j].Position == pPrev.Position)
                             oIndices.push_back(j);
                         if (iVerts[j].Position == pNext.Position)
@@ -850,7 +851,7 @@ class Loader {
 
                 // If any vertices are within this triangle
                 bool inTri = false;
-                for (int j = 0; j < int(iVerts.size()); j++) {
+                for (size_t j = 0; j < iVerts.size(); j++) {
                     if (algorithm::inTriangle(iVerts[j].Position,
                                               pPrev.Position, pCur.Position,
                                               pNext.Position) &&
@@ -865,7 +866,7 @@ class Loader {
                     continue;
 
                 // Create a triangle from pCur, pPrev, pNext
-                for (int j = 0; j < int(iVerts.size()); j++) {
+                for (size_t j = 0; j < iVerts.size(); j++) {
                     if (iVerts[j].Position == pCur.Position)
                         oIndices.push_back(j);
                     if (iVerts[j].Position == pPrev.Position)
@@ -875,7 +876,7 @@ class Loader {
                 }
 
                 // Delete pCur from the list
-                for (int j = 0; j < int(tVerts.size()); j++) {
+                for (size_t j = 0; j < tVerts.size(); j++) {
                     if (tVerts[j].Position == pCur.Position) {
                         tVerts.erase(tVerts.begin() + j);
                         break;

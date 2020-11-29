@@ -8,7 +8,7 @@ Scene::Scene() { _init(); }
 Scene::Scene(objl::Mesh const &mesh) {
     _init();
     debugm("%lu vertices found in loaded mesh\n", mesh.Vertices.size());
-    for (int i = 0; i < mesh.Vertices.size(); i += 3) {
+    for (size_t i = 0; i < mesh.Vertices.size(); i += 3) {
         std::array<vec3, 3> verts;
         for (int j = 0; j < 3; ++j) {
             vec3 vertex(mesh.Vertices[i + j].Position.X,
