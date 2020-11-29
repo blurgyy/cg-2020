@@ -199,9 +199,8 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
     int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
     int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
     int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
-    if (xmin < 0 || ymin < 0 || xmax > w || ymax > h) {
-        return;
-    }
+    xmin = clamp(xmin, 0, w - 1), xmax = clamp(xmax, 0, w - 1);
+    ymin = clamp(ymin, 0, h - 1), ymax = clamp(ymax, 0, h - 1);
     for (int j = ymin; j < ymax; ++j) {
         for (int i = xmin; i < xmax; ++i) {
             // todo: AA

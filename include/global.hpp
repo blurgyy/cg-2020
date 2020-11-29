@@ -33,7 +33,7 @@
     } while (0)
 
 // Type definitions
-typedef double flt;
+typedef double    flt;
 typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
 typedef glm::mat3 mat3;
@@ -88,6 +88,12 @@ struct Image {
 // @param filename: name of the ppm image file
 // @param img: image data (of type Image)
 void write_ppm(std::string const &filename, Image const &img);
+
+// Returns min(maxx, max(x, minx))
+template <typename T, typename T1, typename T2>
+T clamp(T x, T1 minx, T2 maxx) {
+    return std::min((T)maxx, std::max(x, (T)minx));
+}
 
 /*** debugging ***/
 inline void output(mat4 const &x) {
