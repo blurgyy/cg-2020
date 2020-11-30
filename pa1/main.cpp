@@ -33,18 +33,26 @@ void show_help(char const *selfname) {
            "1920x1080\n");
     printf("        -f|--field-of-view <fov>  Use given field of view (in "
            "degrees), default: 45\n");
+    printf("        -o|--output <path>        Save render result (ppm "
+           "format) to <path>, default: zbuffer.ppm");
     printf("\n");
 }
 
 int main(int argc, char **argv) {
-    std::string objfile; // Path to the obj file
+    // Path to the obj file
+    std::string objfile;
+    // Path of the file to save render result
+    std::string outfile = "zbuffer.ppm";
+    // Shader function to use
     std::function<Color(Triangle const &, Triangle const &, flt const &,
                         flt const &)>
         selected_fragment_shader = shdr::normal_shader;
-    // Resolution
-    int width  = 1920;
+    // Resolution (horizontal)
+    int width = 1920;
+    // Resolution (vertical)
     int height = 1080;
-    flt fovy   = 45;
+    // Field of view (in degrees)
+    flt fovy = 45;
 
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
@@ -84,6 +92,9 @@ int main(int argc, char **argv) {
                    !strcmp(argv[i], "--field-of-view")) {
             ++i;
             fovy = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")) {
+            ++i;
+            outfile = argv[i];
         } else {
             objfile = argv[i];
         }
@@ -152,7 +163,7 @@ int main(int argc, char **argv) {
     msg("Rendering scene ..\n");
     zbuf.render();
 
-    write_ppm("testfile.ppm", zbuf.img);
+    write_ppm(outfile, zbuf.img);
 
     return 0;
 }

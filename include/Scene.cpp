@@ -18,7 +18,7 @@ Scene::Scene(objl::Mesh const &mesh) {
         }
         this->realworld_triangles.emplace_back(verts[0], verts[1], verts[2]);
     }
-    msg("Loaded %lu triangles into scene\n", realworld_triangles.size());
+    msg("Scene created with %lu triangles\n", realworld_triangles.size());
 }
 Scene::Scene(std::vector<Triangle> const &triangles)
     : realworld_triangles(triangles) {
