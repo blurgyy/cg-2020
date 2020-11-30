@@ -25,12 +25,14 @@ void show_help(char const *selfname) {
     printf("                   [-r|--resolution WxH] <objfile>\n");
     printf("\n");
     printf("    options:\n");
-    printf("        -h|--help               Show this message and quit\n");
-    printf("        -n|--normal             Use normal fragment shader\n");
-    printf("        -i|--interpolation      Use interpolation fragment "
+    printf("        -h|--help                 Show this message and quit\n");
+    printf("        -n|--normal               Use normal fragment shader\n");
+    printf("        -i|--interpolation        Use interpolation fragment "
            "shader\n");
-    printf("        -r|--resolution <WxH>   Use given resolution, default: "
+    printf("        -r|--resolution <WxH>     Use given resolution, default: "
            "1920x1080\n");
+    printf("        -f|--field-of-view <fov>  Use given field of view (in "
+           "degrees), default: 45\n");
     printf("\n");
 }
 
@@ -42,6 +44,7 @@ int main(int argc, char **argv) {
     // Resolution
     int width  = 1920;
     int height = 1080;
+    flt fovy   = 45;
 
     /*************************** Parse arguments ****************************/
     for (int i = 1; i < argc; ++i) {
@@ -77,6 +80,10 @@ int main(int argc, char **argv) {
                 height         = atoi(argv[i] + split + 1);
                 // debugm("width is %d, height is %d\n", width, height);
             }
+        } else if (!strcmp(argv[i], "-f") ||
+                   !strcmp(argv[i], "--field-of-view")) {
+            ++i;
+            fovy = atof(argv[i]);
         } else {
             objfile = argv[i];
         }
@@ -130,7 +137,6 @@ int main(int argc, char **argv) {
     // vec3 gaze(0, 0, -1);
     vec3 gaze = glm::normalize(-eye);
     vec3 up(2, 3, -.9);
-    flt  fovy         = 45;
     flt  aspect_ratio = 1.0 * height / width;
     flt  znear        = -.1;
     flt  zfar         = -50;
