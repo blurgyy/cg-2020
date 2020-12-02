@@ -34,7 +34,7 @@ void show_help(char const *selfname) {
     printf("        -f|--field-of-view <fov>  Use given field of view (in "
            "degrees), default: 45\n");
     printf("        -o|--output <path>        Save render result (ppm "
-           "format) to <path>, default: zbuffer.ppm");
+           "format) to <path>, default: zbuffer.ppm\n");
     printf("\n");
 }
 
