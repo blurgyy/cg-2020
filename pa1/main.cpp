@@ -19,10 +19,12 @@ void show_help(char const *selfname) {
     }
     ++o;
     printf("%s: zbuffer demo\n\n", selfname + o);
-    // printf("    usage: %s [-h|--help] <objfile>\n", selfname);
-    printf("    usage: %s [-n|--normal] [-i|--interpolation]\n",
+    printf("    usage: %s <objfile> [-n|--normal]\n",
            selfname + o);
-    printf("                   [-r|--resolution WxH] <objfile>\n");
+    printf("                             [-i|--interpolation]\n");
+    printf("                             [-r|--resolution <WxH>]\n");
+    printf("                             [-f|--field-of-view <fov>]\n");
+    printf("                             [-o|--output <path>]\n");
     printf("\n");
     printf("    options:\n");
     printf("        -h|--help                 Show this message and quit\n");
@@ -91,9 +93,15 @@ int main(int argc, char **argv) {
         } else if (!strcmp(argv[i], "-f") ||
                    !strcmp(argv[i], "--field-of-view")) {
             ++i;
+            if (i >= argc) {
+                break;
+            }
             fovy = atof(argv[i]);
         } else if (!strcmp(argv[i], "-o") || !strcmp(argv[i], "--output")) {
             ++i;
+            if (i >= argc) {
+                break;
+            }
             outfile = argv[i];
         } else {
             objfile = argv[i];
