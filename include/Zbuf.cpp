@@ -11,8 +11,8 @@ Zbuf::Zbuf(Scene const &s, unsigned int const &height,
 }
 
 void Zbuf::set_shader(
-    std::function<Color(Triangle const &t, Triangle const &v, flt const &x,
-                        flt const &y)>
+    std::function<Color(Triangle const &t, Triangle const &v,
+                        std::tuple<flt, flt, flt> const &barycentric)>
         shader_func) {
     this->frag_shader = shader_func;
 }
@@ -209,7 +209,9 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
             if (this->inside(x, y, t)) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
-                auto [ca, cb, cc] = t % vec3(x, y, 0);
+                std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                // unpack the barycentric coordinates
+                auto [ca, cb, cc] = barycentric;
                 // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
                 // z value in view-space
                 flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
@@ -218,7 +220,7 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
                     // vertices.
                     // Note: t and v shall have same color values by now.
                     // Color icol    = v.color_at(ca, cb, cc, real_z);
-                    Color icol    = this->frag_shader(t, v, x, y);
+                    Color icol    = this->frag_shader(t, v, barycentric);
                     this->z(i, j) = real_z;
                     this->set_pixel(i, j, icol);
                 }

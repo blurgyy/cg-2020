@@ -44,10 +44,10 @@ class Zbuf {
     void set_pixel(unsigned int const &x, unsigned int const &y,
                    Color const &color = Color(255));
     // Active fragment shader function.  Triangle t has screen coordinates,
-    // triangle v has view-space coordinates, (x, y) is the center of the
-    // pixel to be shaded.
-    std::function<Color(Triangle const &t, Triangle const &v, flt const &x,
-                        flt const &y)>
+    // triangle v has view-space coordinates, barycentric is a tuple
+    // consists of the 3 weights on each vertex
+    std::function<Color(Triangle const &t, Triangle const &v,
+                        std::tuple<flt, flt, flt> const &barycentric)>
         frag_shader;
     // Naive z-buffer implementation.
     // @param v: Triangle with view-space coordinates
@@ -69,8 +69,9 @@ class Zbuf {
          unsigned int const &width);
 
     // Set fragment shader
-    void set_shader(std::function<Color(Triangle const &t, Triangle const &v,
-                                        flt const &x, flt const &y)>);
+    void set_shader(
+        std::function<Color(Triangle const &t, Triangle const &v,
+                            std::tuple<flt, flt, flt> const &barycentric)>);
     // Set camera's {ex,in}trinsincs
     void init_cam(vec3 const &ey, flt const &fovy, flt const &aspect_ratio,
                   flt const &znear, flt const &zfar,

@@ -19,8 +19,7 @@ void show_help(char const *selfname) {
     }
     ++o;
     printf("%s: zbuffer demo\n\n", selfname + o);
-    printf("    usage: %s <objfile> [-n|--normal]\n",
-           selfname + o);
+    printf("    usage: %s <objfile> [-n|--normal]\n", selfname + o);
     printf("                             [-i|--interpolation]\n");
     printf("                             [-r|--resolution <WxH>]\n");
     printf("                             [-f|--field-of-view <fov>]\n");
@@ -46,8 +45,8 @@ int main(int argc, char **argv) {
     // Path of the file to save render result
     std::string outfile = "zbuffer.ppm";
     // Shader function to use
-    std::function<Color(Triangle const &, Triangle const &, flt const &,
-                        flt const &)>
+    std::function<Color(Triangle const &, Triangle const &,
+                        std::tuple<flt, flt, flt> const &barycentric)>
         selected_fragment_shader = shdr::normal_shader;
     // Resolution (horizontal)
     int width = 1920;

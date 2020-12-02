@@ -6,12 +6,13 @@
 namespace shdr {
 
 // Normal shader
-Color normal_shader(Triangle const &t, Triangle const &v, flt const &x,
-                    flt const &y);
+Color normal_shader(Triangle const &t, Triangle const &v,
+                    std::tuple<flt, flt, flt> const &barycentric);
 
 // Interpolate colors on vertices with barycentric coordinates
-Color vertex_interpolation_shader(Triangle const &t, Triangle const &v,
-                                  flt const &x, flt const &y);
+Color vertex_interpolation_shader(
+    Triangle const &t, Triangle const &v,
+    std::tuple<flt, flt, flt> const &barycentric);
 
 }; // namespace shdr
 
