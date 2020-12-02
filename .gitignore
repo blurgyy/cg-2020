@@ -4,5 +4,8 @@ build/
 # clangd cache
 .cache/
 
+# Render results
+*.ppm
+
 # Author: Blurgy <gy@blurgy.xyz>
 # Date:   Nov 18 2020, 17:26 [CST]
