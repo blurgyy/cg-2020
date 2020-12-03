@@ -29,8 +29,8 @@ Color Triangle::cb() const { return this->col[1]; }
 Color Triangle::cc() const { return this->col[2]; }
 
 flt Triangle::doublearea() const {
-    return fabs(v[1].x * v[2].y - v[1].x * v[0].y - v[0].x * v[2].y -
-                v[2].x * v[1].y + v[0].x * v[1].y + v[2].x * v[0].y);
+    return fabs((v[1].x - v[0].x) * (v[2].y - v[0].y) -
+                (v[2].x - v[0].x) * (v[1].y - v[0].y));
 }
 flt Triangle::area() const { return .5 * this->doublearea(); }
 
