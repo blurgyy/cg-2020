@@ -26,19 +26,19 @@ class Camera {
               vec3 const &up   = vec3(0, 1, 0));
 
     // Get Position
-    vec3 pos() const;
+    vec3 const &pos() const;
     // Get Direction (gaze)
-    vec3 gaze() const;
+    vec3 const &gaze() const;
     // Get Direction (up)
-    vec3 up() const;
+    vec3 const &up() const;
     // Get Field of view (Vertical, in degrees)
-    flt fovy() const;
+    flt const &fovy() const;
     // Get \frac{height}{width}
-    flt aspect_ratio() const;
+    flt const &aspect_ratio() const;
     // Get Near clipping plane's z coordinate
-    flt znear() const;
+    flt const &znear() const;
     // Get Far clipping plane's z coordinate
-    flt zfar() const;
+    flt const &zfar() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>
