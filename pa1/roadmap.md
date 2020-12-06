@@ -9,6 +9,7 @@
 - [ ] OctTree construction
 - [ ] Scan conversion
 - [ ] Remove dependency `glm`
+- [ ] Add class `timer` for benchmarking
 
 ## Steps
 
