@@ -8,6 +8,7 @@
 - [ ] Hierarchical z-buffer
 - [ ] OctTree construction
 - [ ] Scan conversion
+- [ ] Remove dependency `glm`
 
 ## Steps
 
