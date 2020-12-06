@@ -27,7 +27,8 @@ void show_help(char const *selfname) {
     printf("\n");
     printf("    options:\n");
     printf("        -h|--help                 Show this message and quit\n");
-    printf("        -n|--normal               Use normal fragment shader\n");
+    printf("        -n|--normal               Use normal fragment shader "
+           "(default)\n");
     printf("        -i|--interpolation        Use interpolation fragment "
            "shader\n");
     printf("        -r|--resolution <WxH>     Use given resolution, default: "
@@ -102,6 +103,8 @@ int main(int argc, char **argv) {
                 break;
             }
             outfile = argv[i];
+        } else if (argv[i][0] == '-') {
+            fprintf(stderr, "Unrecognized option '%s'\n", argv[i]);
         } else {
             objfile = argv[i];
         }
