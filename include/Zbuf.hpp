@@ -51,8 +51,17 @@ class Zbuf {
                         std::tuple<flt, flt, flt> const &barycentric)>
         frag_shader;
     // Naive z-buffer implementation.
-    // @param v: Triangle with view-space coordinates
-    void draw_triangle_naive(Triangle const &v);
+    // @param v: Triangle with **viewspace** coordinates
+    void draw_triangle_with_aabb(Triangle const &v);
+    // Use hierarchical z-buffer (depth MIP-map) to achieve ``early reject''.
+    // @brief: Compare the triangle's nearest z value with the smallest
+    //         QuadTree node's depth value, if the triangle's nearest z value
+    //         is farther than current node's depth value, then this triangle
+    //         can be safely ignored.
+    //         If the triangle is not ignored, draw it with aabb.
+    //         (todo: scan conversion).
+    // @param v: Triangle with **viewspace** coordinates
+    void draw_triangle_with_zpyramid(Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
     flt &      z(size_t const &x, size_t const &y);

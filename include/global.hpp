@@ -84,9 +84,12 @@ struct Image {
 };
 
 template <size_t _order> struct Node {
-    Node() : fa(nullptr){};
+    Node() : tdep(0), isleaf(false){};
 
-    Node *fa; // Father
+    // Depth in the pyramid
+    int tdep;
+    // If this node is a leaf node
+    bool isleaf;
 
     /* Pointer array to children should be declared in inherited structs,
      * because data members are declared in inherited structs, and children
