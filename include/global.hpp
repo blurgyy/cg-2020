@@ -39,6 +39,9 @@ typedef glm::vec4 vec4;
 typedef glm::mat3 mat3;
 typedef glm::mat4 mat4;
 
+typedef std::pair<int, int>       pii;
+typedef std::pair<size_t, size_t> pss;
+
 // Constants
 extern flt const pi;
 extern flt const twopi;
@@ -66,19 +69,17 @@ struct Color {
 
 struct Image {
     Image();
-    Image(unsigned int const &height, unsigned int const &width);
+    Image(size_t const &height, size_t const &width);
 
     // Initialize data array
-    void init(unsigned int const &height, unsigned int const &width);
-    // Color &operator[](unsigned int const &id);
-    Color &      operator()(unsigned int const &x, unsigned int const &y);
-    Color const &operator()(unsigned int const &x,
-                            unsigned int const &y) const;
+    void         init(size_t const &height, size_t const &width);
+    Color &      operator()(size_t const &x, size_t const &y);
+    Color const &operator()(size_t const &x, size_t const &y) const;
 
     // Store color in this array
     std::vector<Color> data;
     // Width and height
-    unsigned int h, w;
+    size_t h, w;
 };
 
 // Write struct `Image` image data to a ppm file.
