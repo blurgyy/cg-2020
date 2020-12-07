@@ -56,6 +56,8 @@ void write_ppm(std::string const &filename, Image const &img) {
     for (size_t j = 0; j < img.h; ++j) {
         for (size_t i = 0; i < img.w; ++i) {
             Color const &col = img(i, img.h - 1 - j);
+            // printf("on pixel (%zu, %zu)\n", i, j);
+            // assert(col.r() > 0 && col.g() > 0 && col.b() > 0);
             f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
         }
     }

@@ -21,7 +21,7 @@ void Pyramid::construct() {
     pss southwestern = std::make_pair(0, 0);
     pss northeastern = std::make_pair(this->w, this->h);
     debugm("Construction depth buffer MIP-map ..\n");
-    this->root = build(southwestern, northeastern);
+    this->root = build(southwestern, northeastern, nullptr);
     this->update_tdep(this->root);
     msg("Hierarchical depth buffer constructed\n");
 }
@@ -34,15 +34,27 @@ void Pyramid::setz(size_t const &x, size_t const &y, flt const &zval) {
     assert(node != nullptr);
     node->depth = zval;
     while (node != this->root) {
-        node->fa->depth = std::min(node->fa->depth, node->depth);
-        node            = node->fa;
+        // node->fa->depth = std::min(node->fa->depth, node->depth);
+        node = node->fa;
+        this->pushup(node);
     }
 }
 
 bool Pyramid::visible(Triangle const &t) {
     // NOTE: t has screenspace coordinates.
     flt nearest_z = std::max(t.c().z, std::max(t.a().z, t.b().z));
-    if (nearest_z < this->root->depth) {
+    // debugm("nearest z is %f, root depth is %f\n", nearest_z,
+    // this->root->depth);
+    // debugm("depths of root's 4 children: (%f, %f, %f, %f)\n",
+    // root->children[0]->depth, root->children[1]->depth,
+    // root->children[2]->depth, root->children[3]->depth);
+    Node4 *a = this->which(t.a().x, t.a().y, this->root);
+    Node4 *b = this->which(t.b().x, t.b().y, this->root);
+    Node4 *c = this->which(t.c().x, t.c().y, this->root);
+    // debugm("finding ancsstor\n");
+    Node4 *anc = this->lca(a, this->lca(b, c));
+    // debugm("ancestor found\n");
+    if (nearest_z < anc->depth) {
         // Invisible if the entire image's farthest depth value is closer than
         // the triangle's nearest depth value.
         debugm("nearest_z %f is farther than root depth %f\n", nearest_z,
@@ -55,13 +67,14 @@ bool Pyramid::visible(Triangle const &t) {
 
 // private methods
 void Pyramid::pushup(Node4 *node) const {
+    flt ndepth = std::numeric_limits<flt>::infinity();
     for (auto &child : node->children) {
         if (nullptr == child) {
             continue;
         }
-        node->depth = std::min(node->depth, child->depth);
-        child->fa   = node;
+        ndepth = std::min(ndepth, child->depth);
     }
+    node->depth = ndepth;
 }
 
 void Pyramid::update_tdep(Node4 *node) const {
@@ -70,7 +83,22 @@ void Pyramid::update_tdep(Node4 *node) const {
             continue;
         }
         child->tdep = node->tdep + 1;
+        update_tdep(child);
     }
+}
+
+Node4 *const Pyramid::lca(Node4 *a, Node4 *b) const {
+    Node4 *anca = a, *ancb = b;
+    while (anca != ancb) {
+        // debugm("%p: dep(%d); %p: dep(%d)\n", anca, anca->tdep, ancb,
+        // ancb->tdep);
+        if (anca->tdep > ancb->tdep) {
+            anca = anca->fa;
+        } else {
+            ancb = ancb->fa;
+        }
+    }
+    return anca;
 }
 
 Node4 *Pyramid::which(size_t const &x, size_t const &y, Node4 *node) const {
@@ -103,7 +131,8 @@ Node4 *Pyramid::which(size_t const &x, size_t const &y, Node4 *node) const {
     return nullptr;
 }
 
-Node4 *const Pyramid::build(pss const &sw, pss const &ne) const {
+Node4 *const Pyramid::build(pss const &sw, pss const &ne,
+                            Node4 *const fa) const {
     int x1 = sw.first, y1 = sw.second;
     int x2 = ne.first, y2 = ne.second;
     if (x1 >= x2 || y1 >= y2) {
@@ -111,6 +140,7 @@ Node4 *const Pyramid::build(pss const &sw, pss const &ne) const {
         return nullptr;
     }
     Node4 *ret = new Node4;
+    ret->fa    = fa;
     ret->sw    = sw;
     ret->ne    = ne;
     ret->depth = -std::numeric_limits<flt>::infinity();
@@ -130,13 +160,13 @@ Node4 *const Pyramid::build(pss const &sw, pss const &ne) const {
     pss mid_n = std::make_pair(midx, y2); // Northern mid point
     pss mid_e = std::make_pair(x2, midy); // Eastern mid point
     // Southwestern child
-    ret->children[0] = build(sw, mid);
+    ret->children[0] = build(sw, mid, ret);
     // Southeastern child
-    ret->children[1] = build(mid_s, mid_e);
+    ret->children[1] = build(mid_s, mid_e, ret);
     // Northweastern child
-    ret->children[2] = build(mid_w, mid_n);
+    ret->children[2] = build(mid_w, mid_n, ret);
     // Northeastern child
-    ret->children[3] = build(mid, ne);
+    ret->children[3] = build(mid, ne, ret);
     pushup(ret);
     return ret;
 }
