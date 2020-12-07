@@ -67,6 +67,7 @@ struct Color {
     unsigned char red, green, blue;
 };
 
+// NOTE: Image data array has origin at lower left.
 struct Image {
     Image();
     Image(size_t const &height, size_t const &width);
