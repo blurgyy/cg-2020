@@ -231,40 +231,37 @@ void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
 void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
     // Triangle with screen-space coordinates
     Triangle t(v * viewport);
-    if (zpyramid.visible(t)) {
-        // AABB
-        int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
-        int xmax =
-            std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
-        int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
-        int ymax =
-            std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
-        xmin = clamp(xmin, 0, w), xmax = clamp(xmax, 0, w);
-        ymin = clamp(ymin, 0, h), ymax = clamp(ymax, 0, h);
-        for (int j = ymin; j < ymax; ++j) {
-            for (int i = xmin; i < xmax; ++i) {
-                // todo: AA
-                flt x = .5 + i;
-                flt y = .5 + j;
-                if (this->inside(x, y, t)) {
-                    // Screen space barycentric coordinates of (x, y) inside
-                    // triangle t.
-                    std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
-                    // unpack the barycentric coordinates
-                    auto [ca, cb, cc] = barycentric;
-                    // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
-                    // z value in view-space
-                    flt real_z =
-                        1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
-                    if (real_z > this->z(i, j)) {
-                        // Calculate interpolated color with given triangle's
-                        // 3 vertices. Note: t and v shall have same color
-                        // values by now. Color icol    = v.color_at(ca, cb,
-                        // cc, real_z);
-                        Color icol = this->frag_shader(t, v, barycentric);
-                        this->zpyramid.setz(i, j, real_z);
-                        this->set_pixel(i, j, icol);
-                    }
+    // AABB
+    int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
+    int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
+    int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
+    int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
+    if (xmin < 0 || xmax >= w || ymin < 0 || ymax >= h ||
+        !zpyramid.visible(t)) {
+        return;
+    }
+    for (int j = ymin; j < ymax; ++j) {
+        for (int i = xmin; i < xmax; ++i) {
+            // todo: AA
+            flt x = .5 + i;
+            flt y = .5 + j;
+            if (this->inside(x, y, t)) {
+                // Screen space barycentric coordinates of (x, y) inside
+                // triangle t.
+                std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                // unpack the barycentric coordinates
+                auto [ca, cb, cc] = barycentric;
+                // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
+                // z value in view-space
+                flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
+                if (real_z > this->z(i, j)) {
+                    // Calculate interpolated color with given triangle's
+                    // 3 vertices. Note: t and v shall have same color
+                    // values by now. Color icol    = v.color_at(ca, cb,
+                    // cc, real_z);
+                    Color icol = this->frag_shader(t, v, barycentric);
+                    this->zpyramid.setz(i, j, real_z);
+                    this->set_pixel(i, j, icol);
                 }
             }
         }
