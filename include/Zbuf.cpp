@@ -239,8 +239,8 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
         int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
         int ymax =
             std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
-        xmin = clamp(xmin, 0, w - 1), xmax = clamp(xmax, 0, w - 1);
-        ymin = clamp(ymin, 0, h - 1), ymax = clamp(ymax, 0, h - 1);
+        xmin = clamp(xmin, 0, w), xmax = clamp(xmax, 0, w);
+        ymin = clamp(ymin, 0, h), ymax = clamp(ymax, 0, h);
         for (int j = ymin; j < ymax; ++j) {
             for (int i = xmin; i < xmax; ++i) {
                 // todo: AA
