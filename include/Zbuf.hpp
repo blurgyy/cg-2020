@@ -26,7 +26,7 @@ class Zbuf {
               // matrix multiplication
     bool mvp_initialized;
 
-    unsigned int w, h;     // Screen size, in pixels
+    size_t       w, h;     // Screen size, in pixels
     mat4         viewport; // Viewport transformation matrix, transforms the
                            // canonical cube to screen size on xOy plane
     bool viewport_initialized;
@@ -41,7 +41,7 @@ class Zbuf {
     bool inside(flt x, flt y, Triangle const &t) const;
     // Set image pixel at coordinate (x, y), origin is located at left-bottom
     // corner of the image.
-    void set_pixel(unsigned int const &x, unsigned int const &y,
+    void set_pixel(size_t const &x, size_t const &y,
                    Color const &color = Color(255));
     // Active fragment shader function.  Triangle t has screen coordinates,
     // triangle v has view-space coordinates, barycentric is a tuple
@@ -54,8 +54,8 @@ class Zbuf {
     void draw_triangle_naive(Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
-    flt &      z(unsigned int const &x, unsigned int const &y);
-    flt const &z(unsigned int const &x, unsigned int const &y) const;
+    flt &      z(size_t const &x, size_t const &y);
+    flt const &z(size_t const &x, size_t const &y) const;
 
   public:
     Image img;
@@ -65,8 +65,7 @@ class Zbuf {
     // Initialize a zbuffer object with given scene
     Zbuf(Scene const &s);
     // Initialize a zbuffer object with given viewport size
-    Zbuf(Scene const &s, unsigned int const &height,
-         unsigned int const &width);
+    Zbuf(Scene const &s, size_t const &height, size_t const &width);
 
     // Set fragment shader
     void set_shader(
@@ -84,7 +83,7 @@ class Zbuf {
     //               specified.
     void set_model_transformation(mat4 const &model = glm::identity<mat4>());
     // Set viewport transformation matrix
-    void init_viewport(unsigned int const &height, unsigned int const &width);
+    void init_viewport(size_t const &height, size_t const &width);
 
     // Render scene
     void render();

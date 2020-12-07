@@ -3,8 +3,7 @@
 
 Zbuf::Zbuf() { this->_init(); }
 Zbuf::Zbuf(Scene const &s) : scene(s) { this->_init(); }
-Zbuf::Zbuf(Scene const &s, unsigned int const &height,
-           unsigned int const &width)
+Zbuf::Zbuf(Scene const &s, size_t const &height, size_t const &width)
     : scene(s) {
     this->_init();
     this->init_viewport(height, width);
@@ -109,8 +108,7 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     this->mvp_initialized = true;
 }
 
-void Zbuf::init_viewport(const unsigned int &height,
-                         const unsigned int &width) {
+void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     this->h = height;
     this->w = width;
     // clang-format off
@@ -177,17 +175,16 @@ bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
     return t.contains(x, y);
 }
 
-void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
-                     Color const &color) {
+void Zbuf::set_pixel(size_t const &x, size_t const &y, Color const &color) {
     // errorm("Setting pixel (%u, %u)\n", x, y);
     this->img(x, y) = color;
 }
 
-flt &Zbuf::z(unsigned int const &x, unsigned int const &y) {
+flt &Zbuf::z(size_t const &x, size_t const &y) {
     return this->depth_buffer[w * y + x];
 }
 
-flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
+flt const &Zbuf::z(size_t const &x, size_t const &y) const {
     return this->depth_buffer[w * y + x];
 }
 

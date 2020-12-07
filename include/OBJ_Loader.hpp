@@ -179,8 +179,7 @@ struct Mesh {
     // Default Constructor
     Mesh() {}
     // Variable Set Constructor
-    Mesh(std::vector<Vertex> &      _Vertices,
-         std::vector<unsigned int> &_Indices) {
+    Mesh(std::vector<Vertex> &_Vertices, std::vector<size_t> &_Indices) {
         Vertices = _Vertices;
         Indices  = _Indices;
     }
@@ -189,7 +188,7 @@ struct Mesh {
     // Vertex List
     std::vector<Vertex> Vertices;
     // Index List
-    std::vector<unsigned int> Indices;
+    std::vector<size_t> Indices;
 
     // Material
     Material MeshMaterial;
@@ -395,7 +394,7 @@ class Loader {
         std::vector<Vector3> Normals;
 
         std::vector<Vertex>       Vertices;
-        std::vector<unsigned int> Indices;
+        std::vector<size_t>       Indices;
 
         std::vector<std::string> MeshMatNames;
 
@@ -405,8 +404,8 @@ class Loader {
         Mesh tempMesh;
 
 #ifdef OBJL_CONSOLE_OUTPUT
-        const unsigned int outputEveryNth  = 1000;
-        unsigned int       outputIndicator = outputEveryNth;
+        const size_t outputEveryNth  = 1000;
+        size_t       outputIndicator = outputEveryNth;
 #endif
 
         std::string curline;
@@ -519,20 +518,20 @@ class Loader {
                     LoadedVertices.push_back(vVerts[i]);
                 }
 
-                std::vector<unsigned int> iIndices;
+                std::vector<size_t> iIndices;
 
                 VertexTriangluation(iIndices, vVerts);
 
                 // Add Indices
                 for (size_t i = 0; i < iIndices.size(); i++) {
-                    unsigned int indnum =
-                        (unsigned int)((Vertices.size()) - vVerts.size()) +
+                    size_t indnum =
+                        (size_t)((Vertices.size()) - vVerts.size()) +
                         iIndices[i];
                     Indices.push_back(indnum);
 
-                    indnum = (unsigned int)((LoadedVertices.size()) -
-                                            vVerts.size()) +
-                             iIndices[i];
+                    indnum =
+                        (size_t)((LoadedVertices.size()) - vVerts.size()) +
+                        iIndices[i];
                     LoadedIndices.push_back(indnum);
                 }
             }
@@ -641,7 +640,7 @@ class Loader {
     // Loaded Vertex Objects
     std::vector<Vertex> LoadedVertices;
     // Loaded Index Positions
-    std::vector<unsigned int> LoadedIndices;
+    std::vector<size_t> LoadedIndices;
     // Loaded Material Objects
     std::vector<Material> LoadedMaterials;
 
@@ -749,7 +748,7 @@ class Loader {
 
     // Triangulate a list of vertices into a face by printing
     //	inducies corresponding with triangles within it
-    void VertexTriangluation(std::vector<unsigned int> &oIndices,
+    void VertexTriangluation(std::vector<size_t> &      oIndices,
                              const std::vector<Vertex> &iVerts) {
         // If there are 2 or less verts,
         // no triangle can be created,

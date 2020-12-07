@@ -25,25 +25,24 @@ unsigned char const &Color::b() const { return this->blue; }
 
 // struct Image
 Image::Image() {}
-Image::Image(unsigned int const &height, unsigned int const &width)
+Image::Image(size_t const &height, size_t const &width)
     : h(height), w(width) {
-    this->data = std::vector<Color>(h * w);
+    this->data.resize(this->h * this->w);
 }
-void Image::init(const unsigned int &height, const unsigned int &width) {
+void Image::init(const size_t &height, const size_t &width) {
     this->h    = height;
     this->w    = width;
     this->data = std::vector<Color>(this->h * this->w);
 }
-Color &Image::operator()(unsigned int const &x, unsigned int const &y) {
+Color &Image::operator()(size_t const &x, size_t const &y) {
     return this->data[this->w * y + x];
 }
-Color const &Image::operator()(unsigned int const &x,
-                               unsigned int const &y) const {
+Color const &Image::operator()(size_t const &x, size_t const &y) const {
     return this->data[this->w * y + x];
 }
 
 void write_ppm(std::string const &filename, Image const &img) {
-    msg("Writing image (%dx%d) to %s ..\n", img.w, img.h, filename.c_str());
+    msg("Writing image (%zux%zu) to %s ..\n", img.w, img.h, filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
     char          ppm_head[50] = {0};
     int           height       = img.h;
