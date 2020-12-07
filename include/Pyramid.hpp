@@ -43,6 +43,8 @@ class Pyramid {
 
     // Actual data
     std::vector<flt> raw;
+    // Corresponding node addresses
+    std::vector<Node4 *> nodes;
 
     // Root of depth MIP-map
     Node4 *root;
@@ -56,12 +58,12 @@ class Pyramid {
     // @param     sw: Southwestern coordinate (INclusive) of this node's area.
     // @param     ne: Northeastern coordinate (EXclusive) of this node's area.
     Node4 *const build(pss const &sw, pss const &ne,
-                       Node4 *const fa = nullptr) const;
+                       Node4 *const fa = nullptr);
     // Lowest common ancestor of two nodes
     Node4 *const lca(Node4 *a, Node4 *b) const;
     // Leaf node corresponding to image coordinate (x, y), pass this->root to
     // the 3rd parameter.
-    Node4 *which(size_t const &x, size_t const &y, Node4 *node) const;
+    Node4 *which(int x, int y, Node4 *node) const;
 
   public:
     Pyramid();
