@@ -141,8 +141,9 @@ void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     img.init(this->h, this->w);
     // Initilize the depth buffer, initial values are infinitely far (negative
     // infinity).
-    this->depth_buffer = std::vector<flt>(
-        this->h * this->w, -std::numeric_limits<double>::infinity());
+    // this->depth_buffer = std::vector<flt>(
+    // this->h * this->w, -std::numeric_limits<double>::infinity());
+    this->zpyramid             = Pyramid(this->h, this->w);
     this->viewport_initialized = true;
 }
 
@@ -181,11 +182,11 @@ void Zbuf::set_pixel(size_t const &x, size_t const &y, Color const &color) {
 }
 
 flt &Zbuf::z(size_t const &x, size_t const &y) {
-    return this->depth_buffer[w * y + x];
+    return this->zpyramid(x, y);
 }
 
 flt const &Zbuf::z(size_t const &x, size_t const &y) const {
-    return this->depth_buffer[w * y + x];
+    return this->zpyramid(x, y);
 }
 
 void Zbuf::draw_triangle_naive(Triangle const &v) {

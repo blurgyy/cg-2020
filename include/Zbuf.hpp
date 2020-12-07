@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "Camera.hpp"
+#include "Pyramid.hpp"
 #include "Scene.hpp"
 #include "global.hpp"
 
@@ -26,12 +27,12 @@ class Zbuf {
               // matrix multiplication
     bool mvp_initialized;
 
-    size_t       w, h;     // Screen size, in pixels
-    mat4         viewport; // Viewport transformation matrix, transforms the
-                           // canonical cube to screen size on xOy plane
+    size_t w, h;     // Screen size, in pixels
+    mat4   viewport; // Viewport transformation matrix, transforms the
+                     // canonical cube to screen size on xOy plane
     bool viewport_initialized;
 
-    std::vector<flt> depth_buffer;
+    Pyramid zpyramid;
 
   private:
     // Set default values
