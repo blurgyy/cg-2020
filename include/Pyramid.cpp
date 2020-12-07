@@ -7,6 +7,7 @@ Pyramid::Pyramid(size_t const &height, size_t const &width)
     : h(height), w(width) {
     this->raw.resize(this->h * this->w,
                      -std::numeric_limits<flt>::infinity());
+    this->nodes.resize(this->h * this->w, nullptr);
     this->construct();
 }
 
@@ -57,8 +58,8 @@ bool Pyramid::visible(Triangle const &t) {
     if (nearest_z < anc->depth) {
         // Invisible if the entire image's farthest depth value is closer than
         // the triangle's nearest depth value.
-        debugm("nearest_z %f is farther than root depth %f\n", nearest_z,
-               this->root->depth);
+        // debugm("nearest_z %f is farther than depth %f\n", nearest_z,
+        // anc->depth);
         return false;
     }
     return true;
@@ -101,38 +102,13 @@ Node4 *const Pyramid::lca(Node4 *a, Node4 *b) const {
     return anca;
 }
 
-Node4 *Pyramid::which(size_t const &x, size_t const &y, Node4 *node) const {
-    // debugm("This node splits at (%zu, %zu)\n", node->split.first,
-    // node->split.second);
-    assert(node != nullptr);
-    if (node->isleaf) {
-        return node;
-    }
-    size_t midx = node->split.first;
-    size_t midy = node->split.second;
-    if (y < midy) {
-        if (x < midx) {
-            // debugm("southwestern\n");
-            return this->which(x, y, node->children[0]);
-        } else {
-            // debugm("southeastern\n");
-            return this->which(x, y, node->children[1]);
-        }
-    } else {
-        if (x < midx) {
-            // debugm("northweastern\n");
-            return this->which(x, y, node->children[2]);
-        } else {
-            // debugm("northeastern\n");
-            return this->which(x, y, node->children[3]);
-        }
-    }
-    // Below line is obsolete.
-    return nullptr;
+Node4 *Pyramid::which(int x, int y, Node4 *node) const {
+    x = clamp(x, 0, this->w - 1);
+    y = clamp(y, 0, this->h - 1);
+    return this->nodes[y * this->w + x];
 }
 
-Node4 *const Pyramid::build(pss const &sw, pss const &ne,
-                            Node4 *const fa) const {
+Node4 *const Pyramid::build(pss const &sw, pss const &ne, Node4 *const fa) {
     int x1 = sw.first, y1 = sw.second;
     int x2 = ne.first, y2 = ne.second;
     if (x1 >= x2 || y1 >= y2) {
@@ -146,8 +122,9 @@ Node4 *const Pyramid::build(pss const &sw, pss const &ne,
     ret->depth = -std::numeric_limits<flt>::infinity();
     if (x1 + 1 == x2 && y1 + 1 == y2) {
         // Leaf node, assign actual depth value to the node and return.
-        ret->isleaf = true;
-        ret->split  = sw;
+        ret->isleaf                    = true;
+        ret->split                     = sw;
+        this->nodes[y1 * this->w + x1] = ret;
         return ret;
     }
     int midx   = (x1 + x2) >> 1;
