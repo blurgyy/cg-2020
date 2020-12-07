@@ -83,6 +83,18 @@ struct Image {
     size_t h, w;
 };
 
+template <size_t _order> struct Node {
+    Node() : fa(nullptr){};
+
+    Node *fa; // Father
+
+    /* Pointer array to children should be declared in inherited structs,
+     * because data members are declared in inherited structs, and children
+     * have to have same data members as ancestor.
+     * */
+    // std::array<Node<_order> *, _order> children; // Children
+};
+
 // Write struct `Image` image data to a ppm file.
 // Reference:
 //  1. https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C.2B.2B
