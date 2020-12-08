@@ -64,6 +64,16 @@ bool Pyramid::visible(Triangle const &t) {
     // Node4 anc = this->lca();
 }
 
+bool Pyramid::visible(Triangle const &t, Node4 *node) const {
+    if (node == nullptr) {
+        node = this->root;
+    }
+    flt nearest_z = std::max(t.c().z, std::max(t.a().z, t.b().z));
+    if (nearest_z < node->depth) {
+        return false;
+    }
+}
+
 // private methods
 void Pyramid::pushup(Node4 *node) const {
     flt ndepth = std::numeric_limits<flt>::infinity();
