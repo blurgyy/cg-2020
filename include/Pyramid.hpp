@@ -75,6 +75,9 @@ class Pyramid {
 
     // Check if the given triangle (in **screenspace**) is visible.
     bool visible(Triangle const &t);
+    // Check if the given triangle (in **screenspace**) is visible in given
+    // node.
+    bool visible(Triangle const &t, Node4 *node = nullptr) const;
 
     // Get depth value's reference at image coordinate (x, y)
     flt &operator()(size_t const &x, size_t const &y);
