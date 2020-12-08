@@ -41,9 +41,7 @@ class Pyramid {
     // Screen size, in pixels
     size_t h, w;
 
-    // Actual data
-    std::vector<flt> raw;
-    // Corresponding node addresses
+    // Leaf nodes, containing finest depth values
     std::vector<Node4 *> nodes;
 
     // Root of depth MIP-map

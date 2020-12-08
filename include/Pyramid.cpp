@@ -5,17 +5,15 @@
 Pyramid::Pyramid() {}
 Pyramid::Pyramid(size_t const &height, size_t const &width)
     : h(height), w(width) {
-    this->raw.resize(this->h * this->w,
-                     -std::numeric_limits<flt>::infinity());
     this->nodes.resize(this->h * this->w, nullptr);
     this->construct();
 }
 
 flt &Pyramid::operator()(size_t const &x, size_t const &y) {
-    return this->raw[this->w * y + x];
+    return this->nodes[this->w * y + x]->depth;
 }
 flt const &Pyramid::operator()(size_t const &x, size_t const &y) const {
-    return this->raw[this->w * y + x];
+    return this->nodes[this->w * y + x]->depth;
 }
 
 void Pyramid::construct() {
