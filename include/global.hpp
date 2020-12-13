@@ -1,9 +1,8 @@
 #pragma once
 
+#include <cmath>
 #include <string>
 #include <vector>
-
-#include <glm/glm.hpp>
 
 // message functions `debugm` (debug messages), `errorm` (error messages)
 // Reference: https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
@@ -33,11 +32,7 @@
     } while (0)
 
 // Type definitions
-typedef double    flt;
-typedef glm::vec3 vec3;
-typedef glm::vec4 vec4;
-typedef glm::mat3 mat3;
-typedef glm::mat4 mat4;
+typedef double flt;
 
 // Constants
 extern flt const pi;
@@ -95,35 +90,41 @@ T constexpr clamp(T x, T1 minx, T2 maxx) {
     return std::min((T)maxx, std::max(x, (T)minx));
 }
 
+// Returns 1 if value is positive, -1 if value is negative, 0 if value is
+// zero.
+template <typename T> int sign(T const &value) {
+    return (T(0) < value) - (value < T(0));
+}
+
 /*** debugging ***/
-inline void output(mat4 const &x) {
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            printf("%f ", x[i][j]);
-        }
-        printf("\n");
-    }
-}
-inline void output(mat3 const &x) {
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            printf("%f ", x[i][j]);
-        }
-        printf("\n");
-    }
-}
-inline void output(vec4 const &x) {
-    for (int i = 0; i < 4; ++i) {
-        printf("%f ", x[i]);
-    }
-    printf("\n");
-}
-inline void output(vec3 const &x) {
-    for (int i = 0; i < 3; ++i) {
-        printf("%f ", x[i]);
-    }
-    printf("\n");
-}
+// inline void output(mat4 const &x) {
+// for (int i = 0; i < 4; ++i) {
+// for (int j = 0; j < 4; ++j) {
+// printf("%f ", x[i][j]);
+// }
+// printf("\n");
+// }
+// }
+// inline void output(mat3 const &x) {
+// for (int i = 0; i < 3; ++i) {
+// for (int j = 0; j < 3; ++j) {
+// printf("%f ", x[i][j]);
+// }
+// printf("\n");
+// }
+// }
+// inline void output(vec4 const &x) {
+// for (int i = 0; i < 4; ++i) {
+// printf("%f ", x[i]);
+// }
+// printf("\n");
+// }
+// inline void output(vec3 const &x) {
+// for (int i = 0; i < 3; ++i) {
+// printf("%f ", x[i]);
+// }
+// printf("\n");
+// }
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 18 2020, 17:36 [CST]

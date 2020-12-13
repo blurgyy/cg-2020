@@ -11,9 +11,9 @@ Scene::Scene(objl::Mesh const &mesh) {
     for (size_t i = 0; i < mesh.Vertices.size(); i += 3) {
         std::array<vec3, 3> verts;
         for (int j = 0; j < 3; ++j) {
-            vec3 vertex(mesh.Vertices[i + j].Position.X,
-                        mesh.Vertices[i + j].Position.Y,
-                        mesh.Vertices[i + j].Position.Z);
+            vec3 vertex({mesh.Vertices[i + j].Position.X,
+                         mesh.Vertices[i + j].Position.Y,
+                         mesh.Vertices[i + j].Position.Z});
             verts[j] = vertex;
         }
         this->realworld_triangles.emplace_back(verts[0], verts[1], verts[2]);
@@ -33,10 +33,11 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
     for (auto const &t : this->realworld_triangles) {
         // If the triangle has same facing direction as camera's gaze
         // direction, skip it (face culling).
-        if (glm::dot(cam_gaze, t.facing) >= 0) {
+        if (cam_gaze.dot(t.facing) >= 0) {
+            // if (glm::dot(cam_gaze, t.facing) >= 0) {
             continue;
         }
-        viewspace_triangles.push_back(t * mvp);
+        viewspace_triangles.push_back(mvp * t);
     }
     debugm("real world: %zu triangles, viewspace: %zu triangles\n",
            this->realworld_triangles.size(),

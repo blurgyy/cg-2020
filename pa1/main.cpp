@@ -1,3 +1,4 @@
+#include "Linalg.hpp"
 #include "OBJ_Loader.hpp"
 #include "Scene.hpp"
 #include "Triangle.hpp"
@@ -151,10 +152,11 @@ int main(int argc, char **argv) {
     zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
-    vec3 eye(-3, 5, 10);
+    vec3 eye({-3, 5, 10});
     // vec3 gaze(0, 0, -1);
-    vec3 gaze = glm::normalize(-eye);
-    vec3 up(2, 3, -.9);
+    // vec3 gaze = glm::normalize(-eye);
+    vec3 gaze = (-eye).normalized();
+    vec3 up({2, 3, -.9});
     flt  aspect_ratio = 1.0 * height / width;
     flt  znear        = -.1;
     flt  zfar         = -50;
@@ -165,7 +167,7 @@ int main(int argc, char **argv) {
     zbuf.init_cam(camera);
 
     // Use no model transformation
-    zbuf.set_model_transformation(glm::identity<mat4>());
+    zbuf.set_model_transformation(mat4::identity());
 
     msg("Rendering scene ..\n");
     zbuf.render();

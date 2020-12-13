@@ -1,4 +1,5 @@
 #include "Triangle.hpp"
+#include <cassert>
 
 Triangle::Triangle() {}
 Triangle::Triangle(std::array<vec3, 3> const & vtx,
@@ -37,14 +38,13 @@ flt Triangle::area() const { return .5 * this->doublearea(); }
 bool Triangle::contains(flt x, flt y) const {
     vec3 v[3];
     flt  z[3];
-    v[0] = vec3((this->v[0].x - x), (this->v[0].y - y), 0);
-    v[1] = vec3((this->v[1].x - x), (this->v[1].y - y), 0);
-    v[2] = vec3((this->v[2].x - x), (this->v[2].y - y), 0);
-    z[0] = glm::cross(v[0], v[1]).z;
-    z[1] = glm::cross(v[1], v[2]).z;
-    z[2] = glm::cross(v[2], v[0]).z;
-    return glm::sign(z[0]) == glm::sign(z[1]) &&
-           glm::sign(z[1]) == glm::sign(z[2]);
+    v[0] = vec3({(this->v[0].x - x), (this->v[0].y - y), 0});
+    v[1] = vec3({(this->v[1].x - x), (this->v[1].y - y), 0});
+    v[2] = vec3({(this->v[2].x - x), (this->v[2].y - y), 0});
+    z[0] = v[0].cross(v[1]).z;
+    z[1] = v[1].cross(v[2]).z;
+    z[2] = v[2].cross(v[0]).z;
+    return sign(z[0]) == sign(z[1]) && sign(z[1]) == sign(z[2]);
 }
 
 Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
@@ -77,43 +77,19 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
 /*** Operator overrides ***/
 // Matrix left multiplication.
 // Caveat: glm implements matrix multiplication in reversed order.
-Triangle Triangle::operator*(mat4 const &m) const {
-    // Assign color values and indices of each vertex to the returned
-    // triangle.  Positions of vertices are overwritten, normal directons
-    // of vertices doesn't matter.
-    Triangle ret(*this);
-    // debugm("*this has color (%u, %u, %u) on first vert\n",
-    // this->col[0].r(), this->col[0].g(), this->col[0].b()); errorm("ret has
-    // color (%u, %u, %u) on first vert\n", ret.col[0].r(), ret.col[0].g(),
-    // ret.col[0].b());
-    for (int i = 0; i < 3; ++i) {
-        auto const &v            = ret.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
-
-        homo       = homo * m;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
-    }
-    return ret;
-}
-// Matrix right multiplication.
-// Caveat: glm implements matrix multiplication in reversed order.
-Triangle operator*(mat4 const &m, Triangle const &t) {
+Triangle const operator*(mat4 const &m, Triangle const &t) {
     // Assign color values and indices of each vertex to the returned
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
     Triangle ret(t);
     for (int i = 0; i < 3; ++i) {
-        auto const &v            = t.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
+        auto const &v    = t.v[i];
+        vec4        homo = vec4({v.x, v.y, v.z, 1});
 
         homo       = m * homo;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
+        ret.v[i].x = ret.v[i].data[0] = homo.x / homo.w;
+        ret.v[i].y = ret.v[i].data[1] = homo.y / homo.w;
+        ret.v[i].z = ret.v[i].data[2] = homo.z / homo.w;
     }
     return ret;
 }
@@ -140,8 +116,8 @@ std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
 // private
 void Triangle::_init() {
     // Initialize facing direction
-    this->facing = glm::normalize(
-        glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
+    this->facing =
+        (this->v[1] - this->v[0]).cross(this->v[2] - this->v[1]).normalized();
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

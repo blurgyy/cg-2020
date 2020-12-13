@@ -75,14 +75,14 @@ class Zbuf {
     // Set camera's {ex,in}trinsincs
     void init_cam(vec3 const &ey, flt const &fovy, flt const &aspect_ratio,
                   flt const &znear, flt const &zfar,
-                  vec3 const &g = vec3(0, 0, -1),
-                  vec3 const &u = vec3(0, 1, 0));
+                  vec3 const &g = vec3({0, 0, -1}),
+                  vec3 const &u = vec3({0, 1, 0}));
     // Use given camera
     void init_cam(Camera const &cam);
     // Set mvp transformation matrix
     // @param model: Model's transformation matrix, uses identity if not
     //               specified.
-    void set_model_transformation(mat4 const &model = glm::identity<mat4>());
+    void set_model_transformation(mat4 const &model = mat4::identity());
     // Set viewport transformation matrix
     void init_viewport(unsigned int const &height, unsigned int const &width);
 

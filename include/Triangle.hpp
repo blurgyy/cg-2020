@@ -3,9 +3,8 @@
 #include <array>
 #include <tuple>
 
+#include "Linalg.hpp"
 #include "global.hpp"
-
-#include <glm/gtc/type_ptr.hpp>
 
 class Triangle {
   public:
@@ -23,15 +22,15 @@ class Triangle {
     Triangle();
     // Assumes indices is {0, 1, 2}
     Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
-             vec3 const &na = vec3(0), vec3 const &nb = vec3(0),
-             vec3 const &nc = vec3(0), Color const &ca = Color(0),
+             vec3 const &na = vec3(), vec3 const &nb = vec3(),
+             vec3 const &nc = vec3(), Color const &ca = Color(0),
              Color const &cb = Color(0), Color const &cc = Color(0));
     Triangle(std::array<vec3, 3> const &vtx,
              std::array<vec3, 3> const &nor =
                  {
-                     vec3(0),
-                     vec3(0),
-                     vec3(0),
+                     vec3(),
+                     vec3(),
+                     vec3(),
                  },
              std::array<Color, 3> const &col = {
                  Color(0),
@@ -71,9 +70,11 @@ class Triangle {
                    flt const &z_viewspace) const;
 
   public: // Operator overrides
-    Triangle                  operator*(mat4 const &m) const;
+    // Triangle                  operator*(mat4 const &m) const;
     std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
+
+Triangle const operator*(mat4 const &m, Triangle const &t);
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 23 2020, 13:20 [CST]

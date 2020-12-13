@@ -38,22 +38,25 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     // output(model);
 
     // Set view matrix, according to camera information
-    vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
+    vec3 right = cam.gaze().cross(cam.up()).normalized();
+    // vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
     // clang-format off
-    flt trans_value[] = {
+    // flt trans_value[] = {
+    std::array<flt, 16> trans_value = {
         1, 0, 0, -cam.pos().x,
         0, 1, 0, -cam.pos().y,
         0, 0, 1, -cam.pos().z,
         0, 0, 0,            1,
     };
-    flt rot_value[] = {
+    // flt rot_value[] = {
+    std::array<flt, 16> rot_value = {
               right.x,       right.y,       right.z, 0,
            cam.up().x,    cam.up().y,    cam.up().z, 0,
         -cam.gaze().x, -cam.gaze().y, -cam.gaze().z, 0,
                     0,             0,             0, 1,
     };
     // clang-format on
-    this->view = glm::make_mat4(trans_value) * glm::make_mat4(rot_value);
+    this->view = mat4(rot_value) * mat4(trans_value);
     // debugm("view matrix is\n");
     // output(view);
 
@@ -72,34 +75,41 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     // debugm("screen top is %f, screen right is %f\n", screen_top,
     // screen_right);
     // clang-format off
-    flt po_value[] = { // values for persp_ortho
+    // flt po_value[] = { // values for persp_ortho
+    std::array<flt, 16> po_value = { // values for persp_ortho
         n, 0,   0,    0,
         0, n,   0,    0,
         0, 0, n+f, -n*f,
         0, 0,   1,    0,
     };
-    flt ot_value[] = { // values for ortho_trans
+    // flt ot_value[] = { // values for ortho_trans
+    std::array<flt, 16> ot_value = { // values for ortho_trans
         1, 0, 0,        0,
         0, 1, 0,        0,
         0, 0, 1, -(n+f)/2,
         0, 0, 0,        1,
     };
-    flt os_value[] = { // values for ortho_scale
+    // flt os_value[] = { // values for ortho_scale
+    std::array<flt, 16> os_value = { // values for ortho_scale
         1/screen_right,            0,           0, 0,
                      0, 1/screen_top,           0, 0,
                      0,            0, 1/fabs(f-n), 0,
                      0,            0,           0, 1
     };
     // clang-format on
-    persp_ortho = glm::make_mat4(po_value);
-    ortho_trans = glm::make_mat4(ot_value);
-    ortho_scale = glm::make_mat4(os_value);
+    // persp_ortho = glm::make_mat4(po_value);
+    // ortho_trans = glm::make_mat4(ot_value);
+    // ortho_scale = glm::make_mat4(os_value);
+    persp_ortho = mat4(po_value);
+    ortho_trans = mat4(ot_value);
+    ortho_scale = mat4(os_value);
     // debugm("perspective to orthographic matrix is\n");
     // output(persp_ortho);
     // debugm("orthographic translation matrix is\n");
     // output(ortho_trans);
     // projection = ortho_scale * ortho_trans * persp_ortho;
-    this->projection = persp_ortho * ortho_trans * ortho_scale;
+    // this->projection = persp_ortho * ortho_trans * ortho_scale;
+    this->projection = ortho_scale * ortho_trans * persp_ortho;
     // debugm("orthographic scaling matrix is\n");
     // output(ortho_scale);
 
@@ -121,23 +131,28 @@ void Zbuf::init_viewport(const unsigned int &height,
     // 0,     0, 0, 1,
     // };
     // Todo: use single initilization array
-    flt vtrans_value[] = {
+    // flt vtrans_value[] = {
+    std::array<flt, 16> vtrans_value = {
         1, 0, 0, 1,
         0, 1, 0, 1,
         0, 0, 1, 0,
         0, 0, 0, 1,
     };
-    flt vscale_value[] = {
+    // flt vscale_value[] = {
+    std::array<flt, 16> vscale_value = {
         w*0.5,     0, 0, 0,
             0, h*0.5, 0, 0,
             0,     0, 1, 0,
             0,     0, 0, 1,
     };
     // clang-format on
-    mat4 vtrans = glm::make_mat4(vtrans_value);
-    mat4 vscale = glm::make_mat4(vscale_value);
+    // mat4 vtrans = glm::make_mat4(vtrans_value);
+    // mat4 vscale = glm::make_mat4(vscale_value);
+    mat4 vtrans = mat4(vtrans_value);
+    mat4 vscale = mat4(vscale_value);
     // viewport         = vscale * vtrans;
-    this->viewport = vtrans * vscale;
+    // this->viewport = vtrans * vscale;
+    this->viewport = vscale * vtrans;
     // debugm("viewport matrix is xxxxx\n");
     // output(viewport);
     img.init(this->h, this->w);
@@ -193,7 +208,8 @@ flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
 
 void Zbuf::draw_triangle_naive(Triangle const &v) {
     // Triangle with screen-space coordinates
-    Triangle t(v * viewport);
+    // Triangle t(viewport * v);
+    Triangle t(this->viewport * v);
     // AABB
     int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
     int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
@@ -209,7 +225,7 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
             if (this->inside(x, y, t)) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
-                std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                std::tuple<flt, flt, flt> barycentric = t % vec3({x, y, 0});
                 // unpack the barycentric coordinates
                 auto [ca, cb, cc] = barycentric;
                 // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
