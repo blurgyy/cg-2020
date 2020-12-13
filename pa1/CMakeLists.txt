@@ -10,6 +10,9 @@ set(CMAKE_BUILD_TYPE "Debug")
 
 add_executable(zbuffer main.cpp)
 
+# Extern libraies
+include_directories("extern")
+
 # Custom headers, include these lines **after** other packages
 include_directories("include")
 add_subdirectory("include")
