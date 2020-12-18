@@ -8,8 +8,6 @@
 - [ ] Hierarchical z-buffer
 - [ ] OctTree construction
 - [ ] Scan conversion
-- [ ] Remove dependency `glm`
-- [ ] Add class `timer` for benchmarking
 
 ## Steps
 
@@ -25,6 +23,8 @@
 ## Optional
 
 - [ ] omp
+- [ ] Remove dependency `glm`
+- [ ] Add class `timer` for benchmarking
 
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Nov 23 2020, 15:18 [CST]
