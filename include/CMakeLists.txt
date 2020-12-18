@@ -4,6 +4,7 @@ add_library(wheels
     Camera.cpp
     Pyramid.cpp
     Scene.cpp
+    Timer.cpp
     Triangle.cpp
     Zbuf.cpp
     global.cpp
