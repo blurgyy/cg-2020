@@ -1,5 +1,6 @@
 #include "OBJ_Loader.hpp"
 #include "Scene.hpp"
+#include "Timer.hpp"
 #include "Triangle.hpp"
 #include "Zbuf.hpp"
 #include "global.hpp"
@@ -171,7 +172,13 @@ int main(int argc, char **argv) {
     zbuf.set_model_transformation(glm::identity<mat4>());
 
     msg("Rendering scene ..\n");
+    Timer timer;
+    timer.start();
     zbuf.render();
+    timer.end();
+
+    msg("Scene (%dx%d) rendered in %.0f miliseconds\n", width, height,
+        timer.elapsedms());
 
     write_ppm(outfile, zbuf.img);
 
