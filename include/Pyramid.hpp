@@ -10,6 +10,15 @@ struct Node4 : Node<4> {
     Node4()
         : fa(nullptr),
           depth(-std::numeric_limits<flt>::infinity()), children{nullptr} {}
+
+    // Returns which quadrant of current node that coordinate (x, y) is in
+    int idof(size_t const &x, size_t const &y) {
+        if (this->isleaf) {
+            return -1;
+        }
+        return 2 * (y > this->split.second) + (x > this->split.first);
+    }
+
     // Father of this node
     Node4 *fa;
 
@@ -73,10 +82,13 @@ class Pyramid {
     // pyramid.
     void setz(size_t const &x, size_t const &y, flt const &zval);
 
-    // Check if the given triangle (in **screenspace**) is visible.
+    // Bottom-up visibility checking method.  Computes the least common
+    // ancestor node of the 3 vertices of triangle `t`, then check if `t` is
+    // visible in that node.
     bool visible(Triangle const &t);
-    // Check if the given triangle (in **screenspace**) is visible in given
-    // node.
+    // Top-down visibility checking method.  Check whether or not the triangle
+    // `t` is visible in the root node, if not, dive into its children to do
+    // further checking.
     bool visible(Triangle const &t, Node4 *node = nullptr) const;
 
     // Get depth value's reference at image coordinate (x, y)

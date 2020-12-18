@@ -231,7 +231,7 @@ void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
 void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
     // Triangle with screen-space coordinates
     Triangle t(v * viewport);
-    if (this->zpyramid.visible(t)) {
+    if (this->zpyramid.visible(t, nullptr)) {
         // AABB
         int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
         int xmax =

@@ -70,8 +70,29 @@ bool Pyramid::visible(Triangle const &t, Node4 *node) const {
     }
     flt nearest_z = std::max(t.c().z, std::max(t.a().z, t.b().z));
     if (nearest_z < node->depth) {
+        // If triangle `t` has no vertex nearer than current node's nearest z
+        // value, it is not visible.
         return false;
     }
+    // If triangle `t` has some vertex nearer than current nodes' nearest z
+    // value ..
+    if (node->isleaf) {
+        // If this node cannot be further devided (is a leaf node), the
+        // triangle is visible.
+        return true;
+    }
+    // One of the vertices of traingle `t` falls in this child's quadrant.
+    Node4 *child = node->children[node->idof(t.a().x, t.a().y)];
+    if (node->children[node->idof(t.b().x, t.b().y)] != child ||
+        node->children[node->idof(t.c().x, t.c().y)] != child) {
+        // If not all vertices of triangle `t` falls in the same quadrant,
+        // i.e. if triangle `t` covers more than one quadrant of current node,
+        // treat `t` as visible and do normal rendering.
+        return true;
+    }
+    // If all 3 vertices of triangle `t` falls into the same quadrant, dive
+    // into that quadrant and do further checking.
+    return this->visible(t, child);
 }
 
 // private methods
