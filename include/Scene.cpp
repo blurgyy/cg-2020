@@ -36,7 +36,17 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
         if (glm::dot(cam_gaze, t.facing) >= 0) {
             continue;
         }
-        viewspace_triangles.push_back(t * mvp);
+        // Triangle in viewspace
+        Triangle v = t * mvp;
+        for (int i = 0; i < 3; ++i) {
+            // Push viewspace triangle only when it has 1 or more vertices
+            // inside the canonical box $[-1, 1]^3$, aka view frustum culling.
+            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
+                v.v[i].y <= 1) {
+                viewspace_triangles.push_back(v);
+                break;
+            }
+        }
     }
     debugm("real world: %zu triangles, viewspace: %zu triangles\n",
            this->realworld_triangles.size(),
