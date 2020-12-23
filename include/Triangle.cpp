@@ -43,8 +43,7 @@ bool Triangle::contains(flt x, flt y) const {
     z[0] = glm::cross(v[0], v[1]).z;
     z[1] = glm::cross(v[1], v[2]).z;
     z[2] = glm::cross(v[2], v[0]).z;
-    return glm::sign(z[0]) == glm::sign(z[1]) &&
-           glm::sign(z[1]) == glm::sign(z[2]);
+    return sign(z[0]) == sign(z[1]) && sign(z[1]) == sign(z[2]);
 }
 
 Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,

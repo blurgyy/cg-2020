@@ -112,6 +112,12 @@ T constexpr clamp(T x, T1 minx, T2 maxx) {
     return std::min((T)maxx, std::max(x, (T)minx));
 }
 
+// Fast sign function.  Returns `1` when `x` is positive; returns `0` when `x`
+// is `0`, returns `-1` when x is negative.
+template <typename T> int constexpr sign(T const &x) {
+    return ((T)0 < x) - (x < (T)0);
+}
+
 /*** debugging ***/
 inline void output(mat4 const &x) {
     for (int i = 0; i < 4; ++i) {
