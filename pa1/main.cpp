@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
     zbuf.render();
     timer.end();
 
-    msg("Scene (%dx%d) rendered in %.0f miliseconds\n", width, height,
+    msg("Scene (%dx%d) rendered in %.0f milliseconds\n", width, height,
         timer.elapsedms());
 
     write_ppm(outfile, zbuf.img);
