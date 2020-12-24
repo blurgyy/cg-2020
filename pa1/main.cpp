@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
     // std::vector<Triangle> prims{t1, t2};
 
     // // Load the triangle into scene
-    // Scene scene(prims);
+    // Scene world(prims);
 
     // Create a renderer on scene
     Zbuf zbuf{world, height, width};
