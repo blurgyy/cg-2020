@@ -37,9 +37,9 @@ flt Triangle::area() const { return .5 * this->doublearea(); }
 bool Triangle::contains(flt x, flt y) const {
     vec3 v[3];
     flt  z[3];
-    v[0] = vec3((this->v[0].x - x), (this->v[0].y - y), 0);
-    v[1] = vec3((this->v[1].x - x), (this->v[1].y - y), 0);
-    v[2] = vec3((this->v[2].x - x), (this->v[2].y - y), 0);
+    v[0] = vec3{(this->v[0].x - x), (this->v[0].y - y), 0};
+    v[1] = vec3{(this->v[1].x - x), (this->v[1].y - y), 0};
+    v[2] = vec3{(this->v[2].x - x), (this->v[2].y - y), 0};
     z[0] = glm::cross(v[0], v[1]).z;
     z[1] = glm::cross(v[1], v[2]).z;
     z[2] = glm::cross(v[2], v[0]).z;
@@ -70,7 +70,7 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     flt blue = .5 + (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
                         zv_reciprocal;
     // debugm("red %f, green %f, blue %f\n", red, green, blue);
-    return Color(red, green, blue);
+    return Color{red, green, blue};
 }
 
 /*** Operator overrides ***/

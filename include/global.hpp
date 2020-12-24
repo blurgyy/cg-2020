@@ -84,7 +84,7 @@ struct Image {
 };
 
 template <size_t _order> struct Node {
-    Node() : tdep(0), isleaf(false){};
+    Node() : tdep{0}, isleaf{false} {};
 
     // Depth in the pyramid
     int tdep;

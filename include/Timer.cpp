@@ -1,6 +1,6 @@
 #include "Timer.hpp"
 
-Timer::Timer() : start_time(std::chrono::time_point<clk>()) {}
+Timer::Timer() : start_time{std::chrono::time_point<clk>()} {}
 
 void Timer::start() { this->start_time = clk::now(); }
 void Timer::end() { this->end_time = clk::now(); }

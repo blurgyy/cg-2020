@@ -2,9 +2,9 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Zbuf::Zbuf() { this->_init(); }
-Zbuf::Zbuf(Scene const &s) : scene(s) { this->_init(); }
+Zbuf::Zbuf(Scene const &s) : scene{s} { this->_init(); }
 Zbuf::Zbuf(Scene const &s, size_t const &height, size_t const &width)
-    : scene(s) {
+    : scene{s} {
     this->_init();
     this->init_viewport(height, width);
 }
@@ -208,7 +208,7 @@ void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
             if (this->inside(x, y, t)) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
-                std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
                 // unpack the barycentric coordinates
                 auto [ca, cb, cc] = barycentric;
                 // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
@@ -249,7 +249,7 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
                 if (this->inside(x, y, t)) {
                     // Screen space barycentric coordinates of (x, y) inside
                     // triangle t.
-                    std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                    std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
                     // unpack the barycentric coordinates
                     auto [ca, cb, cc] = barycentric;
                     // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);

@@ -43,7 +43,7 @@ class Zbuf {
     // Set image pixel at coordinate (x, y), origin is located at left-bottom
     // corner of the image.
     void set_pixel(size_t const &x, size_t const &y,
-                   Color const &color = Color(255));
+                   Color const &color = Color{255});
     // Active fragment shader function.  Triangle t has screen coordinates,
     // triangle v has view-space coordinates, barycentric is a tuple
     // consists of the 3 weights on each vertex
@@ -84,8 +84,8 @@ class Zbuf {
     // Set camera's {ex,in}trinsincs
     void init_cam(vec3 const &ey, flt const &fovy, flt const &aspect_ratio,
                   flt const &znear, flt const &zfar,
-                  vec3 const &g = vec3(0, 0, -1),
-                  vec3 const &u = vec3(0, 1, 0));
+                  vec3 const &g = vec3{0, 0, -1},
+                  vec3 const &u = vec3{0, 1, 0});
     // Use given camera
     void init_cam(Camera const &cam);
     // Set mvp transformation matrix

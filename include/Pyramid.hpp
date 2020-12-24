@@ -8,8 +8,8 @@
 
 struct Node4 : Node<4> {
     Node4()
-        : fa(nullptr),
-          depth(-std::numeric_limits<flt>::infinity()), children{nullptr} {}
+        : fa{nullptr}, depth{-std::numeric_limits<flt>::infinity()},
+          children{nullptr} {}
 
     // Returns which quadrant of current node that coordinate (x, y) is in
     int idof(size_t const &x, size_t const &y) {

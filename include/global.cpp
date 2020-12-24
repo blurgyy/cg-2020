@@ -11,11 +11,11 @@ flt const piover180 = pi / 180.0;
 flt const epsilon   = 1e-7;
 
 // struct Color
-Color::Color() : red(0), green(0), blue(0) {}
+Color::Color() : red{0}, green{0}, blue{0} {}
 Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
-    : red(r), green(g), blue(b) {}
-Color::Color(unsigned char const &x) : red(x), green(x), blue(x) {}
+    : red{r}, green{g}, blue{b} {}
+Color::Color(unsigned char const &x) : red{x}, green{x}, blue{x} {}
 unsigned char &      Color::r() { return this->red; }
 unsigned char &      Color::g() { return this->green; }
 unsigned char &      Color::b() { return this->blue; }
@@ -26,7 +26,7 @@ unsigned char const &Color::b() const { return this->blue; }
 // struct Image
 Image::Image() {}
 Image::Image(size_t const &height, size_t const &width)
-    : h(height), w(width) {
+    : h{height}, w{width} {
     this->data.resize(this->h * this->w);
 }
 void Image::init(const size_t &height, const size_t &width) {

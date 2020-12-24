@@ -4,7 +4,7 @@
 
 Pyramid::Pyramid() {}
 Pyramid::Pyramid(size_t const &height, size_t const &width)
-    : h(height), w(width) {
+    : h{height}, w{width} {
     this->nodes.resize(this->h * this->w, nullptr);
     this->construct();
 }
