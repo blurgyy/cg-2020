@@ -26,7 +26,7 @@ struct Node4 : Node<4> {
     pss sw, ne;
     // Splitting point
     pss split;
-    // Depth value
+    // Depth (z) value
     flt depth;
 
     /* Node's children has following orders:

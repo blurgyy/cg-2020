@@ -4,9 +4,9 @@
 #include <array>
 #include <cstdio>
 
-Scene::Scene() { _init(); }
+Scene::Scene() { this->_init(); }
 Scene::Scene(objl::Mesh const &mesh) {
-    _init();
+    this->_init();
     debugm("%lu vertices found in loaded mesh\n", mesh.Vertices.size());
     for (size_t i = 0; i < mesh.Vertices.size(); i += 3) {
         std::array<vec3, 3> verts;
@@ -19,10 +19,12 @@ Scene::Scene(objl::Mesh const &mesh) {
         this->realworld_triangles.emplace_back(verts[0], verts[1], verts[2]);
     }
     msg("Scene created with %lu triangles\n", realworld_triangles.size());
+    this->build_octree();
 }
 Scene::Scene(std::vector<Triangle> const &triangles)
     : realworld_triangles(triangles) {
-    _init();
+    this->_init();
+    this->build_octree();
 }
 
 std::vector<Triangle> const &Scene::primitives() const {
@@ -54,6 +56,11 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
 }
 
 // private:
+void Scene::build_octree() {
+    debugm("buliding octree ..\n");
+    //
+}
+
 void Scene::_init() { viewspace_triangles.clear(); }
 
 // Author: Blurgy <gy@blurgy.xyz>

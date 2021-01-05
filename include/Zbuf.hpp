@@ -74,7 +74,7 @@ class Zbuf {
     Zbuf();
     // Initialize a zbuffer object with given scene
     Zbuf(Scene const &s);
-    // Initialize a zbuffer object with given viewport size
+    // Initialize a zbuffer object with given scene and viewport size
     Zbuf(Scene const &s, size_t const &height, size_t const &width);
 
     // Set fragment shader
