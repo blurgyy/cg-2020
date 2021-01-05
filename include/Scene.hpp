@@ -86,6 +86,40 @@ struct Node8 : Node<8> {
         }};
     }
 
+    // Check if triangle `t` lies on any of the dividing planes of current
+    // node.
+    bool owns(Triangle const &t) {
+        flt const &x = midcord[0];
+        flt const &y = midcord[1];
+        flt const &z = midcord[2];
+        if (sign(t.a().x - x) * sign(t.b().x - x) !=
+                sign(t.b().x - x) * sign(t.c().x - x) ||
+            sign(t.a().y - y) * sign(t.b().y - y) !=
+                sign(t.b().y - y) * sign(t.c().y - y) ||
+            sign(t.a().z - z) * sign(t.b().z - z) !=
+                sign(t.b().z - z) * sign(t.c().z - z)) {
+            return true;
+        }
+        return false;
+    }
+
+    // When triangle `t` does not intersect any of the dividing planes of
+    // current node, returns the index of the child that `t` should be
+    // assigned to.
+    // Returned index is an integer in range [0, 8], aka [000, 111].
+    size_t index(Triangle const &t) {
+        bool masks[3];
+        masks[0] = (t.a().x > this->midcord[0]);      // Lowest bit for x
+        masks[1] = (t.a().y > this->midcord[1]) << 1; // Second bit for y
+        masks[2] = (t.a().z > this->midcord[2]) << 2; // Third bit for z
+        return masks[0] | masks[1] | masks[2];
+    }
+
+    // Father
+    Node8 *fa;
+    // Children
+    std::array<Node8 *, 8> children;
+
     // Min values of current cube (0:x, 1:y, 2:z)
     std::array<flt, 3> mincord;
     // Max values of current cube (0:x, 1:y, 2:z)
@@ -94,6 +128,8 @@ struct Node8 : Node<8> {
     std::array<flt, 3> midcord;
     // 6 faces, 2 triangles per face.
     std::array<Triangle, 12> facets;
+    // Associated primitives
+    std::vector<Triangle> prims;
 };
 
 class Scene {
@@ -105,11 +141,20 @@ class Scene {
     std::vector<Triangle> viewspace_triangles;
 
   private:
+    // Root node of object space octree
+    Node8 *root;
+
+  private:
     void _init();
 
     // This is called upon succesfully load of mesh triangles, the octree is
     // built upon all real world triangles.
-    void build_octree();
+    void _build_octree();
+
+    // Helper function for building octree
+    Node8 *_build(flt const &xmin, flt const &ymin, flt const &zmin,
+                  flt const &xmax, flt const &ymax, flt const &zmax,
+                  std::vector<Triangle> const &prims);
 
   public:
     Scene();

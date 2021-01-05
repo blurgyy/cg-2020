@@ -33,11 +33,11 @@
     } while (0)
 
 // Type definitions
-typedef double    flt;
-typedef glm::vec3 vec3;
-typedef glm::vec4 vec4;
-typedef glm::mat3 mat3;
-typedef glm::mat4 mat4;
+typedef double                             flt;
+typedef glm::vec<3, flt, glm::defaultp>    vec3;
+typedef glm::vec<4, flt, glm::defaultp>    vec4;
+typedef glm::mat<3, 3, flt, glm::defaultp> mat3;
+typedef glm::mat<4, 4, flt, glm::defaultp> mat4;
 
 typedef std::pair<int, int>       pii;
 typedef std::pair<size_t, size_t> pss;

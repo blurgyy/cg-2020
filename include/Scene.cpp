@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 #include "global.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstdio>
 
@@ -19,12 +20,12 @@ Scene::Scene(objl::Mesh const &mesh) {
         this->realworld_triangles.emplace_back(verts[0], verts[1], verts[2]);
     }
     msg("Scene created with %lu triangles\n", realworld_triangles.size());
-    this->build_octree();
+    this->_build_octree();
 }
 Scene::Scene(std::vector<Triangle> const &triangles)
     : realworld_triangles(triangles) {
     this->_init();
-    this->build_octree();
+    this->_build_octree();
 }
 
 std::vector<Triangle> const &Scene::primitives() const {
@@ -56,9 +57,66 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
 }
 
 // private:
-void Scene::build_octree() {
-    debugm("buliding octree ..\n");
-    //
+
+void Scene::_build_octree() {
+    flt xmin{std::numeric_limits<flt>::max()}, ymin{xmin}, zmin{xmin};
+    flt xmax{std::numeric_limits<flt>::min()}, ymax{xmax}, zmax{xmax};
+    // Determine size of root node
+    for (Triangle const &t : this->realworld_triangles) {
+        xmin = std::min(std::min(xmin, t.a().x), std::min(t.b().x, t.c().x));
+        ymin = std::min(std::min(ymin, t.a().y), std::min(t.b().y, t.c().y));
+        zmin = std::min(std::min(zmin, t.a().z), std::min(t.b().z, t.c().z));
+        xmax = std::max(std::max(xmax, t.a().x), std::max(t.b().x, t.c().x));
+        ymax = std::max(std::max(ymax, t.a().y), std::max(t.b().y, t.c().y));
+        zmax = std::max(std::max(zmax, t.a().z), std::max(t.b().z, t.c().z));
+    }
+    this->root = this->_build(xmin - epsilon, ymin - epsilon, zmin - epsilon,
+                              xmax + epsilon, ymax + epsilon, zmax + epsilon,
+                              this->realworld_triangles);
+}
+
+Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
+                     flt const &xmax, flt const &ymax, flt const &zmax,
+                     std::vector<Triangle> const &prims) {
+    Node8 *ret = new Node8{xmin, ymin, zmin, xmax, ymax, zmax};
+    // Stop subdividing when number of primitives inside cube is less than 24.
+    if (prims.size() < 24) {
+        ret->isleaf = true;
+        return ret;
+    }
+    // Otherwise, subdivide current cube.
+    std::array<std::vector<Triangle>, 8> subprims;
+    for (auto const &t : prims) {
+        if (ret->owns(t)) {
+            ret->prims.push_back(t);
+        } else {
+            subprims[ret->index(t)].push_back(t);
+        }
+    }
+
+    ret->children[0] =
+        this->_build(xmin, ymin, zmin, ret->midcord[0], ret->midcord[1],
+                     ret->midcord[2], subprims[0]);
+    ret->children[1] =
+        this->_build(ret->midcord[0], ymin, zmin, xmax, ret->midcord[1],
+                     ret->midcord[2], subprims[1]);
+    ret->children[2] =
+        this->_build(xmin, ret->midcord[1], zmin, ret->midcord[0], ymax,
+                     ret->midcord[2], subprims[2]);
+    ret->children[3] = this->_build(ret->midcord[0], ret->midcord[1], zmin,
+                                    xmax, ymax, ret->midcord[2], subprims[3]);
+    ret->children[4] =
+        this->_build(xmin, ymin, ret->midcord[2], ret->midcord[0],
+                     ret->midcord[1], zmax, subprims[4]);
+    ret->children[5] = this->_build(ret->midcord[0], ymin, ret->midcord[2],
+                                    xmax, ret->midcord[1], zmax, subprims[5]);
+    ret->children[6] = this->_build(xmin, ret->midcord[1], ret->midcord[2],
+                                    ret->midcord[0], ymax, zmax, subprims[6]);
+    ret->children[7] =
+        this->_build(ret->midcord[0], ret->midcord[1], ret->midcord[2], xmax,
+                     ymax, zmax, subprims[7]);
+
+    return ret;
 }
 
 void Scene::_init() { viewspace_triangles.clear(); }
