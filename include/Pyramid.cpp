@@ -19,7 +19,7 @@ flt const &Pyramid::operator()(size_t const &x, size_t const &y) const {
 void Pyramid::construct() {
     pss southwestern = std::make_pair(0, 0);
     pss northeastern = std::make_pair(this->w, this->h);
-    debugm("Construction depth buffer MIP-map ..\n");
+    debugm("Constructing depth buffer MIP-map ..\n");
     this->root = build(southwestern, northeastern, nullptr);
     this->update_tdep(this->root);
     msg("Hierarchical depth buffer constructed\n");
