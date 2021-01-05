@@ -7,7 +7,9 @@
     projection
 - [ ] Hierarchical z-buffer
   - [ ] Optimization: binary lifting for LCA
-- [ ] OctTree construction
+- [ ] OcTree construction
+  - [ ] Add `rendered` boolean flag to class `Triangle` to avoid rendering a
+        triangle more than once.
 - [ ] Scan conversion
 
 ## Steps
