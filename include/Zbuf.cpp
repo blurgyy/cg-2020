@@ -2,10 +2,9 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Zbuf::Zbuf() { this->_init(); }
-Zbuf::Zbuf(Scene const &s) : scene(s) { this->_init(); }
-Zbuf::Zbuf(Scene const &s, unsigned int const &height,
-           unsigned int const &width)
-    : scene(s) {
+Zbuf::Zbuf(Scene const &s) : scene{s} { this->_init(); }
+Zbuf::Zbuf(Scene const &s, size_t const &height, size_t const &width)
+    : scene{s} {
     this->_init();
     this->init_viewport(height, width);
 }
@@ -109,8 +108,7 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     this->mvp_initialized = true;
 }
 
-void Zbuf::init_viewport(const unsigned int &height,
-                         const unsigned int &width) {
+void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     this->h = height;
     this->w = width;
     // clang-format off
@@ -143,8 +141,9 @@ void Zbuf::init_viewport(const unsigned int &height,
     img.init(this->h, this->w);
     // Initilize the depth buffer, initial values are infinitely far (negative
     // infinity).
-    this->depth_buffer = std::vector<flt>(
-        this->h * this->w, -std::numeric_limits<double>::infinity());
+    // this->depth_buffer = std::vector<flt>(
+    // this->h * this->w, -std::numeric_limits<double>::infinity());
+    this->zpyramid             = Pyramid(this->h, this->w);
     this->viewport_initialized = true;
 }
 
@@ -161,7 +160,8 @@ void Zbuf::render() {
     scene.to_viewspace(mvp, cam.gaze());
     for (Triangle const &v : scene.primitives()) {
         // Draw triangle
-        this->draw_triangle_naive(v);
+        // this->draw_triangle_with_aabb(v);
+        this->draw_triangle_with_zpyramid(v);
     }
 }
 
@@ -177,21 +177,20 @@ bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
     return t.contains(x, y);
 }
 
-void Zbuf::set_pixel(unsigned int const &x, unsigned int const &y,
-                     Color const &color) {
+void Zbuf::set_pixel(size_t const &x, size_t const &y, Color const &color) {
     // errorm("Setting pixel (%u, %u)\n", x, y);
     this->img(x, y) = color;
 }
 
-flt &Zbuf::z(unsigned int const &x, unsigned int const &y) {
-    return this->depth_buffer[w * y + x];
+flt &Zbuf::z(size_t const &x, size_t const &y) {
+    return this->zpyramid(x, y);
 }
 
-flt const &Zbuf::z(unsigned int const &x, unsigned int const &y) const {
-    return this->depth_buffer[w * y + x];
+flt const &Zbuf::z(size_t const &x, size_t const &y) const {
+    return this->zpyramid(x, y);
 }
 
-void Zbuf::draw_triangle_naive(Triangle const &v) {
+void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
     // Triangle with screen-space coordinates
     Triangle t(v * viewport);
     // AABB
@@ -209,7 +208,7 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
             if (this->inside(x, y, t)) {
                 // Screen space barycentric coordinates of (x, y) inside
                 // triangle t.
-                std::tuple<flt, flt, flt> barycentric = t % vec3(x, y, 0);
+                std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
                 // unpack the barycentric coordinates
                 auto [ca, cb, cc] = barycentric;
                 // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
@@ -223,6 +222,49 @@ void Zbuf::draw_triangle_naive(Triangle const &v) {
                     Color icol    = this->frag_shader(t, v, barycentric);
                     this->z(i, j) = real_z;
                     this->set_pixel(i, j, icol);
+                }
+            }
+        }
+    }
+}
+
+void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
+    // Triangle with screen-space coordinates
+    Triangle t(v * viewport);
+    if (this->zpyramid.visible(t, nullptr)) {
+        // AABB
+        int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
+        int xmax =
+            std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
+        int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
+        int ymax =
+            std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
+        xmin = clamp(xmin, 0, w), xmax = clamp(xmax, 0, w);
+        ymin = clamp(ymin, 0, h), ymax = clamp(ymax, 0, h);
+        for (int j = ymin; j < ymax; ++j) {
+            for (int i = xmin; i < xmax; ++i) {
+                // todo: AA
+                flt x = .5 + i;
+                flt y = .5 + j;
+                if (this->inside(x, y, t)) {
+                    // Screen space barycentric coordinates of (x, y) inside
+                    // triangle t.
+                    std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
+                    // unpack the barycentric coordinates
+                    auto [ca, cb, cc] = barycentric;
+                    // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
+                    // z value in view-space
+                    flt real_z =
+                        1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
+                    if (real_z > this->z(i, j)) {
+                        // Calculate interpolated color with given triangle's
+                        // 3 vertices. Note: t and v shall have same color
+                        // values by now. Color icol    = v.color_at(ca, cb,
+                        // cc, real_z);
+                        Color icol = this->frag_shader(t, v, barycentric);
+                        this->zpyramid.setz(i, j, real_z);
+                        this->set_pixel(i, j, icol);
+                    }
                 }
             }
         }

@@ -39,6 +39,9 @@ typedef glm::vec4 vec4;
 typedef glm::mat3 mat3;
 typedef glm::mat4 mat4;
 
+typedef std::pair<int, int>       pii;
+typedef std::pair<size_t, size_t> pss;
+
 // Constants
 extern flt const pi;
 extern flt const twopi;
@@ -64,21 +67,35 @@ struct Color {
     unsigned char red, green, blue;
 };
 
+// NOTE: Image data array has origin at lower left.
 struct Image {
     Image();
-    Image(unsigned int const &height, unsigned int const &width);
+    Image(size_t const &height, size_t const &width);
 
     // Initialize data array
-    void init(unsigned int const &height, unsigned int const &width);
-    // Color &operator[](unsigned int const &id);
-    Color &      operator()(unsigned int const &x, unsigned int const &y);
-    Color const &operator()(unsigned int const &x,
-                            unsigned int const &y) const;
+    void         init(size_t const &height, size_t const &width);
+    Color &      operator()(size_t const &x, size_t const &y);
+    Color const &operator()(size_t const &x, size_t const &y) const;
 
     // Store color in this array
     std::vector<Color> data;
     // Width and height
-    unsigned int h, w;
+    size_t h, w;
+};
+
+template <size_t _order> struct Node {
+    Node() : tdep{0}, isleaf{false} {};
+
+    // Depth in the pyramid
+    int tdep;
+    // If this node is a leaf node
+    bool isleaf;
+
+    /* Pointer array to children should be declared in inherited structs,
+     * because data members are declared in inherited structs, and children
+     * have to have same data members as ancestor.
+     * */
+    // std::array<Node<_order> *, _order> children; // Children
 };
 
 // Write struct `Image` image data to a ppm file.
@@ -93,6 +110,12 @@ void write_ppm(std::string const &filename, Image const &img);
 template <typename T, typename T1, typename T2>
 T constexpr clamp(T x, T1 minx, T2 maxx) {
     return std::min((T)maxx, std::max(x, (T)minx));
+}
+
+// Fast sign function.  Returns `1` when `x` is positive; returns `0` when `x`
+// is `0`, returns `-1` when x is negative.
+template <typename T> int constexpr sign(T const &x) {
+    return ((T)0 < x) - (x < (T)0);
 }
 
 /*** debugging ***/

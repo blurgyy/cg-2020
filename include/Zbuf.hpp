@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "Camera.hpp"
+#include "Pyramid.hpp"
 #include "Scene.hpp"
 #include "global.hpp"
 
@@ -26,12 +27,12 @@ class Zbuf {
               // matrix multiplication
     bool mvp_initialized;
 
-    unsigned int w, h;     // Screen size, in pixels
-    mat4         viewport; // Viewport transformation matrix, transforms the
-                           // canonical cube to screen size on xOy plane
+    size_t w, h;     // Screen size, in pixels
+    mat4   viewport; // Viewport transformation matrix, transforms the
+                     // canonical cube to screen size on xOy plane
     bool viewport_initialized;
 
-    std::vector<flt> depth_buffer;
+    Pyramid zpyramid;
 
   private:
     // Set default values
@@ -41,8 +42,8 @@ class Zbuf {
     bool inside(flt x, flt y, Triangle const &t) const;
     // Set image pixel at coordinate (x, y), origin is located at left-bottom
     // corner of the image.
-    void set_pixel(unsigned int const &x, unsigned int const &y,
-                   Color const &color = Color(255));
+    void set_pixel(size_t const &x, size_t const &y,
+                   Color const &color = Color{255});
     // Active fragment shader function.  Triangle t has screen coordinates,
     // triangle v has view-space coordinates, barycentric is a tuple
     // consists of the 3 weights on each vertex
@@ -50,12 +51,21 @@ class Zbuf {
                         std::tuple<flt, flt, flt> const &barycentric)>
         frag_shader;
     // Naive z-buffer implementation.
-    // @param v: Triangle with view-space coordinates
-    void draw_triangle_naive(Triangle const &v);
+    // @param v: Triangle with **viewspace** coordinates
+    void draw_triangle_with_aabb(Triangle const &v);
+    // Use hierarchical z-buffer (depth MIP-map) to achieve ``early reject''.
+    // @brief: Compare the triangle's nearest z value with the smallest
+    //         QuadTree node's depth value, if the triangle's nearest z value
+    //         is farther than current node's depth value, then this triangle
+    //         can be safely ignored.
+    //         If the triangle is not ignored, draw it with aabb.
+    //         (todo: scan conversion).
+    // @param v: Triangle with **viewspace** coordinates
+    void draw_triangle_with_zpyramid(Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
-    flt &      z(unsigned int const &x, unsigned int const &y);
-    flt const &z(unsigned int const &x, unsigned int const &y) const;
+    flt &      z(size_t const &x, size_t const &y);
+    flt const &z(size_t const &x, size_t const &y) const;
 
   public:
     Image img;
@@ -65,8 +75,7 @@ class Zbuf {
     // Initialize a zbuffer object with given scene
     Zbuf(Scene const &s);
     // Initialize a zbuffer object with given viewport size
-    Zbuf(Scene const &s, unsigned int const &height,
-         unsigned int const &width);
+    Zbuf(Scene const &s, size_t const &height, size_t const &width);
 
     // Set fragment shader
     void set_shader(
@@ -75,8 +84,8 @@ class Zbuf {
     // Set camera's {ex,in}trinsincs
     void init_cam(vec3 const &ey, flt const &fovy, flt const &aspect_ratio,
                   flt const &znear, flt const &zfar,
-                  vec3 const &g = vec3(0, 0, -1),
-                  vec3 const &u = vec3(0, 1, 0));
+                  vec3 const &g = vec3{0, 0, -1},
+                  vec3 const &u = vec3{0, 1, 0});
     // Use given camera
     void init_cam(Camera const &cam);
     // Set mvp transformation matrix
@@ -84,7 +93,7 @@ class Zbuf {
     //               specified.
     void set_model_transformation(mat4 const &model = glm::identity<mat4>());
     // Set viewport transformation matrix
-    void init_viewport(unsigned int const &height, unsigned int const &width);
+    void init_viewport(size_t const &height, size_t const &width);
 
     // Render scene
     void render();

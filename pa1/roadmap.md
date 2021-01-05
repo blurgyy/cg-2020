@@ -6,6 +6,7 @@
   - use 2D bounding boxes (AABB) to check if a pixel is inside a triangle's
     projection
 - [ ] Hierarchical z-buffer
+  - [ ] Optimization: binary lifting for LCA
 - [ ] OctTree construction
 - [ ] Scan conversion
 

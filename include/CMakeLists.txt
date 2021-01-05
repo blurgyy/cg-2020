@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 add_library(wheels
     Camera.cpp
+    Pyramid.cpp
     Scene.cpp
     Timer.cpp
     Triangle.cpp

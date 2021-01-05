@@ -11,11 +11,11 @@ flt const piover180 = pi / 180.0;
 flt const epsilon   = 1e-7;
 
 // struct Color
-Color::Color() : red(0), green(0), blue(0) {}
+Color::Color() : red{0}, green{0}, blue{0} {}
 Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
-    : red(r), green(g), blue(b) {}
-Color::Color(unsigned char const &x) : red(x), green(x), blue(x) {}
+    : red{r}, green{g}, blue{b} {}
+Color::Color(unsigned char const &x) : red{x}, green{x}, blue{x} {}
 unsigned char &      Color::r() { return this->red; }
 unsigned char &      Color::g() { return this->green; }
 unsigned char &      Color::b() { return this->blue; }
@@ -25,25 +25,24 @@ unsigned char const &Color::b() const { return this->blue; }
 
 // struct Image
 Image::Image() {}
-Image::Image(unsigned int const &height, unsigned int const &width)
-    : h(height), w(width) {
-    this->data = std::vector<Color>(h * w);
+Image::Image(size_t const &height, size_t const &width)
+    : h{height}, w{width} {
+    this->data.resize(this->h * this->w);
 }
-void Image::init(const unsigned int &height, const unsigned int &width) {
+void Image::init(const size_t &height, const size_t &width) {
     this->h    = height;
     this->w    = width;
     this->data = std::vector<Color>(this->h * this->w);
 }
-Color &Image::operator()(unsigned int const &x, unsigned int const &y) {
+Color &Image::operator()(size_t const &x, size_t const &y) {
     return this->data[this->w * y + x];
 }
-Color const &Image::operator()(unsigned int const &x,
-                               unsigned int const &y) const {
+Color const &Image::operator()(size_t const &x, size_t const &y) const {
     return this->data[this->w * y + x];
 }
 
 void write_ppm(std::string const &filename, Image const &img) {
-    msg("Writing image (%dx%d) to %s ..\n", img.w, img.h, filename.c_str());
+    msg("Writing image (%zux%zu) to %s ..\n", img.w, img.h, filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
     char          ppm_head[50] = {0};
     int           height       = img.h;
@@ -57,6 +56,8 @@ void write_ppm(std::string const &filename, Image const &img) {
     for (size_t j = 0; j < img.h; ++j) {
         for (size_t i = 0; i < img.w; ++i) {
             Color const &col = img(i, img.h - 1 - j);
+            // printf("on pixel (%zu, %zu)\n", i, j);
+            // assert(col.r() > 0 && col.g() > 0 && col.b() > 0);
             f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
         }
     }
