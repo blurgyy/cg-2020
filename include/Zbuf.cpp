@@ -157,18 +157,7 @@ void Zbuf::render() {
     if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
-    if (true) {
-        this->_get_effective_triangles(this->scene.root);
-    } else {
-        scene.to_viewspace(mvp, cam.gaze());
-        this->effective_triangles.assign(this->scene.primitives().begin(),
-                                         this->scene.primitives().end());
-    }
-    for (Triangle const &v : this->effective_triangles) {
-        // Draw triangle
-        // this->draw_triangle_with_aabb(v);
-        this->draw_triangle_with_zpyramid(v);
-    }
+    this->_render(this->scene.root);
 }
 
 // private:
@@ -276,7 +265,7 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
         }
     }
 }
-void Zbuf::_get_effective_triangles(Node8 const *node) {
+void Zbuf::_render(Node8 const *node) {
     std::vector<Triangle> facets;
     // Convert to view space coordinates
     for (int i = 0; i < 12; ++i) {
@@ -302,7 +291,7 @@ void Zbuf::_get_effective_triangles(Node8 const *node) {
     if (invisible) {
         return;
     }
-    // When the cube does intersects with the view frustum, render the
+    // When the cube does intersect with the view frustum, render the
     // triangles associated with it, and dive into its child nodes.
     for (Triangle const &t : node->prims) {
         // Face culling
@@ -315,7 +304,7 @@ void Zbuf::_get_effective_triangles(Node8 const *node) {
         for (int i = 0; i < 3; ++i) {
             if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
                 v.v[i].y <= 1) {
-                this->effective_triangles.push_back(v);
+                this->draw_triangle_with_zpyramid(v);
                 break;
             }
         }
@@ -325,7 +314,7 @@ void Zbuf::_get_effective_triangles(Node8 const *node) {
         if (child == nullptr) {
             continue;
         }
-        this->_get_effective_triangles(child);
+        this->_render(child);
     }
 }
 

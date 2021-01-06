@@ -34,9 +34,6 @@ class Zbuf {
 
     Pyramid zpyramid;
 
-    // Effective triangles to be rendered (with **view space** coordinates)
-    std::vector<Triangle> effective_triangles;
-
   private:
     // Set default values
     void _init();
@@ -69,9 +66,9 @@ class Zbuf {
     // left-bottom corner of the image.
     flt &      z(size_t const &x, size_t const &y);
     flt const &z(size_t const &x, size_t const &y) const;
-    // Get effective_triangles with early rejection via octree in object
-    // space, with given octree node, this runs recursively.
-    void _get_effective_triangles(Node8 const *node);
+    // Recurse octree from give node address, convert coordinates and render
+    // on the fly.
+    void _render(Node8 const *node);
 
   public:
     Image img;
