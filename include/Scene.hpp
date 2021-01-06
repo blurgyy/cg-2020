@@ -122,7 +122,6 @@ struct Node8 : Node<8> {
         masks[0] = (t.a().x > this->midcord[0]);      // Lowest bit for x
         masks[1] = (t.a().y > this->midcord[1]) << 1; // Second bit for y
         masks[2] = (t.a().z > this->midcord[2]) << 2; // Third bit for z
-        // debugm("index is %d\n", masks[0] | masks[1] | masks[2]);
         return masks[0] | masks[1] | masks[2];
     }
 

@@ -80,24 +80,6 @@ void Scene::_build_octree() {
 Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
                      flt const &xmax, flt const &ymax, flt const &zmax,
                      std::vector<Triangle> const &prims, Node8 *fa) {
-    // debugm("prims.size is %zu\n", prims.size());
-    // /* [for debugging] */
-    // if (xmax - xmin < epsilon || ymax - ymin < epsilon ||
-    // zmax - zmin < epsilon) {
-    // for (size_t i = 0; i < prims.size(); ++i) {
-    // auto const &t = prims[i];
-    // printf("%zu-th triangle ..\n", i);
-    // output(t.a());
-    // output(t.b());
-    // output(t.c());
-    // }
-    // if (prims.size()) {
-    // debugm("splitting: %f, %f, %f\n", xmin, ymin, zmin);
-    // errorm("Aborted!\n");
-    // }
-    // return nullptr;
-    // }
-    // /* [/for debugging] */
     // Do not create a node if there is no primitive inside given cubic area.
     if (prims.size() == 0) {
         return nullptr;
@@ -120,13 +102,6 @@ Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
             subprims[ret->index(t)].push_back(t);
         }
     }
-
-    // debugm("minpoints: (%f, %f, %f)\n", ret->mincord[0], ret->mincord[1],
-    // ret->mincord[2]);
-    // debugm("midpoints: (%f, %f, %f)\n", ret->midcord[0], ret->midcord[1],
-    // ret->midcord[2]);
-    // debugm("maxpoints: (%f, %f, %f)\n", ret->maxcord[0], ret->maxcord[1],
-    // ret->maxcord[2]);
 
     ret->children[0] =
         this->_build(xmin, ymin, zmin, ret->midcord[0], ret->midcord[1],
