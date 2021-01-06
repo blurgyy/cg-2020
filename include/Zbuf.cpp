@@ -33,8 +33,6 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     }
     // Set model matrix
     this->model = model;
-    // debugm("model matrix is\n");
-    // output(model);
 
     // Set view matrix, according to camera information
     vec3 right = glm::normalize(glm::cross(cam.gaze(), cam.up()));
@@ -53,23 +51,17 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     };
     // clang-format on
     this->view = glm::make_mat4(trans_value) * glm::make_mat4(rot_value);
-    // debugm("view matrix is\n");
-    // output(view);
 
     // Set projection matrix, according to fov, aspect ratio, etc.
     mat4 persp_ortho; // Squeezes the frustum into a rectangular box
     mat4 ortho_trans; // Centers the rectangular box at origin
     mat4 ortho_scale; // Scales the rectangular box to the canonical cube
-    flt  n    = this->cam.znear();
-    flt  f    = this->cam.zfar();
-    flt  fovy = this->cam.fovy() * piover180;
-    // debugm("cam.fovy is %f degrees, aka %f rad\n", cam.fovy(), fovy);
-    flt aspect_ratio = this->cam.aspect_ratio();
-    // debugm("aspect ratios is %f\n", aspect_ratio);
-    flt screen_top   = std::tan(fovy / 2) * fabs(n);
-    flt screen_right = screen_top / aspect_ratio;
-    // debugm("screen top is %f, screen right is %f\n", screen_top,
-    // screen_right);
+    flt  n            = this->cam.znear();
+    flt  f            = this->cam.zfar();
+    flt  fovy         = this->cam.fovy() * piover180;
+    flt  aspect_ratio = this->cam.aspect_ratio();
+    flt  screen_top   = std::tan(fovy / 2) * fabs(n);
+    flt  screen_right = screen_top / aspect_ratio;
     // clang-format off
     flt po_value[] = { // values for persp_ortho
         n, 0,   0,    0,
@@ -90,20 +82,12 @@ void Zbuf::set_model_transformation(mat4 const &model) {
                      0,            0,           0, 1
     };
     // clang-format on
-    persp_ortho = glm::make_mat4(po_value);
-    ortho_trans = glm::make_mat4(ot_value);
-    ortho_scale = glm::make_mat4(os_value);
-    // debugm("perspective to orthographic matrix is\n");
-    // output(persp_ortho);
-    // debugm("orthographic translation matrix is\n");
-    // output(ortho_trans);
-    // projection = ortho_scale * ortho_trans * persp_ortho;
+    persp_ortho      = glm::make_mat4(po_value);
+    ortho_trans      = glm::make_mat4(ot_value);
+    ortho_scale      = glm::make_mat4(os_value);
     this->projection = persp_ortho * ortho_trans * ortho_scale;
-    // debugm("orthographic scaling matrix is\n");
-    // output(ortho_scale);
 
     // Set mvp
-    // mvp             = projection * view * model;
     this->mvp             = model * view * projection;
     this->mvp_initialized = true;
 }
@@ -113,11 +97,6 @@ void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     this->w = width;
     // clang-format off
     // flt viewport_value[] = {
-    // w/2.0,     0, 0, 0,
-    // 0, h/2.0, 0, 0,
-    // 0,     0, 1, 0,
-    // 0,     0, 0, 1,
-    // };
     // Todo: use single initilization array
     flt vtrans_value[] = {
         1, 0, 0, 1,
@@ -136,13 +115,9 @@ void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     mat4 vscale = glm::make_mat4(vscale_value);
     // viewport         = vscale * vtrans;
     this->viewport = vtrans * vscale;
-    // debugm("viewport matrix is xxxxx\n");
-    // output(viewport);
     img.init(this->h, this->w);
     // Initilize the depth buffer, initial values are infinitely far (negative
     // infinity).
-    // this->depth_buffer = std::vector<flt>(
-    // this->h * this->w, -std::numeric_limits<double>::infinity());
     this->zpyramid             = Pyramid(this->h, this->w);
     this->viewport_initialized = true;
 }
@@ -173,7 +148,6 @@ bool Zbuf::inside(flt x, flt y, Triangle const &t) const {
 }
 
 void Zbuf::set_pixel(size_t const &x, size_t const &y, Color const &color) {
-    // errorm("Setting pixel (%u, %u)\n", x, y);
     this->img(x, y) = color;
 }
 
@@ -206,7 +180,6 @@ void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
                 std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
                 // unpack the barycentric coordinates
                 auto [ca, cb, cc] = barycentric;
-                // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
                 // z value in view-space
                 flt real_z = 1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);
                 if (real_z > this->z(i, j)) {
@@ -247,7 +220,6 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
                     std::tuple<flt, flt, flt> barycentric = t % vec3{x, y, 0};
                     // unpack the barycentric coordinates
                     auto [ca, cb, cc] = barycentric;
-                    // debugm("ca = %f, cb = %f, cc = %f\n", ca, cb, cc);
                     // z value in view-space
                     flt real_z =
                         1 / (ca / v.a().z + cb / v.b().z + cc / v.c().z);

@@ -41,27 +41,17 @@ void Pyramid::setz(size_t const &x, size_t const &y, flt const &zval) {
 
 bool Pyramid::visible(Triangle const &t) {
     // NOTE: t has screenspace coordinates.
-    flt nearest_z = std::max(t.c().z, std::max(t.a().z, t.b().z));
-    // debugm("nearest z is %f, root depth is %f\n", nearest_z,
-    // this->root->depth);
-    // debugm("depths of root's 4 children: (%f, %f, %f, %f)\n",
-    // root->children[0]->depth, root->children[1]->depth,
-    // root->children[2]->depth, root->children[3]->depth);
-    Node4 *a = this->which(t.a().x, t.a().y, this->root);
-    Node4 *b = this->which(t.b().x, t.b().y, this->root);
-    Node4 *c = this->which(t.c().x, t.c().y, this->root);
-    // debugm("finding ancsstor\n");
-    Node4 *anc = this->lca(a, this->lca(b, c));
-    // debugm("ancestor found\n");
+    flt    nearest_z = std::max(t.c().z, std::max(t.a().z, t.b().z));
+    Node4 *a         = this->which(t.a().x, t.a().y, this->root);
+    Node4 *b         = this->which(t.b().x, t.b().y, this->root);
+    Node4 *c         = this->which(t.c().x, t.c().y, this->root);
+    Node4 *anc       = this->lca(a, this->lca(b, c));
     if (nearest_z < anc->depth) {
         // Invisible if the entire image's farthest depth value is closer than
         // the triangle's nearest depth value.
-        // debugm("nearest_z %f is farther than depth %f\n", nearest_z,
-        // anc->depth);
         return false;
     }
     return true;
-    // Node4 anc = this->lca();
 }
 
 bool Pyramid::visible(Triangle const &t, Node4 *node) const {
@@ -120,8 +110,6 @@ void Pyramid::update_tdep(Node4 *node) const {
 Node4 *const Pyramid::lca(Node4 *a, Node4 *b) const {
     Node4 *anca = a, *ancb = b;
     while (anca != ancb) {
-        // debugm("%p: dep(%d); %p: dep(%d)\n", anca, anca->tdep, ancb,
-        // ancb->tdep);
         if (anca->tdep > ancb->tdep) {
             anca = anca->fa;
         } else {

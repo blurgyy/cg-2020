@@ -116,7 +116,6 @@ int main(int argc, char **argv) {
     }
 
     /****************************** Load model ******************************/
-    // Uncomment below lines when testing is finished!
     objl::Loader loader;
     debugm("loading object from file '%s' ..\n", objfile.c_str());
     if (!loader.LoadFile(objfile)) {
@@ -124,29 +123,6 @@ int main(int argc, char **argv) {
     }
     msg("Object loaded\n");
     Scene world{loader.LoadedMeshes[0]};
-    // printf("%lu meshes loaded\n", loader.LoadedMeshes.size());
-
-    /****************************** playground ******************************/
-    // // The first triangle to be rendered
-    // vec3 v11(0, 2, -6);
-    // vec3 v12(-1, -1, -5);
-    // vec3 v13(0, 0, -4);
-    // Triangle  t1(v11, v12, v13);
-    // t1.col[0] = Color{29, 135, 96};
-    // t1.col[1] = Color{209, 232, 5};
-    // t1.col[2] = Color{32, 192, 21};
-    // // The second triangle to be rendered
-    // vec3 v21(-1, 1, -3);
-    // vec3 v22(0, 0, -4);
-    // vec3 v23(1, 0, -5);
-    // Triangle  t2(v21, v22, v23);
-    // t2.col[0] = Color{41, 23, 206};
-    // t2.col[1] = Color{160, 163, 83};
-    // t2.col[2] = Color{149, 149, 224};
-    // std::vector<Triangle> prims{t1, t2};
-
-    // // Load the triangle into scene
-    // Scene world(prims);
 
     // Create a renderer on scene
     Zbuf zbuf{world, height, width};

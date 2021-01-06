@@ -58,18 +58,13 @@ bool Triangle::contains(flt x, flt y) const {
 
 Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
                          flt const &z_viewspace) const {
-    Color a = this->col[0];
-    Color b = this->col[1];
-    Color c = this->col[2];
-    // debugm("color-a: [%u, %u, %u]\n", a.r(), a.g(), a.b());
-    // debugm("color-b: [%u, %u, %u]\n", b.r(), b.g(), b.b());
-    // debugm("color-c: [%u, %u, %u]\n", c.r(), c.g(), c.b());
-    flt az            = this->v[0].z;
-    flt bz            = this->v[1].z;
-    flt cz            = this->v[2].z;
-    flt zv_reciprocal = 1.0 / z_viewspace;
-    // debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz,
-    // z_viewspace);
+    Color a             = this->col[0];
+    Color b             = this->col[1];
+    Color c             = this->col[2];
+    flt   az            = this->v[0].z;
+    flt   bz            = this->v[1].z;
+    flt   cz            = this->v[2].z;
+    flt   zv_reciprocal = 1.0 / z_viewspace;
     // r
     flt red = .5 + (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) /
                        zv_reciprocal;
@@ -80,7 +75,6 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     // b
     flt blue = .5 + (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
                         zv_reciprocal;
-    // debugm("red %f, green %f, blue %f\n", red, green, blue);
     return Color{red, green, blue};
 }
 
@@ -92,10 +86,6 @@ Triangle Triangle::operator*(mat4 const &m) const {
     // triangle.  Positions of vertices are overwritten, normal directons
     // of vertices doesn't matter.
     Triangle ret(*this);
-    // debugm("*this has color (%u, %u, %u) on first vert\n",
-    // this->col[0].r(), this->col[0].g(), this->col[0].b()); errorm("ret
-    // has color (%u, %u, %u) on first vert\n", ret.col[0].r(),
-    // ret.col[0].g(), ret.col[0].b());
     for (int i = 0; i < 3; ++i) {
         auto const &v            = ret.v[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
@@ -129,20 +119,14 @@ Triangle operator*(mat4 const &m, Triangle const &t) {
 }
 // Calculate barycentric coordinates of point 'pos' in triangle 't'
 std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
-    // std::tuple<flt, flt, flt> operator%(vec3 const &pos, Triangle
-    // const &t) { Point position `pos` should be inside the triangle `t`
+    // Point position `pos` should be inside the triangle `t`
     assert(this->contains(pos.x, pos.y));
 
     Triangle ta(pos, this->v[1], this->v[2]);
     Triangle tb(pos, this->v[0], this->v[2]);
-    // debugm("pos (%f, %f, %f)\n", pos.x, pos.y, pos.z);
-    // debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x,
-    // vtx[0].y, vtx[0].z); debugm("total area %f\n", this->area());
-    // debugm("aarea %f\n", ta.area());
-    // debugm("barea %f\n", tb.area());
-    flt ca = ta.doublearea() / this->doublearea();
-    flt cb = tb.doublearea() / this->doublearea();
-    flt cc = 1 - ca - cb;
+    flt      ca = ta.doublearea() / this->doublearea();
+    flt      cb = tb.doublearea() / this->doublearea();
+    flt      cc = 1 - ca - cb;
     return {ca, cb, cc};
 }
 

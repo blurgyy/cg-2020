@@ -182,6 +182,9 @@ class Scene {
     // @param      mvp: Model-view-projection matrix
     // @param cam_gaze: Camera's gaze direction for face culling
     void to_viewspace(mat4 const &mvp, vec3 const &cam_gaze);
+
+    // Generate a camera position according to primitives' coordinates
+    vec3 generate_campos();
 };
 
 // Author: Blurgy <gy@blurgy.xyz>
