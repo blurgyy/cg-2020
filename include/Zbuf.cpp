@@ -281,8 +281,7 @@ void Zbuf::_render(Node8 const *node) {
     bool invisible{true};
     for (auto const &v : facets) {
         for (int i = 0; i < 3; ++i) {
-            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
-                v.v[i].y <= 1 && v.v[i].z >= -1 && v.v[i].z <= 1) {
+            if (v.vert_in_canonical()) {
                 invisible = false;
             }
         }
@@ -303,8 +302,7 @@ void Zbuf::_render(Node8 const *node) {
         Triangle v = t * this->mvp;
         // View frustum culling
         for (int i = 0; i < 3; ++i) {
-            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
-                v.v[i].y <= 1 && v.v[i].z >= -1 && v.v[i].z <= 1) {
+            if (v.vert_in_canonical()) {
                 this->draw_triangle_with_zpyramid(v);
                 break;
             }

@@ -34,6 +34,16 @@ flt Triangle::doublearea() const {
 }
 flt Triangle::area() const { return .5 * this->doublearea(); }
 
+bool Triangle::vert_in_canonical() const {
+    for (int i = 0; i < 3; ++i) {
+        if (this->v[i].x >= -1 && this->v[i].x <= 1 && this->v[i].y >= -1 &&
+            this->v[i].y <= 1 && this->v[i].z >= -1 && this->v[i].z <= 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Triangle::contains(flt x, flt y) const {
     vec3 v[3];
     flt  z[3];
@@ -58,7 +68,8 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     flt bz            = this->v[1].z;
     flt cz            = this->v[2].z;
     flt zv_reciprocal = 1.0 / z_viewspace;
-    // debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz, z_viewspace);
+    // debugm("az %f, bz %f, cz %f, real_z %f\n", az, bz, cz,
+    // z_viewspace);
     // r
     flt red = .5 + (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) /
                        zv_reciprocal;
@@ -82,9 +93,9 @@ Triangle Triangle::operator*(mat4 const &m) const {
     // of vertices doesn't matter.
     Triangle ret(*this);
     // debugm("*this has color (%u, %u, %u) on first vert\n",
-    // this->col[0].r(), this->col[0].g(), this->col[0].b()); errorm("ret has
-    // color (%u, %u, %u) on first vert\n", ret.col[0].r(), ret.col[0].g(),
-    // ret.col[0].b());
+    // this->col[0].r(), this->col[0].g(), this->col[0].b()); errorm("ret
+    // has color (%u, %u, %u) on first vert\n", ret.col[0].r(),
+    // ret.col[0].g(), ret.col[0].b());
     for (int i = 0; i < 3; ++i) {
         auto const &v            = ret.v[i];
         flt         homo_value[] = {v.x, v.y, v.z, 1};
@@ -125,9 +136,8 @@ std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
     Triangle ta(pos, this->v[1], this->v[2]);
     Triangle tb(pos, this->v[0], this->v[2]);
     // debugm("pos (%f, %f, %f)\n", pos.x, pos.y, pos.z);
-    // debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x, vtx[0].y,
-    // vtx[0].z);
-    // debugm("total area %f\n", this->area());
+    // debugm("first vert of triangle: (%f, %f, %f)\n", vtx[0].x,
+    // vtx[0].y, vtx[0].z); debugm("total area %f\n", this->area());
     // debugm("aarea %f\n", ta.area());
     // debugm("barea %f\n", tb.area());
     flt ca = ta.doublearea() / this->doublearea();

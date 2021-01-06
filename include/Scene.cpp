@@ -44,8 +44,7 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
         for (int i = 0; i < 3; ++i) {
             // Push viewspace triangle only when it has 1 or more vertices
             // inside the canonical box $[-1, 1]^3$, aka view frustum culling.
-            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
-                v.v[i].y <= 1 && v.v[i].z >= -1 && v.v[i].z <= 1) {
+            if (v.vert_in_canonical()) {
                 viewspace_triangles.push_back(v);
                 break;
             }

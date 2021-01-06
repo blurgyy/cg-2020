@@ -64,6 +64,9 @@ class Triangle {
     // xOy plane.
     flt doublearea() const;
 
+    // Determine whether this triangle has a vertex inside the canonical box.
+    bool vert_in_canonical() const;
+
     bool contains(flt x, flt y) const;
     // When calling this function, make sure the triangle has **view-space**
     // coordinates (as opposed to screen-space coordinates).
