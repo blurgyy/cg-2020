@@ -157,8 +157,14 @@ void Zbuf::render() {
     if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
-    scene.to_viewspace(mvp, cam.gaze());
-    for (Triangle const &v : scene.primitives()) {
+    if (true) {
+        this->_get_effective_triangles(this->scene.root);
+    } else {
+        scene.to_viewspace(mvp, cam.gaze());
+        this->effective_triangles.assign(this->scene.primitives().begin(),
+                                         this->scene.primitives().end());
+    }
+    for (Triangle const &v : this->effective_triangles) {
         // Draw triangle
         // this->draw_triangle_with_aabb(v);
         this->draw_triangle_with_zpyramid(v);
@@ -268,6 +274,58 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
                 }
             }
         }
+    }
+}
+void Zbuf::_get_effective_triangles(Node8 const *node) {
+    std::vector<Triangle> facets;
+    // Convert to view space coordinates
+    for (int i = 0; i < 12; ++i) {
+        // Face culling
+        if (glm::dot(this->cam.gaze(), node->facets[i].facing) >= 0) {
+            continue;
+        }
+        facets.push_back(node->facets[i] * mvp);
+    }
+    // Check if this cube intersects with the view frustum (view frustum
+    // culling)
+    bool invisible{true};
+    for (auto const &v : facets) {
+        for (int i = 0; i < 3; ++i) {
+            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
+                v.v[i].y <= 1) {
+                invisible = false;
+            }
+        }
+    }
+    // When the cube does not intersects with the view frustum, it can be
+    // safely ignored.
+    if (invisible) {
+        return;
+    }
+    // When the cube does intersects with the view frustum, render the
+    // triangles associated with it, and dive into its child nodes.
+    for (Triangle const &t : node->prims) {
+        // Face culling
+        if (glm::dot(this->cam.gaze(), t.facing) >= 0) {
+            continue;
+        }
+        // Convert to view space
+        Triangle v = t * this->mvp;
+        // View frustum culling
+        for (int i = 0; i < 3; ++i) {
+            if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
+                v.v[i].y <= 1) {
+                this->effective_triangles.push_back(v);
+                break;
+            }
+        }
+    }
+    // Recurse into child nodes.
+    for (Node8 *child : node->children) {
+        if (child == nullptr) {
+            continue;
+        }
+        this->_get_effective_triangles(child);
     }
 }
 

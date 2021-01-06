@@ -151,10 +151,6 @@ class Scene {
     std::vector<Triangle> viewspace_triangles;
 
   private:
-    // Root node of object space octree
-    Node8 *root;
-
-  private:
     void _init();
 
     // This function is the frontend of octree construction.
@@ -166,6 +162,10 @@ class Scene {
     Node8 *_build(flt const &xmin, flt const &ymin, flt const &zmin,
                   flt const &xmax, flt const &ymax, flt const &zmax,
                   std::vector<Triangle> const &prims, Node8 *fa);
+
+  public:
+    // Root node of object space octree
+    Node8 *root;
 
   public:
     Scene();
