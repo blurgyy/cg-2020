@@ -59,6 +59,7 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
 // private:
 
 void Scene::_build_octree() {
+    debugm("Constructing octree in object space ..\n");
     flt xmin{std::numeric_limits<flt>::max()}, ymin{xmin}, zmin{xmin};
     flt xmax{std::numeric_limits<flt>::min()}, ymax{xmax}, zmax{xmax};
     // Determine size of root node
@@ -72,16 +73,42 @@ void Scene::_build_octree() {
     }
     this->root = this->_build(xmin - epsilon, ymin - epsilon, zmin - epsilon,
                               xmax + epsilon, ymax + epsilon, zmax + epsilon,
-                              this->realworld_triangles);
+                              this->realworld_triangles, nullptr);
+    msg("Object space octree constructed\n");
 }
 
 Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
                      flt const &xmax, flt const &ymax, flt const &zmax,
-                     std::vector<Triangle> const &prims) {
+                     std::vector<Triangle> const &prims, Node8 *fa) {
+    // debugm("prims.size is %zu\n", prims.size());
+    // /* [for debugging] */
+    // if (xmax - xmin < epsilon || ymax - ymin < epsilon ||
+    // zmax - zmin < epsilon) {
+    // for (size_t i = 0; i < prims.size(); ++i) {
+    // auto const &t = prims[i];
+    // printf("%zu-th triangle ..\n", i);
+    // output(t.a());
+    // output(t.b());
+    // output(t.c());
+    // }
+    // if (prims.size()) {
+    // debugm("splitting: %f, %f, %f\n", xmin, ymin, zmin);
+    // errorm("Aborted!\n");
+    // }
+    // return nullptr;
+    // }
+    // /* [/for debugging] */
+    // Do not create a node if there is no primitive inside given cubic area.
+    if (prims.size() == 0) {
+        return nullptr;
+    }
+    // Pointer to constructed octree node.
     Node8 *ret = new Node8{xmin, ymin, zmin, xmax, ymax, zmax};
     // Stop subdividing when number of primitives inside cube is less than 24.
     if (prims.size() < 24) {
         ret->isleaf = true;
+        // Associate all primitives (less than 24) to current node.
+        ret->prims.assign(prims.begin(), prims.end());
         return ret;
     }
     // Otherwise, subdivide current cube.
@@ -93,6 +120,13 @@ Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
             subprims[ret->index(t)].push_back(t);
         }
     }
+
+    // debugm("minpoints: (%f, %f, %f)\n", ret->mincord[0], ret->mincord[1],
+    // ret->mincord[2]);
+    // debugm("midpoints: (%f, %f, %f)\n", ret->midcord[0], ret->midcord[1],
+    // ret->midcord[2]);
+    // debugm("maxpoints: (%f, %f, %f)\n", ret->maxcord[0], ret->maxcord[1],
+    // ret->maxcord[2]);
 
     ret->children[0] =
         this->_build(xmin, ymin, zmin, ret->midcord[0], ret->midcord[1],

@@ -11,7 +11,8 @@
 struct Node8 : Node<8> {
     Node8(flt xmin = 0, flt ymin = 0, flt zmin = 0, flt xmax = 0,
           flt ymax = 0, flt zmax = 0)
-        : mincord{xmin, ymin, zmin}, // Min values of current cube
+        : children{nullptr},         // Initialize child nodes to nullptr
+          mincord{xmin, ymin, zmin}, // Min values of current cube
           maxcord{xmax, ymax, zmax}  // Max values of current cube
     {
         for (int i = 0; i < 3; ++i) {
@@ -86,32 +87,42 @@ struct Node8 : Node<8> {
         }};
     }
 
-    // Check if triangle `t` lies on any of the dividing planes of current
-    // node.
+    // Check if triangle `t` lies on any of the dividing planes of the cube
+    // associated with current node.
     bool owns(Triangle const &t) {
-        flt const &x = midcord[0];
-        flt const &y = midcord[1];
-        flt const &z = midcord[2];
-        if (sign(t.a().x - x) * sign(t.b().x - x) !=
-                sign(t.b().x - x) * sign(t.c().x - x) ||
-            sign(t.a().y - y) * sign(t.b().y - y) !=
-                sign(t.b().y - y) * sign(t.c().y - y) ||
-            sign(t.a().z - z) * sign(t.b().z - z) !=
-                sign(t.b().z - z) * sign(t.c().z - z)) {
+        assert(this->mincord[0] < t.a().x && t.a().x < this->maxcord[0]);
+        assert(this->mincord[0] < t.b().x && t.b().x < this->maxcord[0]);
+        assert(this->mincord[0] < t.c().x && t.c().x < this->maxcord[0]);
+        assert(this->mincord[1] < t.a().y && t.a().y < this->maxcord[1]);
+        assert(this->mincord[1] < t.b().y && t.b().y < this->maxcord[1]);
+        assert(this->mincord[1] < t.c().y && t.c().y < this->maxcord[1]);
+        assert(this->mincord[2] < t.a().z && t.a().z < this->maxcord[2]);
+        assert(this->mincord[2] < t.b().z && t.b().z < this->maxcord[2]);
+        assert(this->mincord[2] < t.c().z && t.c().z < this->maxcord[2]);
+        flt const &x = this->midcord[0];
+        flt const &y = this->midcord[1];
+        flt const &z = this->midcord[2];
+        if (sign(t.a().x - x) != sign(t.b().x - x) ||
+            sign(t.b().x - x) != sign(t.c().x - x) ||
+            sign(t.a().y - y) != sign(t.b().y - y) ||
+            sign(t.b().y - y) != sign(t.c().y - y) ||
+            sign(t.a().z - z) != sign(t.b().z - z) ||
+            sign(t.b().z - z) != sign(t.c().z - z)) {
             return true;
         }
         return false;
     }
 
-    // When triangle `t` does not intersect any of the dividing planes of
-    // current node, returns the index of the child that `t` should be
-    // assigned to.
+    // When triangle `t` does not intersect any of the dividing planes of the
+    // cube associated with current node, returns the index of the child that
+    // `t` should be assigned to.
     // Returned index is an integer in range [0, 8], aka [000, 111].
     size_t index(Triangle const &t) {
-        bool masks[3];
+        unsigned char masks[3];
         masks[0] = (t.a().x > this->midcord[0]);      // Lowest bit for x
         masks[1] = (t.a().y > this->midcord[1]) << 1; // Second bit for y
         masks[2] = (t.a().z > this->midcord[2]) << 2; // Third bit for z
+        // debugm("index is %d\n", masks[0] | masks[1] | masks[2]);
         return masks[0] | masks[1] | masks[2];
     }
 
@@ -147,14 +158,15 @@ class Scene {
   private:
     void _init();
 
-    // This is called upon succesfully load of mesh triangles, the octree is
+    // This function is the frontend of octree construction.
+    // It is called upon succesfully load of mesh triangles, the octree is
     // built upon all real world triangles.
     void _build_octree();
 
-    // Helper function for building octree
+    // Actual octree recursive construction function
     Node8 *_build(flt const &xmin, flt const &ymin, flt const &zmin,
                   flt const &xmax, flt const &ymax, flt const &zmax,
-                  std::vector<Triangle> const &prims);
+                  std::vector<Triangle> const &prims, Node8 *fa = nullptr);
 
   public:
     Scene();
