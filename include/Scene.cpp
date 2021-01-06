@@ -86,6 +86,7 @@ Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
     }
     // Pointer to constructed octree node.
     Node8 *ret = new Node8{xmin, ymin, zmin, xmax, ymax, zmax};
+    ret->fa    = fa;
     // Stop subdividing when number of primitives inside cube is less than 24.
     if (prims.size() < 24) {
         ret->isleaf = true;
@@ -105,25 +106,28 @@ Node8 *Scene::_build(flt const &xmin, flt const &ymin, flt const &zmin,
 
     ret->children[0] =
         this->_build(xmin, ymin, zmin, ret->midcord[0], ret->midcord[1],
-                     ret->midcord[2], subprims[0]);
+                     ret->midcord[2], subprims[0], ret);
     ret->children[1] =
         this->_build(ret->midcord[0], ymin, zmin, xmax, ret->midcord[1],
-                     ret->midcord[2], subprims[1]);
+                     ret->midcord[2], subprims[1], ret);
     ret->children[2] =
         this->_build(xmin, ret->midcord[1], zmin, ret->midcord[0], ymax,
-                     ret->midcord[2], subprims[2]);
-    ret->children[3] = this->_build(ret->midcord[0], ret->midcord[1], zmin,
-                                    xmax, ymax, ret->midcord[2], subprims[3]);
+                     ret->midcord[2], subprims[2], ret);
+    ret->children[3] =
+        this->_build(ret->midcord[0], ret->midcord[1], zmin, xmax, ymax,
+                     ret->midcord[2], subprims[3], ret);
     ret->children[4] =
         this->_build(xmin, ymin, ret->midcord[2], ret->midcord[0],
-                     ret->midcord[1], zmax, subprims[4]);
-    ret->children[5] = this->_build(ret->midcord[0], ymin, ret->midcord[2],
-                                    xmax, ret->midcord[1], zmax, subprims[5]);
-    ret->children[6] = this->_build(xmin, ret->midcord[1], ret->midcord[2],
-                                    ret->midcord[0], ymax, zmax, subprims[6]);
+                     ret->midcord[1], zmax, subprims[4], ret);
+    ret->children[5] =
+        this->_build(ret->midcord[0], ymin, ret->midcord[2], xmax,
+                     ret->midcord[1], zmax, subprims[5], ret);
+    ret->children[6] =
+        this->_build(xmin, ret->midcord[1], ret->midcord[2], ret->midcord[0],
+                     ymax, zmax, subprims[6], ret);
     ret->children[7] =
         this->_build(ret->midcord[0], ret->midcord[1], ret->midcord[2], xmax,
-                     ymax, zmax, subprims[7]);
+                     ymax, zmax, subprims[7], ret);
 
     return ret;
 }

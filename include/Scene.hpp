@@ -165,7 +165,7 @@ class Scene {
     // Actual octree recursive construction function
     Node8 *_build(flt const &xmin, flt const &ymin, flt const &zmin,
                   flt const &xmax, flt const &ymax, flt const &zmax,
-                  std::vector<Triangle> const &prims, Node8 *fa = nullptr);
+                  std::vector<Triangle> const &prims, Node8 *fa);
 
   public:
     Scene();
