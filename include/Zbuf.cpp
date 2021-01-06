@@ -265,6 +265,7 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
         }
     }
 }
+
 void Zbuf::_render(Node8 const *node) {
     std::vector<Triangle> facets;
     // Convert to view space coordinates
@@ -281,7 +282,7 @@ void Zbuf::_render(Node8 const *node) {
     for (auto const &v : facets) {
         for (int i = 0; i < 3; ++i) {
             if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
-                v.v[i].y <= 1) {
+                v.v[i].y <= 1 && v.v[i].z >= -1 && v.v[i].z <= 1) {
                 invisible = false;
             }
         }
@@ -303,7 +304,7 @@ void Zbuf::_render(Node8 const *node) {
         // View frustum culling
         for (int i = 0; i < 3; ++i) {
             if (v.v[i].x >= -1 && v.v[i].x <= 1 && v.v[i].y >= -1 &&
-                v.v[i].y <= 1) {
+                v.v[i].y <= 1 && v.v[i].z >= -1 && v.v[i].z <= 1) {
                 this->draw_triangle_with_zpyramid(v);
                 break;
             }
