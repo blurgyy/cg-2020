@@ -2,7 +2,7 @@ proj = pa1
 srcs = *.cpp include/*
 builddir = build
 
-makeflags = -j$(shell expr $(shell nproc) - 1)
+makeflags = -j
 
 all: ${srcs} CMakeLists.txt
 	cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=1
