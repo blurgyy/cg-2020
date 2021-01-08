@@ -75,7 +75,11 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     // b
     flt blue = .5 + (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
                         zv_reciprocal;
-    return Color{red, green, blue};
+    return Color{
+        static_cast<unsigned char>(red),
+        static_cast<unsigned char>(green),
+        static_cast<unsigned char>(blue),
+    };
 }
 
 /*** Operator overrides ***/
