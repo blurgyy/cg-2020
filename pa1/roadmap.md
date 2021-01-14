@@ -5,9 +5,9 @@
 - [x] Naive z-buffer
   - use 2D bounding boxes (AABB) to check if a pixel is inside a triangle's
     projection
-- [ ] Hierarchical z-buffer
+- [x] Hierarchical z-buffer
   - [ ] Optimization: binary lifting for LCA
-- [ ] OcTree construction
+- [x] OcTree construction
   - [ ] Add `rendered` boolean flag to class `Triangle` to avoid rendering a
         triangle more than once.
 - [ ] Scan conversion
@@ -21,7 +21,7 @@
 - [x] Barycentric coordinates
 - [x] Normal fragment shader
 - [ ] Read obj's normal values
-- [ ] Hierarchical z-buffer value checking
+- [x] Hierarchical z-buffer value checking
 
 ## Optional
 
