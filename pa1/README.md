@@ -6,6 +6,12 @@ OS: Arch Linux (5.10.6-zen1-1-zen)
 g++: 10.2.0
 CMake: 3.19.3
 
+## 文件结构
+
+使用的外部库有 [`glm`](./extern/glm) (线性代数库) 和用于读取 `.obj` 文件的头文件 [`OBJ_Loader.hpp`](./extern/OBJ_Loader.hpp), 两个外部库都放在 [`extern`](./extern) 文件夹下.  [`include`](./include) 文件夹下的文件是 zbuffer 和相关优化数据结构等的实现, [`main.cpp`](./main.cpp) 是主函数所在的文件, [`CMakeLists.txt`](./CMakeLists.txt) 和 [`Makefile`](./Makefile) 是用于构建项目的工程文件.
+
+[`README.md`](./README.md) 是实验报告的 markdown source, [`media`](./media) 文件夹中包含了实验报告中出现的图片.
+
 ## 使用方法
 
 编译: 进入文件夹后执行
