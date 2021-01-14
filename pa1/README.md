@@ -95,19 +95,20 @@ $ ./build/zbuffer model.obj
 
 ### 层次 zbuffer
 
-这是在图像空间建立的四叉树, 如果一个面片的深度远于所在的四叉树节点的最远深度,
-说明这个面片必定完全不可见, 可以安全忽略这个面片的绘制, 实现 early rejection.
+这是在图像空间建立的四叉树, 如果一个面片的深度远于所在的四叉树节点的最远深度, 说明这个面片必定完全不可见, 可以安全忽略这个面片的绘制, 实现 early rejection.
 
-相关文件: [Pyramid.cpp](./include/Pyramid.cpp), [Zbuf.cpp](./include/Zbuf.cpp)
+相关文件:
+
+- [include/Pyramid.cpp](./include/Pyramid.cpp)
+- [include/Zbuf.cpp](./include/Zbuf.cpp)
 
 ### 场景八叉树
 
-这是在景物空间建立的八叉树, 每个节点是一个立方体, 根节点的立方体大小为刚好覆盖
-整个场景的立方体大小, 当一个面片存在于某个立方体的划分平面上时, 就把这个面片认
-为是立方体所包含的面片, 如果当前立方体被判断可见或部分可见, 就要对这个立方体包
-含的面片进行绘制, 然后对这个节点的所有子节点进行递归判断可见性.
+这是在景物空间建立的八叉树, 每个节点是一个立方体, 根节点的立方体大小为刚好覆盖整个场景的立方体大小, 当一个面片存在于某个立方体的划分平面上时, 就把这个面片认为是立方体所包含的面片, 如果当前立方体被判断可见或部分可见, 就要对这个立方体包含的面片进行绘制, 然后对这个节点的所有子节点进行递归判断可见性.
 
-相关文件: [Scene.cpp](./include/Scene.cpp)
+相关文件:
+
+- [include/Scene.cpp](./include/Scene.cpp)
 
 [fig:exp1-spaceship]: ./media/exp1/spaceship.png
 [fig:exp1-bedroom]: ./media/exp1/bedroom.png
