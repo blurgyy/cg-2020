@@ -40,6 +40,9 @@ int main(int argc, char **argv) {
     std::string objfile;
     // Path of the file to save render result
     std::string outfile{"zbuffer.ppm"};
+    std::string octree_outfile{"octree-zbuffer.ppm"};
+    std::string zpyramid_outfile{"zpyramid-zbuffer.ppm"};
+    std::string naive_outfile{"naive-zbuffer.ppm"};
     // Shader function to use
     std::function<Color(Triangle const &, Triangle const &,
                         std::tuple<flt, flt, flt> const &barycentric)>
@@ -93,6 +96,17 @@ int main(int argc, char **argv) {
                 break;
             }
             outfile = argv[i];
+            // Find last slash '/'
+            int pos = outfile.size() - 1;
+            while (pos >= 0 && outfile[pos] != '/') {
+                --pos;
+            }
+            naive_outfile = outfile.substr(0, pos + 1) + "naive-" +
+                            outfile.substr(pos + 1);
+            zpyramid_outfile = outfile.substr(0, pos + 1) + "zpyramid-" +
+                               outfile.substr(pos + 1);
+            octree_outfile = outfile.substr(0, pos + 1) + "octree-" +
+                             outfile.substr(pos + 1);
         } else if (argv[i][0] == '-') {
             fprintf(stderr, "Unrecognized option '%s'\n", argv[i]);
         } else {
@@ -141,11 +155,12 @@ int main(int argc, char **argv) {
     // Octree
     zbuf.reset();
     timer.start();
-    zbuf.render(rendering_method::zpyramid);
+    zbuf.render(rendering_method::octree);
     timer.end();
     msg("Scene (%dx%d) rendered in %.0f milliseconds with zpyramid and "
         "object-space octree\n",
         width, height, timer.elapsedms());
+    write_ppm(octree_outfile, zbuf.image());
 
     // Z-pyramid
     zbuf.reset();
@@ -154,6 +169,7 @@ int main(int argc, char **argv) {
     timer.end();
     msg("Scene (%dx%d) rendered in %.0f milliseconds with z-pyramid\n", width,
         height, timer.elapsedms());
+    write_ppm(zpyramid_outfile, zbuf.image());
 
     // Naive
     zbuf.reset();
@@ -162,7 +178,7 @@ int main(int argc, char **argv) {
     timer.end();
     msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
         width, height, timer.elapsedms());
-    write_ppm(outfile, zbuf.image());
+    write_ppm(naive_outfile, zbuf.image());
 
     return 0;
 }
