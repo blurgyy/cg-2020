@@ -120,10 +120,6 @@ int main(int argc, char **argv) {
     zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
-    // vec3 eye{-3, 5, 10};
-    // // vec3 gaze(0, 0, -1);
-    // vec3 gaze = glm::normalize(-eye);
-    // vec3 up{2, 3, -.9};
     auto [eye, gaze, up] = world.generate_camera();
     flt aspect_ratio     = 1.0 * height / width;
     flt znear            = -.1;
@@ -142,24 +138,6 @@ int main(int argc, char **argv) {
     /* Benchmarking */
     msg("-- Benchmarking ..\n");
 
-    // Naive
-    zbuf.reset();
-    timer.start();
-    zbuf.render(rendering_method::naive);
-    timer.end();
-    msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
-        width, height, timer.elapsedms());
-    write_ppm("naive-" + outfile, zbuf.image());
-
-    // Z-pyramid
-    zbuf.reset();
-    timer.start();
-    zbuf.render(rendering_method::zpyramid);
-    timer.end();
-    msg("Scene (%dx%d) rendered in %.0f milliseconds with z-pyramid\n", width,
-        height, timer.elapsedms());
-    write_ppm("zpyramid-" + outfile, zbuf.image());
-
     // Octree
     zbuf.reset();
     timer.start();
@@ -168,7 +146,23 @@ int main(int argc, char **argv) {
     msg("Scene (%dx%d) rendered in %.0f milliseconds with zpyramid and "
         "object-space octree\n",
         width, height, timer.elapsedms());
-    write_ppm("octree-" + outfile, zbuf.image());
+
+    // Z-pyramid
+    zbuf.reset();
+    timer.start();
+    zbuf.render(rendering_method::zpyramid);
+    timer.end();
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with z-pyramid\n", width,
+        height, timer.elapsedms());
+
+    // Naive
+    zbuf.reset();
+    timer.start();
+    zbuf.render(rendering_method::naive);
+    timer.end();
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
+        width, height, timer.elapsedms());
+    write_ppm(outfile, zbuf.image());
 
     return 0;
 }
