@@ -9,6 +9,12 @@
 
 #include <glm/ext/matrix_transform.hpp>
 
+enum rendering_method {
+    naive,    // render with AABB of each triangle
+    zpyramid, // render with z-pyramid only
+    octree,   // render with z-pyramid + octree
+};
+
 class Zbuf {
   private:
     Scene scene; // Scene to be rendered
@@ -32,7 +38,12 @@ class Zbuf {
                      // canonical cube to screen size on xOy plane
     bool viewport_initialized;
 
+    // Depth buffer
     Pyramid zpyramid;
+    // Color buffer
+    Image img;
+
+    std::function<void(Triangle const &)> method;
 
   private:
     // Set default values
@@ -52,7 +63,7 @@ class Zbuf {
         frag_shader;
     // Naive z-buffer implementation.
     // @param v: Triangle with **viewspace** coordinates
-    void draw_triangle_with_aabb(Triangle const &v);
+    void _draw_triangle_with_aabb(Triangle const &v);
     // Use hierarchical z-buffer (depth MIP-map) to achieve ``early reject''.
     // @brief: Compare the triangle's nearest z value with the smallest
     //         QuadTree node's depth value, if the triangle's nearest z value
@@ -61,17 +72,17 @@ class Zbuf {
     //         If the triangle is not ignored, draw it with aabb.
     //         (todo: scan conversion).
     // @param v: Triangle with **viewspace** coordinates
-    void draw_triangle_with_zpyramid(Triangle const &v);
+    void _draw_triangle_with_zpyramid(Triangle const &v);
     // Depth buffer value at image coordinate (x, y), origin is located at
     // left-bottom corner of the image.
     flt &      z(size_t const &x, size_t const &y);
     flt const &z(size_t const &x, size_t const &y) const;
     // Recurse octree from give node address, convert coordinates and render
     // on the fly.
-    void _render(Node8 const *node);
+    void _render_with_octree(Node8 const *node);
 
   public:
-    Image img;
+    Image const &image() const;
 
   public:
     Zbuf();
@@ -79,6 +90,12 @@ class Zbuf {
     Zbuf(Scene const &s);
     // Initialize a zbuffer object with given scene and viewport size
     Zbuf(Scene const &s, size_t const &height, size_t const &width);
+
+    // Reset member variables to an initial state for next rendering. This
+    // function:
+    //      1. Clears color buffer `this->img`;
+    //      2. Clears depth buffer `this->Pyramid`;
+    void reset();
 
     // Set fragment shader
     void set_shader(
@@ -99,7 +116,7 @@ class Zbuf {
     void init_viewport(size_t const &height, size_t const &width);
 
     // Render scene
-    void render();
+    void render(rendering_method const &type);
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

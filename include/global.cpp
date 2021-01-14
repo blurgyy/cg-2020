@@ -34,6 +34,9 @@ void Image::init(const size_t &height, const size_t &width) {
     this->w    = width;
     this->data = std::vector<Color>(this->h * this->w);
 }
+void Image::fill(Color const &value) {
+    std::fill(this->data.begin(), this->data.end(), value);
+}
 Color &Image::operator()(size_t const &x, size_t const &y) {
     return this->data[this->w * y + x];
 }
@@ -42,7 +45,8 @@ Color const &Image::operator()(size_t const &x, size_t const &y) const {
 }
 
 void write_ppm(std::string const &filename, Image const &img) {
-    msg("Writing image (%zux%zu) to %s ..\n", img.w, img.h, filename.c_str());
+    debugm("Writing image (%zux%zu) to %s ..\n", img.w, img.h,
+           filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
     char          ppm_head[50] = {0};
     int           height       = img.h;
@@ -59,7 +63,8 @@ void write_ppm(std::string const &filename, Image const &img) {
         }
     }
     f.close();
-    msg("Render result saved in %s\n", filename.c_str());
+    msg("Render result (%zux%zu) saved in %s\n", img.w, img.h,
+        filename.c_str());
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

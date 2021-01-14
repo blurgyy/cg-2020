@@ -8,8 +8,8 @@
 
 struct Node4 : Node<4> {
     Node4()
-        : fa{nullptr}, depth{std::numeric_limits<flt>::min()}, children{
-                                                                   nullptr} {}
+        : fa{nullptr}, depth{-std::numeric_limits<flt>::max()},
+          children{nullptr} {}
 
     // Returns which quadrant of current node that coordinate (x, y) is in
     int idof(size_t const &x, size_t const &y) {
@@ -53,9 +53,6 @@ class Pyramid {
     // Leaf nodes, containing finest depth values
     std::vector<Node4 *> nodes;
 
-    // Root of depth MIP-map
-    Node4 *root;
-
   private:
     // Helper functions
     void pushup(Node4 *node) const;
@@ -73,10 +70,18 @@ class Pyramid {
     Node4 *which(int x, int y, Node4 *node) const;
 
   public:
+    // Root of depth MIP-map
+    Node4 *root;
+
+  public:
     Pyramid();
     Pyramid(size_t const &height, size_t const &width);
 
+    // Frontend for MIP-map construction.
     void construct();
+
+    // Clear depths recursively for `node` and all of its descendants.
+    void clear(Node4 *node);
 
     // Set depth value at given image coordinate (x, y), and update the
     // pyramid.

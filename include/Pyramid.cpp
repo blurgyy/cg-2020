@@ -25,6 +25,16 @@ void Pyramid::construct() {
     msg("Hierarchical depth buffer constructed\n");
 }
 
+void Pyramid::clear(Node4 *node) {
+    if (nullptr == node) {
+        return;
+    }
+    node->depth = -std::numeric_limits<flt>::max();
+    for (Node4 *child : node->children) {
+        this->clear(child);
+    }
+}
+
 void Pyramid::setz(size_t const &x, size_t const &y, flt const &zval) {
     (*this)(x, y) = zval;
     // debugm("finding node with (%zu, %zu)\n", x, y);
@@ -136,7 +146,7 @@ Node4 *const Pyramid::build(pss const &sw, pss const &ne, Node4 *const fa) {
     ret->fa    = fa;
     ret->sw    = sw;
     ret->ne    = ne;
-    ret->depth = std::numeric_limits<flt>::min();
+    ret->depth = -std::numeric_limits<flt>::max();
     if (x1 + 1 == x2 && y1 + 1 == y2) {
         // Leaf node, assign actual depth value to the node and return.
         ret->isleaf                    = true;

@@ -33,6 +33,7 @@ std::vector<Triangle> const &Scene::primitives() const {
 }
 
 void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
+    this->viewspace_triangles.clear();
     for (auto const &t : this->realworld_triangles) {
         // If the triangle has same facing direction as camera's gaze
         // direction, skip it (face culling).
@@ -60,7 +61,7 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
 void Scene::_build_octree() {
     debugm("Constructing octree in object space ..\n");
     flt xmin{std::numeric_limits<flt>::max()}, ymin{xmin}, zmin{xmin};
-    flt xmax{std::numeric_limits<flt>::min()}, ymax{xmax}, zmax{xmax};
+    flt xmax{-std::numeric_limits<flt>::max()}, ymax{xmax}, zmax{xmax};
     // Determine size of root node
     for (Triangle const &t : this->realworld_triangles) {
         xmin = std::min(std::min(xmin, t.a().x), std::min(t.b().x, t.c().x));

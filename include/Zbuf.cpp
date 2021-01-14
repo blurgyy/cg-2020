@@ -9,6 +9,13 @@ Zbuf::Zbuf(Scene const &s, size_t const &height, size_t const &width)
     this->init_viewport(height, width);
 }
 
+Image const &Zbuf::image() const { return this->img; }
+
+void Zbuf::reset() {
+    this->img.fill();
+    this->zpyramid.clear(this->zpyramid.root);
+}
+
 void Zbuf::set_shader(
     std::function<Color(Triangle const &t, Triangle const &v,
                         std::tuple<flt, flt, flt> const &barycentric)>
@@ -122,7 +129,7 @@ void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     this->viewport_initialized = true;
 }
 
-void Zbuf::render() {
+void Zbuf::render(rendering_method const &type) {
     if (!this->cam_initialized) {
         errorm("Camera position is not initilized\n");
     }
@@ -132,7 +139,20 @@ void Zbuf::render() {
     if (!this->viewport_initialized) {
         errorm("Viewport size is not initialized\n");
     }
-    this->_render(this->scene.root);
+    if (type == rendering_method::octree) {
+        this->_render_with_octree(this->scene.root);
+    } else {
+        this->scene.to_viewspace(this->mvp, this->cam.gaze());
+        for (Triangle const &v : this->scene.primitives()) {
+            if (type == rendering_method::zpyramid) {
+                this->_draw_triangle_with_zpyramid(v);
+            } else if (type == rendering_method::naive) {
+                this->_draw_triangle_with_aabb(v);
+            } else {
+                errorm("Unhandled rendering method encountered\n");
+            }
+        }
+    }
 }
 
 // private:
@@ -159,14 +179,14 @@ flt const &Zbuf::z(size_t const &x, size_t const &y) const {
     return this->zpyramid(x, y);
 }
 
-void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
+void Zbuf::_draw_triangle_with_aabb(Triangle const &v) {
     // Triangle with screen-space coordinates
     Triangle t(v * viewport);
     // AABB
     int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
-    int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
+    int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x)));
     int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
-    int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
+    int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y)));
     xmin = clamp(xmin, 0, w - 1), xmax = clamp(xmax, 0, w - 1);
     ymin = clamp(ymin, 0, h - 1), ymax = clamp(ymax, 0, h - 1);
     for (int j = ymin; j < ymax; ++j) {
@@ -196,17 +216,15 @@ void Zbuf::draw_triangle_with_aabb(Triangle const &v) {
     }
 }
 
-void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
+void Zbuf::_draw_triangle_with_zpyramid(Triangle const &v) {
     // Triangle with screen-space coordinates
     Triangle t(v * viewport);
     if (this->zpyramid.visible(t, nullptr)) {
         // AABB
         int xmin = std::floor(std::min(t.a().x, std::min(t.b().x, t.c().x)));
-        int xmax =
-            std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x))) + 1;
+        int xmax = std::ceil(std::max(t.a().x, std::max(t.b().x, t.c().x)));
         int ymin = std::floor(std::min(t.a().y, std::min(t.b().y, t.c().y)));
-        int ymax =
-            std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y))) + 1;
+        int ymax = std::ceil(std::max(t.a().y, std::max(t.b().y, t.c().y)));
         xmin = clamp(xmin, 0, w), xmax = clamp(xmax, 0, w);
         ymin = clamp(ymin, 0, h), ymax = clamp(ymax, 0, h);
         for (int j = ymin; j < ymax; ++j) {
@@ -238,7 +256,7 @@ void Zbuf::draw_triangle_with_zpyramid(Triangle const &v) {
     }
 }
 
-void Zbuf::_render(Node8 const *node) {
+void Zbuf::_render_with_octree(Node8 const *node) {
     std::vector<Triangle> facets;
     // Convert to view space coordinates
     for (int i = 0; i < 12; ++i) {
@@ -250,11 +268,13 @@ void Zbuf::_render(Node8 const *node) {
     }
     // Check if this cube intersects with the view frustum (view frustum
     // culling)
+    // Note: this is not deterministic but quite enough
     bool invisible{true};
     for (auto const &v : facets) {
         for (int i = 0; i < 3; ++i) {
             if (v.vert_in_canonical()) {
                 invisible = false;
+                break;
             }
         }
     }
@@ -275,7 +295,7 @@ void Zbuf::_render(Node8 const *node) {
         // View frustum culling
         for (int i = 0; i < 3; ++i) {
             if (v.vert_in_canonical()) {
-                this->draw_triangle_with_zpyramid(v);
+                this->_draw_triangle_with_zpyramid(v);
                 break;
             }
         }
@@ -285,7 +305,7 @@ void Zbuf::_render(Node8 const *node) {
         if (child == nullptr) {
             continue;
         }
-        this->_render(child);
+        this->_render_with_octree(child);
     }
 }
 

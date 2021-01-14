@@ -74,6 +74,7 @@ struct Image {
 
     // Initialize data array
     void         init(size_t const &height, size_t const &width);
+    void         fill(Color const &value = Color{0});
     Color &      operator()(size_t const &x, size_t const &y);
     Color const &operator()(size_t const &x, size_t const &y) const;
 

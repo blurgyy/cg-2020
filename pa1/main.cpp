@@ -147,16 +147,38 @@ int main(int argc, char **argv) {
     // Use no model transformation
     zbuf.set_model_transformation(glm::identity<mat4>());
 
-    msg("Rendering scene ..\n");
     Timer timer;
+
+    /* Benchmarking */
+    msg("-- Benchmarking ..\n");
+
+    // Naive
+    zbuf.reset();
     timer.start();
-    zbuf.render();
+    zbuf.render(rendering_method::naive);
     timer.end();
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
+        width, height, timer.elapsedms());
+    write_ppm("naive-" + outfile, zbuf.image());
 
-    msg("Scene (%dx%d) rendered in %.0f milliseconds\n", width, height,
-        timer.elapsedms());
+    // Z-pyramid
+    zbuf.reset();
+    timer.start();
+    zbuf.render(rendering_method::zpyramid);
+    timer.end();
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with z-pyramid\n", width,
+        height, timer.elapsedms());
+    write_ppm("zpyramid-" + outfile, zbuf.image());
 
-    write_ppm(outfile, zbuf.img);
+    // Octree
+    zbuf.reset();
+    timer.start();
+    zbuf.render(rendering_method::zpyramid);
+    timer.end();
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with zpyramid and "
+        "object-space octree\n",
+        width, height, timer.elapsedms());
+    write_ppm("octree-" + outfile, zbuf.image());
 
     return 0;
 }
