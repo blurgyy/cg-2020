@@ -63,6 +63,15 @@ std::tuple<vec3, vec3, vec3> Scene::generate_camera() const {
     Camera ret;
     vec3   pos, gaze, up;
     pos = vec3{
+        // // Viewpoint-1
+        // this->root->maxcord[0] * 1.5,
+        // this->root->maxcord[1] * 1,
+        // this->root->maxcord[2] * 1.2,
+        // // Viewpoint-2
+        // this->root->maxcord[0] * 1,
+        // this->root->maxcord[1] * 2,
+        // this->root->maxcord[2] * 1,
+        // Viewpoint-default
         this->root->maxcord[0] * 1.5,
         this->root->maxcord[1] * 2,
         this->root->maxcord[2] * 1.2,
