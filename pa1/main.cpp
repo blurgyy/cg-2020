@@ -20,18 +20,12 @@ void show_help(char const *selfname) {
     }
     ++o;
     printf("%s: zbuffer demo\n\n", selfname + o);
-    printf("    usage: %s <objfile> [-n|--normal]\n", selfname + o);
-    printf("                             [-i|--interpolation]\n");
-    printf("                             [-r|--resolution <WxH>]\n");
+    printf("    usage: %s <objfile> [-r|--resolution <WxH>]\n", selfname + o);
     printf("                             [-f|--field-of-view <fov>]\n");
     printf("                             [-o|--output <path>]\n");
     printf("\n");
     printf("    options:\n");
     printf("        -h|--help                 Show this message and quit\n");
-    printf("        -n|--normal               Use normal fragment shader "
-           "(default)\n");
-    printf("        -i|--interpolation        Use interpolation fragment "
-           "shader\n");
     printf("        -r|--resolution <WxH>     Use given resolution, default: "
            "1920x1080\n");
     printf("        -f|--field-of-view <fov>  Use given field of view (in "
@@ -62,11 +56,6 @@ int main(int argc, char **argv) {
         if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
             show_help(argv[0]);
             return 0;
-        } else if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "--normal")) {
-            selected_fragment_shader = shdr::normal_shader;
-        } else if (!strcmp(argv[i], "-i") ||
-                   !strcmp(argv[i], "--interpolation")) {
-            selected_fragment_shader = shdr::vertex_interpolation_shader;
         } else if (!strcmp(argv[i], "-r") ||
                    !strcmp(argv[i], "--resolution")) {
             ++i;

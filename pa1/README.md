@@ -23,15 +23,14 @@ $ cmake -S . -B build && cd build && make
 $ ./build/zbuffer model.obj
 ```
 
-执行后, 程序会统计三种绘制方式所需时间并将信息输出到 `stdout`.
+执行后, 程序会用面片的法向确定面片的颜色, 并统计三种绘制方式所需时间并将信息输
+出到 `stdout`.
 
 ### 参数
 
 直接执行 `./build/zbuffer` 而不提供参数, 程序将输出可选参数并退出.
 
 - `-h|--help` 显示可选参数并退出.
-- `-n|--normal` 使用法向着色 (默认).
-- `-i|--interpolation` 使用读取的顶点颜色在每个三角形内进行插值着色.
 - `-r|--resolution <WxH>` 指定输出图像的分辨率, 默认为 1920x1080.
 - `-f|--field-of-view <fov>` 指定绘制时相机在 `y` 方向的视角 (度), 默认为 45.
 - `-o|--output <path>` 指定保存的图像文件名, 默认为 `zbuffer.ppm`.
