@@ -152,15 +152,14 @@ int main(int argc, char **argv) {
     /* Benchmarking */
     msg("-- Benchmarking ..\n");
 
-    // Octree
+    // Naive
     zbuf.reset();
     timer.start();
-    zbuf.render(rendering_method::octree);
+    zbuf.render(rendering_method::naive);
     timer.end();
-    msg("Scene (%dx%d) rendered in %.0f milliseconds with zpyramid and "
-        "object-space octree\n",
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
         width, height, timer.elapsedms());
-    write_ppm(octree_outfile, zbuf.image());
+    write_ppm(naive_outfile, zbuf.image());
 
     // Z-pyramid
     zbuf.reset();
@@ -171,14 +170,15 @@ int main(int argc, char **argv) {
         height, timer.elapsedms());
     write_ppm(zpyramid_outfile, zbuf.image());
 
-    // Naive
+    // Octree
     zbuf.reset();
     timer.start();
-    zbuf.render(rendering_method::naive);
+    zbuf.render(rendering_method::octree);
     timer.end();
-    msg("Scene (%dx%d) rendered in %.0f milliseconds with naive zbuffer\n",
+    msg("Scene (%dx%d) rendered in %.0f milliseconds with zpyramid and "
+        "object-space octree\n",
         width, height, timer.elapsedms());
-    write_ppm(naive_outfile, zbuf.image());
+    write_ppm(octree_outfile, zbuf.image());
 
     return 0;
 }
