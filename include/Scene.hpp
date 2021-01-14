@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Camera.hpp"
 #include "OBJ_Loader.hpp"
 #include "Triangle.hpp"
 #include "global.hpp"
 
 #include <array>
+#include <tuple>
 #include <vector>
 
 // Node of a full octree.
@@ -183,8 +185,9 @@ class Scene {
     // @param cam_gaze: Camera's gaze direction for face culling
     void to_viewspace(mat4 const &mvp, vec3 const &cam_gaze);
 
-    // Generate a camera position according to primitives' coordinates
-    vec3 generate_campos();
+    // Generate a camera object according to primitives' coordinates
+    // @return A tuple of 3 unit vectors: (`pos`, `gaze`, `up`)
+    std::tuple<vec3, vec3, vec3> generate_camera() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

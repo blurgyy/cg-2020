@@ -131,13 +131,14 @@ int main(int argc, char **argv) {
     zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
-    vec3 eye{-3, 5, 10};
-    // vec3 gaze(0, 0, -1);
-    vec3 gaze = glm::normalize(-eye);
-    vec3 up{2, 3, -.9};
-    flt  aspect_ratio = 1.0 * height / width;
-    flt  znear        = -.1;
-    flt  zfar         = -50;
+    // vec3 eye{-3, 5, 10};
+    // // vec3 gaze(0, 0, -1);
+    // vec3 gaze = glm::normalize(-eye);
+    // vec3 up{2, 3, -.9};
+    auto [eye, gaze, up] = world.generate_camera();
+    flt aspect_ratio     = 1.0 * height / width;
+    flt znear            = -.1;
+    flt zfar             = -50;
     // Camera
     Camera camera{eye, fovy, aspect_ratio, znear, zfar, gaze, up};
 

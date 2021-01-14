@@ -56,6 +56,33 @@ void Scene::to_viewspace(mat4 const &mvp, vec3 const &cam_gaze) {
            this->viewspace_triangles.size());
 }
 
+std::tuple<vec3, vec3, vec3> Scene::generate_camera() const {
+    if (nullptr == this->root) {
+        errorm("Octree is somehow not constructed\n");
+    }
+    Camera ret;
+    vec3   pos, gaze, up;
+    pos = vec3{
+        this->root->maxcord[0] * 1.5,
+        this->root->maxcord[1] * 2,
+        this->root->maxcord[2] * 1.2,
+    };
+    gaze = glm::normalize(vec3{
+                              this->root->midcord[0],
+                              this->root->midcord[1],
+                              this->root->midcord[2],
+                          } -
+                          pos);
+    up   = glm::normalize(vec3{
+        -pos.x,
+        std::fabs(gaze.y) < epsilon
+              ? 1.0
+              : (pos.x * gaze.x + pos.z * gaze.z) / gaze.y,
+        -pos.z,
+    });
+    return {pos, gaze, up};
+}
+
 // private:
 
 void Scene::_build_octree() {
