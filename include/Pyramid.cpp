@@ -87,7 +87,7 @@ bool Pyramid::visible(Triangle const &t, Node4 *node) const {
 
 // private methods
 void Pyramid::pushup(Node4 *node) const {
-    flt ndepth = std::numeric_limits<flt>::infinity();
+    flt ndepth = std::numeric_limits<flt>::max();
     for (auto &child : node->children) {
         if (nullptr == child) {
             continue;
@@ -136,7 +136,7 @@ Node4 *const Pyramid::build(pss const &sw, pss const &ne, Node4 *const fa) {
     ret->fa    = fa;
     ret->sw    = sw;
     ret->ne    = ne;
-    ret->depth = -std::numeric_limits<flt>::infinity();
+    ret->depth = std::numeric_limits<flt>::min();
     if (x1 + 1 == x2 && y1 + 1 == y2) {
         // Leaf node, assign actual depth value to the node and return.
         ret->isleaf                    = true;
