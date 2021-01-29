@@ -17,6 +17,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 add_executable(${target_name} "${sources}")
 
+# Custom headers
+include_directories(include)
+add_subdirectory(include)
+target_link_libraries(${target_name} wheels)
+
 # vim: set ft=cmake:
 
 # Author: Blurgy <gy@blurgy.xyz>
