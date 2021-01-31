@@ -5,7 +5,7 @@ builddir = build
 makeflags = -j
 
 all: ${srcs} CMakeLists.txt
-	cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+	cmake -S . -B ${builddir} -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 	@make -C ${builddir} ${makeflags}
 clean:
 	@make -C ${builddir} clean
