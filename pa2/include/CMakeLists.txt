@@ -4,13 +4,14 @@ project("wheels") # Project name
 set(target_name "wheels") # Target name (target can be an executable or a library)
 set(sources
     global.cpp
+    Scene.cpp
 ) # Sources
 
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
-set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
-# set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_FLAGS_RELEASE "-O2 -w -DNDEBUG")
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -w -DNDEBUG")
 
 # # Build an executable:
 # add_executable(${target_name} ${sources})
