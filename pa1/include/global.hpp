@@ -34,6 +34,7 @@
 
 // Type definitions
 typedef double                             flt;
+typedef glm::vec<2, flt, glm::defaultp>    vec2;
 typedef glm::vec<3, flt, glm::defaultp>    vec3;
 typedef glm::vec<4, flt, glm::defaultp>    vec4;
 typedef glm::mat<3, 3, flt, glm::defaultp> mat3;
@@ -144,6 +145,12 @@ inline void output(vec4 const &x) {
 }
 inline void output(vec3 const &x) {
     for (int i = 0; i < 3; ++i) {
+        printf("%f ", x[i]);
+    }
+    printf("\n");
+}
+inline void output(vec2 const &x) {
+    for (int i = 0; i < 2; ++i) {
         printf("%f ", x[i]);
     }
     printf("\n");
