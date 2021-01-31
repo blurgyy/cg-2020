@@ -14,6 +14,7 @@ class Triangle {
     vec3 facing;  // Facing direction (for face culling), computed by:
                   // glm::cross(v[1] - v[0], v[2] - v[1]);
     vec3  nor[3]; // Normal directions of the 3 vertices
+    vec2  tex[2]; // Texture coordinates of the 3 vertices
     Color col[3]; // Color values of the 3 vertices
 
   private:
