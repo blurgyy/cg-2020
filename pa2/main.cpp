@@ -16,6 +16,13 @@ int main(int argc, char **argv) {
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
+        if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--config")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            camconf = std::string{argv[i]};
+        }
         objfile = std::string{argv[i]};
     }
     if (objfile.length() == 0) {
