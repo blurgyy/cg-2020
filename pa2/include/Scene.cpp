@@ -1,9 +1,8 @@
 #include "Scene.hpp"
 
 Scene::Scene() {}
-Scene::Scene(tinyobj::ObjReader const &loader) {
-    auto const &attrib    = loader.GetAttrib();
-    auto const &materials = loader.GetMaterials();
+Scene::Scene(tinyobj::ObjReader const &loader) : mats(loader.GetMaterials()) {
+    auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
         // Loop over faces in shape
@@ -34,12 +33,15 @@ Scene::Scene(tinyobj::ObjReader const &loader) {
             int      matid = shape.mesh.material_ids[fi];
             Triangle newtri{vtx, nor, tex};
             newtri.set_material(matid);
-            this->triangles.push_back(newtri);
+            this->tris.push_back(newtri);
         }
     }
 }
 
-std::vector<Triangle> const &Scene::facets() const { return this->triangles; }
+std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
+std::vector<tinyobj::material_t> const &Scene::materials() const {
+    return this->mats;
+}
 
 /* public */
 
