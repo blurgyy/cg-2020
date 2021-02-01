@@ -1,6 +1,11 @@
 #include "Camera.hpp"
 
+#include <fstream>
+#include <sstream>
+
 Camera::Camera() {}
+Camera::Camera(flt const &fovy, flt const &aspect_ratio)
+    : fov{fovy}, ar{aspect_ratio} {}
 Camera::Camera(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
                flt const &znear, flt const &zfar, vec3 const &gaze,
                vec3 const &up)
@@ -21,6 +26,31 @@ void Camera::init(const vec3 &pos, const flt &fovy, const flt &aspect_ratio,
     this->ar   = aspect_ratio;
     this->near = znear;
     this->far  = zfar;
+}
+
+void Camera::load(std::string const &configfile) {
+    std::ifstream from(configfile);
+    if (from.fail()) {
+        errorm("Failed opening file '%s'\n", configfile.c_str());
+    }
+    for (std::string curline; std::getline(from, curline);) {
+        std::istringstream input(curline);
+        std::string        token;
+        flt                x, y, z;
+        input >> token >> x >> y >> z;
+        vec3 v{x, y, z};
+        if (token.length() == 0 || token[0] == '#') {
+            continue;
+        }
+        if (token[0] == 'p' || token[0] == 'P') { // Position (eye)
+            this->e = v;
+        } else if (token[0] == 'l' || token[0] == 'L') { // Look at (gaze)
+            this->g = v;
+        } else if (token[0] == 'u' || token[0] == 'U') { // Up (top)
+            this->t = v;
+        }
+    }
+    from.close();
 }
 
 vec3 const &Camera::pos() const { return this->e; }

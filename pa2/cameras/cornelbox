@@ -1,0 +1,7 @@
+# Cornell box
+position    0 0 2.5
+lookat      0 0 0
+up          0 1 0
+
+# Author: Blurgy <gy@blurgy.xyz>
+# Date:   Feb 01 2021, 16:39 [CST]

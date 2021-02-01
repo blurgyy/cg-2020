@@ -1,13 +1,18 @@
+#include "Camera.hpp"
 #include "Scene.hpp"
 #include "Triangle.hpp"
 #include "global.hpp"
 
 #include "tinyobjloader/tiny_obj_loader.h"
 
+#include <filesystem>
 #include <iostream>
 
 int main(int argc, char **argv) {
     std::string objfile{""};
+    std::string camconf{"default.conf"};
+    int         width = 1920, height = 1080;
+    flt         fovy = 45;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -17,6 +22,7 @@ int main(int argc, char **argv) {
         errorm("No <model.obj> file specified\n");
     }
     /* [/Parse arguments] */
+    flt aspect_ratio = static_cast<flt>(height) / static_cast<flt>(width);
 
     /* [Read object file] */
     tinyobj::ObjReader       loader;
@@ -35,12 +41,16 @@ int main(int argc, char **argv) {
     Scene world(loader);
     /* [/Load model] */
 
-    msg("Loaded %zu triangles from %s\n", world.triangles().size(),
-        objfile.c_str());
-
-    for (Triangle const &t : world.triangles()) {
-        msg("material id: %d\n", t.material());
-    }
+    /* [Init Camera] */
+    Camera cam(fovy, aspect_ratio);
+    cam.load(camconf);
+    msg("Cam pos: ");
+    output(cam.pos());
+    msg("Cam gaze: ");
+    output(cam.gaze());
+    msg("Cam up: ");
+    output(cam.up());
+    /* [/Init Camera] */
 
     return 0;
 }

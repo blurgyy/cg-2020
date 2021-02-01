@@ -16,6 +16,7 @@ class Camera {
 
   public:
     Camera();
+    Camera(flt const &fovy, flt const &aspect_ratio);
     Camera(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
            flt const &znear, flt const &zfar,
            vec3 const &gaze = vec3{0, 0, -1}, vec3 const &up = vec3{0, 1, 0});
@@ -24,6 +25,8 @@ class Camera {
               flt const &znear, flt const &zfar,
               vec3 const &gaze = vec3{0, 0, -1},
               vec3 const &up   = vec3{0, 1, 0});
+
+    void load(std::string const &configfile);
 
     // Get Position
     vec3 const &pos() const;

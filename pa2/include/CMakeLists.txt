@@ -3,9 +3,10 @@ project("wheels") # Project name
 
 set(target_name "wheels") # Target name (target can be an executable or a library)
 set(sources
-    global.cpp
+    Camera.cpp
     Scene.cpp
     Triangle.cpp
+    global.cpp
 ) # Sources
 
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
