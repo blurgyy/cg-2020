@@ -34,8 +34,9 @@ int main(int argc, char **argv) {
                 break;
             }
             camconf = std::string{argv[i]};
+        } else {
+            objfile = std::string{argv[i]};
         }
-        objfile = std::string{argv[i]};
     }
     if (objfile.length() == 0) {
         errorm("No <model.obj> file specified\n");
