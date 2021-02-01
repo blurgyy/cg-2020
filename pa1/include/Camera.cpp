@@ -12,7 +12,9 @@ Camera::Camera(vec3 const &pos, flt const &fovy, flt const &aspect_ratio,
     : e{pos}, g{glm::normalize(gaze)}, t{glm::normalize(up)}, // Extrinsincs
       fov{fovy}, ar{aspect_ratio},                            // Intrinsincs
       near{znear}, far{zfar}                                  // Intrinsincs
-{}
+{
+    this->_init_view_matrix();
+}
 
 void Camera::init(const vec3 &pos, const flt &fovy, const flt &aspect_ratio,
                   const flt &znear, const flt &zfar, vec3 const &gaze,
@@ -51,6 +53,7 @@ void Camera::load(std::string const &configfile) {
         }
     }
     from.close();
+    this->_init_view_matrix();
 }
 
 vec3 const &Camera::pos() const { return this->e; }
@@ -60,6 +63,28 @@ flt const & Camera::fovy() const { return this->fov; }
 flt const & Camera::aspect_ratio() const { return this->ar; }
 flt const & Camera::znear() const { return this->near; }
 flt const & Camera::zfar() const { return this->far; }
+mat4 const &Camera::view_matrix() const { return this->view; }
+
+/* Private */
+
+void Camera::_init_view_matrix() {
+    vec3 right = glm::cross(this->gaze(), this->up());
+    // clang-format off
+    mat4 translation{
+        1, 0, 0, -this->pos().x,
+        0, 1, 0, -this->pos().y,
+        0, 0, 1, -this->pos().z,
+        0, 0, 0,              1,
+    };
+    mat4 rotation{
+                right.x,         right.y,         right.z, 0,
+           this->up().x,    this->up().y,    this->up().z, 0,
+        -this->gaze().x, -this->gaze().y, -this->gaze().z, 0,
+                      0,               0,               0, 1,
+    };
+    // clang-format on
+    this->view = translation * rotation;
+}
 
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Nov 25 2020, 11:31 [CST]

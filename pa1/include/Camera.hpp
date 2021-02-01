@@ -14,6 +14,13 @@ class Camera {
     flt ar;        // \frac{height}{width}
     flt near, far; // Near and far clipping plane's z coordinates
 
+    // Multiply this matrix with world-space object to get its corresponding
+    // camera-space coordinate.
+    mat4 view;
+
+  private:
+    void _init_view_matrix();
+
   public:
     Camera();
     Camera(flt const &fovy, flt const &aspect_ratio);
@@ -42,6 +49,8 @@ class Camera {
     flt const &znear() const;
     // Get Far clipping plane's z coordinate
     flt const &zfar() const;
+    // Get view matrix
+    mat4 const &view_matrix() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

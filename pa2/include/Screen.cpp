@@ -12,7 +12,15 @@ Screen::Screen(std::size_t const &width, std::size_t const &height,
 void Screen::attach(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
-void Screen::render(std::size_t const &spp) {}
+void Screen::render(std::size_t const &spp) {
+    this->sce.to_camera_space(this->cam);
+    for (std::size_t i = 0; i < this->w; ++i) {
+        for (std::size_t j = 0; j < this->h; ++j) {
+            flt x = i + 0.5;
+            flt y = j + 0.5;
+        }
+    }
+}
 
 /* Private */
 

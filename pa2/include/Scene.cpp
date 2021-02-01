@@ -33,8 +33,15 @@ Scene::Scene(tinyobj::ObjReader const &loader) : mats(loader.GetMaterials()) {
             int      matid = shape.mesh.material_ids[fi];
             Triangle newtri{vtx, nor, tex};
             newtri.set_material(matid);
-            this->tris.push_back(newtri);
+            this->orig_tris.push_back(newtri);
         }
+    }
+}
+
+void Scene::to_camera_space(Camera const &cam) {
+    this->tris.clear();
+    for (Triangle const &t : this->orig_tris) {
+        this->tris.push_back(t * cam.view_matrix());
     }
 }
 
