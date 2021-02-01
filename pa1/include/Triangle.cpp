@@ -1,32 +1,46 @@
 #include "Triangle.hpp"
 
-Triangle::Triangle() {}
+Triangle::Triangle() { this->_init(); }
 Triangle::Triangle(std::array<vec3, 3> const & vtx,
                    std::array<vec3, 3> const & nor,
+                   std::array<vec2, 3> const & tex,
                    std::array<Color, 3> const &col)
-    : v{vtx[0], vtx[1], vtx[2]}, nor{nor[0], nor[1], nor[2]}, col{col[0],
-                                                                  col[1],
-                                                                  col[2]} {
+    : v{vtx[0], vtx[1], vtx[2]}, nor{nor[0], nor[1], nor[2]},
+      tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]} {
     this->_init();
 }
 Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
                    vec3 const &na, vec3 const &nb, vec3 const &nc,
+                   vec2 const &ta, vec2 const &tb, vec2 const &tc,
                    Color const &ca, Color const &cb, Color const &cc)
-    : v{a, b, c}, nor{na, nb, nc}, col{ca, cb, cc} {
+    : v{a, b, c}, nor{na, nb, nc}, tex{ta, tb, tc}, col{ca, cb, cc} {
     this->_init();
 }
 
-vec3 Triangle::a() const { return this->v[0]; }
-vec3 Triangle::b() const { return this->v[1]; }
-vec3 Triangle::c() const { return this->v[2]; }
+void Triangle::set_material(int const &mat_id) {
+    this->mat          = mat_id;
+    this->has_material = true;
+}
 
-vec3 Triangle::na() const { return this->nor[0]; }
-vec3 Triangle::nb() const { return this->nor[1]; }
-vec3 Triangle::nc() const { return this->nor[2]; }
+vec3 const &Triangle::a() const { return this->v[0]; }
+vec3 const &Triangle::b() const { return this->v[1]; }
+vec3 const &Triangle::c() const { return this->v[2]; }
 
-Color Triangle::ca() const { return this->col[0]; }
-Color Triangle::cb() const { return this->col[1]; }
-Color Triangle::cc() const { return this->col[2]; }
+vec3 const &Triangle::na() const { return this->nor[0]; }
+vec3 const &Triangle::nb() const { return this->nor[1]; }
+vec3 const &Triangle::nc() const { return this->nor[2]; }
+
+Color const &Triangle::ca() const { return this->col[0]; }
+Color const &Triangle::cb() const { return this->col[1]; }
+Color const &Triangle::cc() const { return this->col[2]; }
+
+int const &Triangle::material() const {
+    if (this->has_material) {
+        return this->mat;
+    } else {
+        errorm("No material has been assigned to face\n");
+    }
+}
 
 flt Triangle::doublearea() const {
     return fabs((v[1].x - v[0].x) * (v[2].y - v[0].y) -
@@ -139,6 +153,7 @@ void Triangle::_init() {
     // Initialize facing direction
     this->facing = glm::normalize(
         glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
+    has_material = false;
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

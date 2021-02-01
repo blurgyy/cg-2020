@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global.hpp"
+#include "Triangle.hpp"
 
 #include "tinyobjloader/tiny_obj_loader.h"
 
@@ -8,13 +8,13 @@
 
 class Scene {
   private:
-    std::vector<tinyobj::shape_t> shapes;
+    std::vector<Triangle> triangles;
 
   public:
     Scene();
-    Scene(std::vector<tinyobj::shape_t> const &loaded_shapes);
+    Scene(tinyobj::ObjReader const &loader);
 
-    std::vector<tinyobj::shape_t> const &primitives() const;
+    std::vector<Triangle> const &facets() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

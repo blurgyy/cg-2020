@@ -5,6 +5,7 @@ set(target_name "wheels") # Target name (target can be an executable or a librar
 set(sources
     global.cpp
     Scene.cpp
+    Triangle.cpp
 ) # Sources
 
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
