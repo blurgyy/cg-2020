@@ -5,6 +5,7 @@ set(target_name "wheels") # Target name (target can be an executable or a librar
 set(sources
     Camera.cpp
     Scene.cpp
+    Screen.cpp
     Triangle.cpp
     global.cpp
 ) # Sources

@@ -1,5 +1,6 @@
 #include "Camera.hpp"
 #include "Scene.hpp"
+#include "Screen.hpp"
 #include "Triangle.hpp"
 #include "global.hpp"
 
@@ -9,10 +10,21 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
+    // Path to the obj file.
     std::string objfile{""};
+    // Path to camera pose file.
     std::string camconf{"default.conf"};
-    int         width = 1920, height = 1080;
-    flt         fovy = 45;
+
+    // Resolution (horizontal).
+    std::size_t width = 1920;
+    // Resolution (vertical).
+    std::size_t height = 1080;
+
+    // Field of view (in degrees).
+    flt fovy = 45;
+
+    // Sample(s) per pixel
+    std::size_t spp = 16;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -49,15 +61,15 @@ int main(int argc, char **argv) {
     /* [/Load model] */
 
     /* [Init Camera] */
-    Camera cam(fovy, aspect_ratio);
-    cam.load(camconf);
-    msg("Cam pos: ");
-    output(cam.pos());
-    msg("Cam gaze: ");
-    output(cam.gaze());
-    msg("Cam up: ");
-    output(cam.up());
+    Camera camera(fovy, aspect_ratio);
+    camera.load(camconf);
     /* [/Init Camera] */
+
+    Screen screen(width, height);
+    screen.attach(world);
+    screen.set_cam(camera);
+
+    screen.render(spp);
 
     return 0;
 }
