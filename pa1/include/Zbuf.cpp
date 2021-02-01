@@ -68,7 +68,7 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     flt  fovy         = this->cam.fovy() * piover180;
     flt  aspect_ratio = this->cam.aspect_ratio();
     flt  screen_top   = std::tan(fovy / 2) * fabs(n);
-    flt  screen_right = screen_top / aspect_ratio;
+    flt  screen_right = screen_top * aspect_ratio;
     // clang-format off
     flt po_value[] = { // values for persp_ortho
         n, 0,   0,    0,

@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         errorm("No <model.obj> file specified\n");
     }
     /* [/Parse arguments] */
-    flt aspect_ratio = static_cast<flt>(height) / static_cast<flt>(width);
+    flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
     /* [Read object file] */
     tinyobj::ObjReader       loader;

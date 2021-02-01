@@ -11,7 +11,7 @@ class Camera {
 
     // Intrinsincs
     flt fov;       // Field of view (Vertical, in degrees)
-    flt ar;        // \frac{height}{width}
+    flt ar;        // \frac{width}{height}, e.g.: 16:9
     flt near, far; // Near and far clipping plane's z coordinates
 
     // Multiply this matrix with world-space object to get its corresponding

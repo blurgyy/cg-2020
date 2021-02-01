@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
 
     // Camera extrinsincs
     auto [eye, gaze, up] = world.generate_camera();
-    flt aspect_ratio     = 1.0 * height / width;
+    flt aspect_ratio     = 1.0 * width / height;
     flt znear            = -.1;
     flt zfar             = -50;
     // Camera
