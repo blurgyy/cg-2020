@@ -25,14 +25,14 @@ unsigned char const &Color::b() const { return this->blue; }
 
 // struct Image
 Image::Image() {}
-Image::Image(size_t const &height, size_t const &width)
-    : h{height}, w{width} {
-    this->data.resize(this->h * this->w);
+Image::Image(size_t const &width, size_t const &height)
+    : w{width}, h{height} {
+    this->data.resize(this->w * this->h);
 }
-void Image::init(const size_t &height, const size_t &width) {
-    this->h    = height;
+void Image::init(const size_t &width, const size_t &height) {
     this->w    = width;
-    this->data = std::vector<Color>(this->h * this->w);
+    this->h    = height;
+    this->data = std::vector<Color>(this->w * this->h);
 }
 void Image::fill(Color const &value) {
     std::fill(this->data.begin(), this->data.end(), value);

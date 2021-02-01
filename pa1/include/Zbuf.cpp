@@ -3,10 +3,10 @@
 
 Zbuf::Zbuf() { this->_init(); }
 Zbuf::Zbuf(Scene const &s) : scene{s} { this->_init(); }
-Zbuf::Zbuf(Scene const &s, size_t const &height, size_t const &width)
+Zbuf::Zbuf(Scene const &s, size_t const &width, size_t const &height)
     : scene{s} {
     this->_init();
-    this->init_viewport(height, width);
+    this->init_viewport(width, height);
 }
 
 Image const &Zbuf::image() const { return this->img; }
@@ -99,7 +99,7 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     this->mvp_initialized = true;
 }
 
-void Zbuf::init_viewport(const size_t &height, const size_t &width) {
+void Zbuf::init_viewport(const size_t &width, const size_t &height) {
     this->h = height;
     this->w = width;
     // clang-format off
@@ -122,7 +122,7 @@ void Zbuf::init_viewport(const size_t &height, const size_t &width) {
     mat4 vscale = glm::make_mat4(vscale_value);
     // viewport         = vscale * vtrans;
     this->viewport = vtrans * vscale;
-    img.init(this->h, this->w);
+    this->img.init(this->w, this->h);
     // Initilize the depth buffer, initial values are infinitely far (negative
     // infinity).
     this->zpyramid             = Pyramid(this->h, this->w);

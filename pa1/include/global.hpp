@@ -71,10 +71,10 @@ struct Color {
 // NOTE: Image data array has origin at lower left.
 struct Image {
     Image();
-    Image(size_t const &height, size_t const &width);
+    Image(size_t const &width, size_t const &height);
 
     // Initialize data array
-    void         init(size_t const &height, size_t const &width);
+    void         init(size_t const &width, size_t const &height);
     void         fill(Color const &value = Color{0});
     Color &      operator()(size_t const &x, size_t const &y);
     Color const &operator()(size_t const &x, size_t const &y) const;
@@ -82,7 +82,7 @@ struct Image {
     // Store color in this array
     std::vector<Color> data;
     // Width and height
-    size_t h, w;
+    size_t w, h;
 };
 
 template <size_t _order> struct Node {
