@@ -65,7 +65,7 @@ void Zbuf::set_model_transformation(mat4 const &model) {
     mat4 ortho_scale; // Scales the rectangular box to the canonical cube
     flt  n            = this->cam.znear();
     flt  f            = this->cam.zfar();
-    flt  fovy         = this->cam.fovy() * piover180;
+    flt  fovy         = this->cam.fovy() * degree;
     flt  aspect_ratio = this->cam.aspect_ratio();
     flt  screen_top   = std::tan(fovy / 2) * fabs(n);
     flt  screen_right = screen_top * aspect_ratio;

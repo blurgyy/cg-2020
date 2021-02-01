@@ -4,11 +4,11 @@
 #include <fstream>
 
 // Constants
-flt const pi        = std::acos(-1.0);
-flt const twopi     = pi * 2.0;
-flt const halfpi    = pi / 2.0;
-flt const piover180 = pi / 180.0;
-flt const epsilon   = 1e-7;
+flt const pi      = std::acos(-1.0);
+flt const twopi   = pi * 2.0;
+flt const halfpi  = pi / 2.0;
+flt const degree  = pi / 180.0;
+flt const epsilon = 1e-7;
 
 // struct Color
 Color::Color() : red{0}, green{0}, blue{0} {}
