@@ -18,7 +18,7 @@ Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
 }
 
 void Triangle::set_material(int const &mat_id) {
-    this->mat          = mat_id;
+    this->matid        = mat_id;
     this->has_material = true;
 }
 
@@ -36,7 +36,7 @@ Color const &Triangle::cc() const { return this->col[2]; }
 
 int const &Triangle::material() const {
     if (this->has_material) {
-        return this->mat;
+        return this->matid;
     } else {
         errorm("No material has been assigned to face\n");
     }

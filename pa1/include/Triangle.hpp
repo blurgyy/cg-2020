@@ -18,7 +18,7 @@ class Triangle {
     std::array<Color, 3> col; // Color values of the 3 vertices
 
     bool has_material;
-    int  mat;
+    int  matid;
 
   private:
     void _init();
