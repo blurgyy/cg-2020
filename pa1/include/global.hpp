@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <vector>
 
@@ -112,6 +113,17 @@ void write_ppm(std::string const &filename, Image const &img);
 template <typename T, typename T1, typename T2>
 T constexpr clamp(T x, T1 minx, T2 maxx) {
     return std::min((T)maxx, std::max(x, (T)minx));
+}
+
+// Barycentric interpolation.
+template <typename value_type>
+value_type berp(std::array<value_type, 3> const &values,
+                std::array<flt, 3> const &       b) {
+    value_type ret{0};
+    for (std::size_t i = 0; i < 3; ++i) {
+        ret += b[i] * values[i];
+    }
+    return ret;
 }
 
 // Fast sign function.  Returns `1` when `x` is positive; returns `0` when `x`
