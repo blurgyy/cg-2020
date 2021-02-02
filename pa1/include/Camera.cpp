@@ -53,6 +53,7 @@ void Camera::load(std::string const &configfile) {
         }
     }
     from.close();
+    this->g = glm::normalize(this->g - this->e);
     this->_init_view_matrix();
 }
 
