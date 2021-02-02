@@ -51,6 +51,7 @@ void Scene::build_BVH() {
         delete this->root;
     }
     this->root = new BVHNode(this->tris);
+    this->root->build(nullptr);
 }
 
 Intersection Scene::intersect(Ray const &ray) const {
