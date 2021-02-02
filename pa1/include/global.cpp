@@ -44,6 +44,68 @@ Color const &Image::operator()(size_t const &x, size_t const &y) const {
     return this->data[this->w * y + x];
 }
 
+// struct BBox
+BBox::BBox()
+    : minp{std::numeric_limits<flt>::max()},
+      maxp{std::numeric_limits<flt>::lowest()} {}
+BBox::BBox(vec3 const &p) : minp{p}, maxp{p} {}
+BBox::BBox(vec3 const &p1, vec3 const &p2)
+    : minp{std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z)},
+      maxp{std::max(p1.x, p2.x), std::max(p1.y, p2.y), std::max(p1.z, p2.z)} {
+}
+BBox BBox::operator|(BBox const &rhs) const { // Merged BBox
+    vec3 nminp{
+        std::min(this->minp.x, rhs.minp.x),
+        std::min(this->minp.y, rhs.minp.y),
+        std::min(this->minp.z, rhs.minp.z),
+    };
+    vec3 nmaxp{
+        std::max(this->maxp.x, rhs.maxp.x),
+        std::max(this->maxp.y, rhs.maxp.y),
+        std::max(this->maxp.z, rhs.maxp.z),
+    };
+    return BBox(nminp, nmaxp);
+}
+BBox BBox::operator|(vec3 const &rhs) const { // Merged BBox
+    vec3 nminp{
+        std::min(this->minp.x, rhs.x),
+        std::min(this->minp.y, rhs.y),
+        std::min(this->minp.z, rhs.z),
+    };
+    vec3 nmaxp{
+        std::max(this->maxp.x, rhs.x),
+        std::max(this->maxp.y, rhs.y),
+        std::max(this->maxp.z, rhs.z),
+    };
+    return BBox(nminp, nmaxp);
+}
+BBox BBox::operator|=(BBox const &rhs) {
+    this->minp = vec3{
+        std::min(this->minp.x, rhs.minp.x),
+        std::min(this->minp.y, rhs.minp.y),
+        std::min(this->minp.z, rhs.minp.z),
+    };
+    this->maxp = vec3{
+        std::max(this->maxp.x, rhs.maxp.x),
+        std::max(this->maxp.y, rhs.maxp.y),
+        std::max(this->maxp.z, rhs.maxp.z),
+    };
+    return *this;
+}
+BBox BBox::operator|=(vec3 const &rhs) {
+    this->minp = vec3{
+        std::min(this->minp.x, rhs.x),
+        std::min(this->minp.y, rhs.y),
+        std::min(this->minp.z, rhs.z),
+    };
+    this->maxp = vec3{
+        std::max(this->maxp.x, rhs.x),
+        std::max(this->maxp.y, rhs.y),
+        std::max(this->maxp.z, rhs.z),
+    };
+    return *this;
+}
+
 void write_ppm(std::string const &filename, Image const &img) {
     debugm("Writing image (%zux%zu) to %s ..\n", img.w, img.h,
            filename.c_str());

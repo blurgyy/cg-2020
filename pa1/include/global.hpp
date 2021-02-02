@@ -101,6 +101,39 @@ template <size_t _order> struct Node {
     // std::array<Node<_order> *, _order> children; // Children
 };
 
+// Axis-aligned bounding box (AABB).
+struct BBox {
+  public:
+    vec3 minp, maxp;
+
+  public:
+    BBox();
+    BBox(vec3 const &p);
+    BBox(vec3 const &p1, vec3 const &p2);
+
+    vec3 constexpr centroid() const {
+        return this->minp + (this->maxp - this->minp) * 0.5;
+    }
+    vec3 constexpr extent() const { return this->maxp - this->minp; }
+    flt constexpr area() const {
+        vec3 e = this->extent();
+        return 2 * (e.x * e.x + e.y * e.y + e.z * e.z);
+    }
+    std::size_t constexpr max_dir() const {
+        vec3 e = this->extent();
+        return e.x > e.y   ? e.x > e.z ? 0 : 2
+               : e.x > e.z ? 1
+               : e.y > e.z ? 1
+                           : 2;
+    }
+
+    // Merged Bbox.
+    BBox operator|(BBox const &rhs) const;
+    BBox operator|(vec3 const &rhs) const;
+    BBox operator|=(BBox const &rhs);
+    BBox operator|=(vec3 const &rhs);
+};
+
 // Write struct `Image` image data to a ppm file.
 // Reference:
 //  1. https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C.2B.2B
