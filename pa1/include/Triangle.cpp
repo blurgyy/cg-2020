@@ -5,7 +5,9 @@ Triangle::Triangle(std::array<vec3, 3> const & vtx,
                    std::array<vec3, 3> const & nor,
                    std::array<vec2, 3> const & tex,
                    std::array<Color, 3> const &col)
-    : v{vtx[0], vtx[1], vtx[2]}, nor{nor[0], nor[1], nor[2]},
+    : v{vtx[0], vtx[1], vtx[2]}, nor{glm::normalize(nor[0]),
+                                     glm::normalize(nor[1]),
+                                     glm::normalize(nor[2])},
       tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]} {
     this->_init();
 }
@@ -13,7 +15,9 @@ Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
                    vec3 const &na, vec3 const &nb, vec3 const &nc,
                    vec2 const &ta, vec2 const &tb, vec2 const &tc,
                    Color const &ca, Color const &cb, Color const &cc)
-    : v{a, b, c}, nor{na, nb, nc}, tex{ta, tb, tc}, col{ca, cb, cc} {
+    : v{a, b, c}, nor{glm::normalize(na), glm::normalize(nb),
+                      glm::normalize(nc)},
+      tex{ta, tb, tc}, col{ca, cb, cc} {
     this->_init();
 }
 
