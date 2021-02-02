@@ -51,9 +51,18 @@ inline Intersection Ray::intersect(Triangle const &t) const {
     b2 /= denom;
     std::array<flt, 3> b = {1 - b1 - b2, b1, b2};
 
+    vec3 isectpos = berp(t.v, b);
+    if (sign(isectpos.x - this->origin.x) != sign(this->direction.x) ||
+        sign(isectpos.y - this->origin.y) != sign(this->direction.y) ||
+        sign(isectpos.z - this->origin.z) != sign(this->direction.z)) {
+        // Ignore intersections behind ray origin (according to ray
+        // direction).
+        return isect;
+    }
+
     isect.occurred = true;
     isect.matid    = t.matid;
-    isect.position = berp(t.v, b);
+    isect.position = isectpos;
     isect.normal   = berp(t.nor, b);
     isect.distance = glm::length(isect.position - this->origin);
     return isect;
