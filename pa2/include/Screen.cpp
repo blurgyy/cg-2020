@@ -18,6 +18,7 @@ void Screen::render(std::size_t const &spp) {
     flt xscale = yscale * this->cam.aspect_ratio();
 
     this->sce.to_camera_space(this->cam);
+    this->sce.build_BVH();
     for (std::size_t i = 0; i < this->w; ++i) {
         for (std::size_t j = 0; j < this->h; ++j) {
             flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
@@ -26,6 +27,17 @@ void Screen::render(std::size_t const &spp) {
                 y);
             Ray          ray(vec3{0}, vec3{x, y, -1});
             Intersection isect = this->sce.intersect(ray);
+            if (isect.occurred) {
+                isect.output();
+
+                output(isect.tri->v[0]);
+                output(isect.tri->v[1]);
+                output(isect.tri->v[2]);
+                output(isect.tri->boundingbox().extent());
+
+                int xx;
+                scanf("%d", &xx);
+            }
             if (isect.occurred) {
                 this->img(i, j) =
                     Color{.5 + .5 * (isect.normal.x + 1.0) * 255,

@@ -50,20 +50,22 @@ void Scene::build_BVH() {
     if (this->root) {
         delete this->root;
     }
-    this->root = new BVHNode(this->tris);
-    this->root->build(nullptr);
+    this->root = new BVHNode();
+    this->root->build(this->triangles(), nullptr);
 }
 
 Intersection Scene::intersect(Ray const &ray) const {
-    Intersection ret;
-    /* Naively loop over all primitives */
-    for (Triangle const &t : this->triangles()) {
-        Intersection isect = ray.intersect(t);
-        if (isect.occurred && isect.distance < ret.distance) {
-            ret = isect;
-        }
-    }
-    return ret;
+    // /* Naively loop over all primitives */
+    // Intersection ret;
+    // for (Triangle const &t : this->triangles()) {
+    // Intersection isect = ray.intersect(t);
+    // if (isect.occurred && isect.distance < ret.distance) {
+    // ret = isect;
+    // }
+    // }
+    // return ret;
+    /* Use bounding volume hierarchy */
+    return this->root->intersect(ray);
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
