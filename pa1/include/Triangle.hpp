@@ -9,15 +9,16 @@
 
 class Triangle {
   public:
-    vec3 v[3];    // Spatial coordinate of the 3 vertices, in
-                  // counter-clockwise order
-    vec3 facing;  // Facing direction (for face culling), computed by:
-                  // glm::cross(v[1] - v[0], v[2] - v[1]);
-    vec3  nor[3]; // Normal directions of the 3 vertices
-    vec2  tex[3]; // Texture coordinates of the 3 vertices
-    Color col[3]; // Color values of the 3 vertices
-    bool  has_material;
-    int   mat;
+    std::array<vec3, 3> v; // Spatial coordinate of the 3 vertices, in
+                           // counter-clockwise order
+    vec3 facing; // Facing direction (for face culling), computed by:
+                 // glm::cross(v[1] - v[0], v[2] - v[1]);
+    std::array<vec3, 3>  nor; // Normal directions of the 3 vertices
+    std::array<vec2, 3>  tex; // Texture coordinates of the 3 vertices
+    std::array<Color, 3> col; // Color values of the 3 vertices
+
+    bool has_material;
+    int  mat;
 
   private:
     void _init();
