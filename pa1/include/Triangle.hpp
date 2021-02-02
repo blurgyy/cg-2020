@@ -20,6 +20,9 @@ class Triangle {
     bool has_material;
     int  matid;
 
+    // Bounding box of this triangle.
+    BBox bbox;
+
   private:
     void _init();
 
@@ -73,6 +76,8 @@ class Triangle {
     Color const &cb() const;
     // Returns color value of the third vertex
     Color const &cc() const;
+
+    BBox const &boundingbox() const;
 
     int const &material() const;
 

@@ -34,6 +34,8 @@ Color const &Triangle::ca() const { return this->col[0]; }
 Color const &Triangle::cb() const { return this->col[1]; }
 Color const &Triangle::cc() const { return this->col[2]; }
 
+BBox const &Triangle::boundingbox() const { return this->bbox; }
+
 int const &Triangle::material() const {
     if (this->has_material) {
         return this->matid;
@@ -150,10 +152,12 @@ std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
 
 // private
 void Triangle::_init() {
-    // Initialize facing direction
+    // Initialize facing direction.
     this->facing = glm::normalize(
         glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
     has_material = false;
+    // Initialize bounding box.
+    this->bbox = BBox(this->v[0]) | BBox(this->v[1]) | BBox(this->v[2]);
 }
 
 // Author: Blurgy <gy@blurgy.xyz>
