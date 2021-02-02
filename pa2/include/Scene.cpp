@@ -1,7 +1,8 @@
 #include "Scene.hpp"
 
 Scene::Scene() {}
-Scene::Scene(tinyobj::ObjReader const &loader) : mats(loader.GetMaterials()) {
+Scene::Scene(tinyobj::ObjReader const &loader)
+    : mats{loader.GetMaterials()}, root{nullptr} {
     auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
@@ -43,6 +44,13 @@ void Scene::to_camera_space(Camera const &cam) {
     for (Triangle const &t : this->orig_tris) {
         this->tris.push_back(t * cam.view_matrix());
     }
+}
+
+void Scene::build_BVH() {
+    if (this->root) {
+        delete this->root;
+    }
+    this->root = new BVHNode(this->tris);
 }
 
 Intersection Scene::intersect(Ray const &ray) const {
