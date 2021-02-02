@@ -35,6 +35,7 @@ void Camera::load(std::string const &configfile) {
     if (from.fail()) {
         errorm("Failed opening file '%s'\n", configfile.c_str());
     }
+    vec3 position, lookat, up;
     for (std::string curline; std::getline(from, curline);) {
         std::istringstream input(curline);
         std::string        token;
@@ -45,15 +46,21 @@ void Camera::load(std::string const &configfile) {
             continue;
         }
         if (token[0] == 'p' || token[0] == 'P') { // Position (eye)
-            this->e = v;
+            position = v;
         } else if (token[0] == 'l' || token[0] == 'L') { // Look at (gaze)
-            this->g = v;
+            lookat = v;
         } else if (token[0] == 'u' || token[0] == 'U') { // Up (top)
-            this->t = v;
+            up = v;
         }
     }
     from.close();
-    this->g = glm::normalize(this->g - this->e);
+
+    // Assign values.
+    this->e = position;
+    this->g = glm::normalize(lookat - position);
+    this->t = glm::normalize(up);
+
+    // Initialize world-to-camera transformation matrix.
     this->_init_view_matrix();
 }
 
