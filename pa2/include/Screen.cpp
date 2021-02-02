@@ -1,3 +1,4 @@
+#include "Ray.hpp"
 #include "Screen.hpp"
 
 Screen::Screen() {}
@@ -9,7 +10,7 @@ Screen::Screen(std::size_t const &width, std::size_t const &height,
 
 /* Public */
 
-void Screen::attach(Scene const &world) { this->sce = world; }
+void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
 void Screen::render(std::size_t const &spp) {
@@ -19,11 +20,26 @@ void Screen::render(std::size_t const &spp) {
     this->sce.to_camera_space(this->cam);
     for (std::size_t i = 0; i < this->w; ++i) {
         for (std::size_t j = 0; j < this->h; ++j) {
-            flt x = i + 0.5;
-            flt y = j + 0.5;
+            flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
+            flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
+            msg("pixel(%lu, %lu): shoot ray at (%.3f, %.3f, -1.0)\n", i, j, x,
+                y);
+            Ray          ray(vec3{0}, vec3{x, y, -1});
+            Intersection isect = this->sce.intersect(ray);
+            if (isect.occurred) {
+                this->img(i, j) =
+                    Color{.5 + .5 * (isect.normal.x + 1.0) * 255,
+                          .5 + .5 * (isect.normal.y + 1.0) * 255,
+                          .5 + .5 * (isect.normal.z + 1.0) * 255};
+                // output(isect.normal);
+            } else {
+                this->img(i, j) = Color{0};
+            }
         }
     }
 }
+
+Image const &Screen::image() const { return this->img; }
 
 /* Private */
 

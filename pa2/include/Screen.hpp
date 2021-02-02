@@ -22,11 +22,13 @@ class Screen {
            Scene const &world = Scene{}, Camera const &cam = Camera{});
 
     // Attach screen to a scene.
-    void attach(Scene const &world);
+    void attach_scene(Scene const &world);
     // Set up camera
     void set_cam(Camera const &cam);
 
     void render(std::size_t const &spp = 16);
+
+    Image const &image() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

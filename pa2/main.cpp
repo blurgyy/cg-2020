@@ -16,9 +16,9 @@ int main(int argc, char **argv) {
     std::string camconf{"default.conf"};
 
     // Resolution (horizontal).
-    std::size_t width = 1920;
+    std::size_t width = 64;
     // Resolution (vertical).
-    std::size_t height = 1080;
+    std::size_t height = 64;
 
     // Field of view (in degrees).
     flt fovy = 45;
@@ -67,10 +67,12 @@ int main(int argc, char **argv) {
     /* [/Init Camera] */
 
     Screen screen(width, height);
-    screen.attach(world);
+    screen.attach_scene(world);
     screen.set_cam(camera);
 
     screen.render(spp);
+
+    write_ppm("x.ppm", screen.image());
 
     return 0;
 }

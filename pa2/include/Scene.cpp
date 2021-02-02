@@ -45,6 +45,18 @@ void Scene::to_camera_space(Camera const &cam) {
     }
 }
 
+Intersection Scene::intersect(Ray const &ray) const {
+    Intersection ret;
+    /* Naively loop over all primitives */
+    for (Triangle const &t : this->triangles()) {
+        Intersection isect = ray.intersect(t);
+        if (isect.occurred && isect.distance < ret.distance) {
+            ret = isect;
+        }
+    }
+    return ret;
+}
+
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
 std::vector<tinyobj::material_t> const &Scene::materials() const {
     return this->mats;
