@@ -39,12 +39,12 @@ inline Intersection Ray::intersect(Triangle const &t) const {
     }
     vec3 s  = this->origin - t.v[0];
     flt  b1 = glm::dot(s1, s);
-    if (sign(b1) < 0 || sign(b1 - denom) >= 0) {
+    if (sign(b1) < 0 || sign(b1 - denom) > 0) {
         return isect;
     }
     vec3 s2 = glm::cross(s, e1);
     flt  b2 = glm::dot(s2, this->direction);
-    if (sign(b2) < 0 || sign(b1 + b2 - denom) >= 0) {
+    if (sign(b2) < 0 || sign(b1 + b2 - denom) > 0) {
         return isect;
     }
     b1 /= denom;
