@@ -121,6 +121,9 @@ class Scene {
 
     BVHNode *root;
 
+  private:
+    Intersection intersect(Ray const &ray) const;
+
   public:
     Scene();
     Scene(tinyobj::ObjReader const &loader);
@@ -129,7 +132,7 @@ class Scene {
 
     void build_BVH();
 
-    Intersection intersect(Ray const &ray) const;
+    Color shoot(Ray const &ray) const;
 
     std::vector<Triangle> const &           triangles() const;
     std::vector<tinyobj::material_t> const &materials() const;

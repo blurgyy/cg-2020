@@ -25,17 +25,8 @@ void Screen::render(std::size_t const &spp) {
             flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
             debugm("pixel(%lu, %lu): shoot ray at (%.3f, %.3f, -1.0)\n", i, j,
                    x, y);
-            Ray          ray(vec3{0}, vec3{x, y, -1});
-            Intersection isect = this->sce.intersect(ray);
-            if (isect.occurred) {
-                this->img(i, j) =
-                    Color{.5 + .5 * (isect.normal.x + 1.0) * 255,
-                          .5 + .5 * (isect.normal.y + 1.0) * 255,
-                          .5 + .5 * (isect.normal.z + 1.0) * 255};
-                // output(isect.normal);
-            } else {
-                this->img(i, j) = Color{0};
-            }
+            Ray ray(vec3{0}, vec3{x, y, -1});
+            this->img(i, j) = this->sce.shoot(ray);
         }
     }
 }

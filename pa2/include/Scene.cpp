@@ -39,6 +39,8 @@ Scene::Scene(tinyobj::ObjReader const &loader)
     }
 }
 
+/* public */
+
 void Scene::to_camera_space(Camera const &cam) {
     this->tris.clear();
     for (Triangle const &t : this->orig_tris) {
@@ -54,6 +56,28 @@ void Scene::build_BVH() {
     this->root->build(this->triangles(), nullptr);
 }
 
+Color Scene::shoot(Ray const &ray) const {
+    Color ret;
+
+    Intersection isect = this->intersect(ray);
+
+    if (isect) {
+        tinyobj::material_t mat = this->materials()[isect.matid];
+        vec3                color =
+            vec3{mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]} * 255.0;
+        return Color(color[0], color[1], color[2]);
+    }
+
+    return ret;
+}
+
+std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
+std::vector<tinyobj::material_t> const &Scene::materials() const {
+    return this->mats;
+}
+
+/* Private */
+
 Intersection Scene::intersect(Ray const &ray) const {
     // /* Naively loop over all primitives */
     // Intersection ret;
@@ -67,13 +91,5 @@ Intersection Scene::intersect(Ray const &ray) const {
     /* Use bounding volume hierarchy */
     return this->root->intersect(ray);
 }
-
-std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
-std::vector<tinyobj::material_t> const &Scene::materials() const {
-    return this->mats;
-}
-
-/* public */
-
 // Author: Blurgy <gy@blurgy.xyz>
 // Date:   Jan 31 2021, 21:13 [CST]
