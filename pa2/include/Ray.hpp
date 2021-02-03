@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Material.hpp"
 #include "Triangle.hpp"
 #include "global.hpp"
 

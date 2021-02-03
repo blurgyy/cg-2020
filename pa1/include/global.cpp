@@ -106,22 +106,6 @@ BBox BBox::operator|=(vec3 const &rhs) {
     return *this;
 }
 
-Material::Material()
-    : ambient{0}, diffuse{0}, specular{0}, emission{0}, shineness{0},
-      has_emission{false} {}
-void Material::output() const {
-    printf("ambient: ");
-    ::output(this->ambient);
-    printf("diffuse: ");
-    ::output(this->diffuse);
-    printf("specular: ");
-    ::output(this->specular);
-    printf("emission: ");
-    ::output(this->emission);
-    printf("has_emission: %s\n", this->has_emission ? "true" : "false");
-    printf("shineness: %f\n", shineness);
-}
-
 void write_ppm(std::string const &filename, Image const &img) {
     debugm("Writing image (%zux%zu) to %s ..\n", img.w, img.h,
            filename.c_str());

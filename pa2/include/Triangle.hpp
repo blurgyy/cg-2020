@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Material.hpp"
 #include "global.hpp"
 
 #include "tinyobjloader/tiny_obj_loader.h"

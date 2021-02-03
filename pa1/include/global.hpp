@@ -130,19 +130,6 @@ struct BBox {
     BBox operator|=(vec3 const &rhs);
 };
 
-struct Material {
-    Material();
-    void output() const;
-
-  public:
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    vec3 emission;
-    flt  shineness;
-    bool has_emission;
-};
-
 // Write struct `Image` image data to a ppm file.
 // Reference:
 //  1. https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C.2B.2B
