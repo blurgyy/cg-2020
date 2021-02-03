@@ -101,7 +101,9 @@ vec3 Scene::shoot(Ray const &ray) const {
 
     if (isect) {
         if (isect.tri->material()->has_emission) {
-            return isect.tri->material()->emission;
+            return isect.tri->material()->emission /
+                   glm::dot(ray.origin - isect.position,
+                            ray.origin - isect.position);
         }
         vec3 wo = -ray.direction;
 
