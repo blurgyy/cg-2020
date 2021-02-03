@@ -117,6 +117,9 @@ class Scene {
     std::vector<Triangle> orig_tris;
     std::vector<Triangle> tris;
 
+    std::vector<Triangle> lights;
+    flt                   area_of_lights;
+
     BVHNode *root;
 
   private:
@@ -129,6 +132,15 @@ class Scene {
     void to_camera_space(Camera const &cam);
 
     void build_BVH();
+
+    // Sample on light source and determine if it is occluded by other objects
+    // along the way to position dst.
+    // Returns an `Intersection` object, which is the intersetion of a `Ray`
+    // from `dst` to sampled light source point with the whole scene.
+    // If the ray is occluded along the path, the `occurred` variable of the
+    // returned `Intersection` object will be set to `false`, otherwise the
+    // ray is not occluded.
+    Intersection sample_light(Intersection const &isect) const;
 
     Color shoot(Ray const &ray) const;
 

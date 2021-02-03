@@ -42,8 +42,15 @@ Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
 
 void Scene::to_camera_space(Camera const &cam) {
     this->tris.clear();
+    this->lights.clear();
+    this->area_of_lights = 0;
     for (Triangle const &t : this->orig_tris) {
-        this->tris.push_back(t * cam.view_matrix());
+        Triangle vt = t * cam.view_matrix();
+        this->tris.push_back(vt);
+        if (vt.material()->has_emission) {
+            this->lights.push_back(vt);
+            this->area_of_lights += vt.area();
+        }
     }
 }
 
@@ -55,20 +62,68 @@ void Scene::build_BVH() {
     this->root->build(this->triangles(), nullptr);
 }
 
+Intersection Scene::sample_light(Intersection const &isect) const {
+    Intersection ret;
+
+    vec3            light_pos;
+    Triangle const *light_source;
+
+    flt threshold = uniform() * this->area_of_lights;
+    flt acc_area  = 0;
+    for (Triangle const &t : this->lights) {
+        acc_area += t.area();
+        if (acc_area >= threshold) {
+            light_pos    = t.sample();
+            light_source = &t;
+            break;
+        }
+    }
+    Ray checker_ray{isect.position, light_pos - isect.position};
+    ret = this->intersect(checker_ray);
+    while (ret.tri == isect.tri) {
+        checker_ray = Ray{ret.position, checker_ray.direction};
+        ret         = this->intersect(checker_ray);
+    }
+    if (!ret.tri->material()->has_emission) {
+        // The sampled light ray is occluded.
+        ret.occurred = false;
+    } else {
+        // The sampled light ray is not occluded.
+        /* Do nothing */
+    }
+    return ret;
+}
+
 Color Scene::shoot(Ray const &ray) const {
-    Color ret;
+    vec3 l_dir{0}, l_indir{0};
 
     Intersection isect = this->intersect(ray);
 
     if (isect) {
-        Material *mat = isect.tri->mat;
+        if (isect.tri->material()->has_emission) {
+            return isect.tri->material()->emission;
+        }
+        vec3 wo = -ray.direction;
 
-        if (mat && mat->has_emission) {
-            return Color{255};
+        isect.output();
+        Intersection light_sample = this->sample_light(isect);
+        if (light_sample) { // Calculate direct illumination
+            printf("testxxx\n");
+            vec3 wi = glm::normalize(light_sample.position - isect.position);
+            flt  pdf_light = 1.0 / light_sample.tri->area();
+            vec3 emission  = light_sample.tri->material()->emission;
+            vec3 fr        = isect.tri->material()->fr(wi, wo, isect.normal);
+
+            l_dir = 5.0 * emission * fr * glm::dot(wi, isect.normal) *
+                    glm::dot(-wi, light_sample.normal) /
+                    glm::dot(light_sample.position - isect.position,
+                             light_sample.position - isect.position) /
+                    pdf_light;
+            output(l_dir);
         }
     }
 
-    return ret;
+    return l_dir + l_indir;
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }

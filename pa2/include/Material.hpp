@@ -6,6 +6,9 @@ struct Material {
     Material();
     void output() const;
 
+    // BRDF.
+    vec3 fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
+
   public:
     vec3 ambient;
     vec3 diffuse;
