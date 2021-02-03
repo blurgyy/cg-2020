@@ -94,20 +94,20 @@ inline Intersection Ray::intersect(Triangle const *t) const {
 }
 
 inline bool Ray::intersect(BBox const &bbox) const {
-    flt  t_enter = std::numeric_limits<flt>::lowest();
-    flt  t_exit  = std::numeric_limits<flt>::max();
-    vec3 minp    = bbox.minp - epsilon;
-    vec3 maxp    = bbox.maxp + epsilon;
+    flt t_enter = std::numeric_limits<flt>::lowest();
+    flt t_exit  = std::numeric_limits<flt>::max();
     for (std::size_t dim = 0; dim < 3; ++dim) {
-        flt mint = (minp[dim] - this->origin[dim]) / this->direction[dim];
-        flt maxt = (maxp[dim] - this->origin[dim]) / this->direction[dim];
+        flt mint =
+            (bbox.minp[dim] - this->origin[dim]) / this->direction[dim];
+        flt maxt =
+            (bbox.maxp[dim] - this->origin[dim]) / this->direction[dim];
         if (sign(this->direction[dim]) < 0) {
             std::swap(mint, maxt);
         }
         t_enter = std::max(t_enter, mint);
         t_exit  = std::min(t_exit, maxt);
     }
-    return sign(t_exit - t_enter) > 0 && sign(t_exit) > 0;
+    return sign(t_exit - t_enter) >= 0 && sign(t_exit) > 0;
 }
 
 // Author: Blurgy <gy@blurgy.xyz>
