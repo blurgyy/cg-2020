@@ -73,6 +73,15 @@ flt Triangle::doublearea() const {
 }
 flt Triangle::area() const { return .5 * this->doublearea(); }
 
+vec3 Triangle::sample() const {
+    flt                b1  = uniform();
+    flt                b2  = uniform();
+    flt                b3  = uniform();
+    flt                sum = b1 + b2 + b3;
+    std::array<flt, 3> b{b1 / sum, b2 / sum, b3 / sum};
+    return berp(this->v, b);
+}
+
 bool Triangle::vert_in_canonical() const {
     for (int i = 0; i < 3; ++i) {
         if (this->v[i].x >= -1 && this->v[i].x <= 1 && this->v[i].y >= -1 &&

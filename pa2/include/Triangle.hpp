@@ -89,6 +89,10 @@ class Triangle {
     // Triangle::doublearea()).
     flt area() const;
 
+    // Randomly selects a point inside this triangle, and returns its spatial
+    // coordinate.
+    vec3 sample() const;
+
     // Determine whether this triangle has a vertex inside the canonical box.
     bool vert_in_canonical() const;
 
