@@ -7,7 +7,7 @@ ifeq (${makeflags}, 0)
 	makeflags = 1 # `-j` does not take 0 as a valid jobs count
 endif
 
-deafult: debug
+deafult: release
 
 release: ${srcs} CMakeLists.txt
 	cmake -S . -B ${builddir} -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
