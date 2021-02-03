@@ -61,15 +61,17 @@ int main(int argc, char **argv) {
     Scene world(loader);
     /* [/Load model] */
 
-    /* [Init Camera] */
+    /* [Spawn Camera] */
     Camera camera(fovy, aspect_ratio);
     camera.load(camconf);
-    /* [/Init Camera] */
+    /* [/Spawn Camera] */
 
+    /* [Initialize screen] */
     Screen screen(width, height);
+    /* [/Initialize screen] */
+
     screen.attach_scene(world);
     screen.set_cam(camera);
-
     screen.render(spp);
 
     write_ppm("x.ppm", screen.image());
