@@ -143,7 +143,7 @@ void write_ppm(std::string const &filename, Image const &img);
 // Returns min(maxx, max(x, minx))
 template <typename T, typename T1, typename T2>
 T constexpr clamp(T x, T1 minx, T2 maxx) {
-    return std::min((T)maxx, std::max(x, (T)minx));
+    return std::min(static_cast<T>(maxx), std::max(x, static_cast<T>(minx)));
 }
 
 // Barycentric interpolation.
