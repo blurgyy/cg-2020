@@ -6,6 +6,7 @@ set(sources
     Camera.cpp
     Scene.cpp
     Screen.cpp
+    Timer.cpp
     Triangle.cpp
     global.cpp
 ) # Sources

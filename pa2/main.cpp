@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "Scene.hpp"
 #include "Screen.hpp"
+#include "Timer.hpp"
 #include "Triangle.hpp"
 #include "global.hpp"
 
@@ -16,9 +17,9 @@ int main(int argc, char **argv) {
     std::string camconf{"default.conf"};
 
     // Resolution (horizontal).
-    std::size_t width = 64;
+    std::size_t width = 256;
     // Resolution (vertical).
-    std::size_t height = 64;
+    std::size_t height = 256;
 
     // Field of view (in degrees).
     flt fovy = 45;
@@ -72,7 +73,13 @@ int main(int argc, char **argv) {
 
     screen.attach_scene(world);
     screen.set_cam(camera);
+
+    Timer timer;
+    msg("Rendering scene ..\n");
+    timer.start();
     screen.render(spp);
+    timer.end();
+    msg("Elapsed %.2f ms \n", timer.elapsedms());
 
     write_ppm("x.ppm", screen.image());
 
