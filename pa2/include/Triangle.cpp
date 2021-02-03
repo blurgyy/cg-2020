@@ -1,6 +1,9 @@
 #include "Triangle.hpp"
 
-Triangle::Triangle() { this->_init(); }
+#include <iostream>
+#include <sstream>
+
+Triangle::Triangle() : mat{nullptr} { this->_init(); }
 Triangle::Triangle(std::array<vec3, 3> const & vtx,
                    std::array<vec3, 3> const & nor,
                    std::array<vec2, 3> const & tex,
@@ -8,7 +11,7 @@ Triangle::Triangle(std::array<vec3, 3> const & vtx,
     : v{vtx[0], vtx[1], vtx[2]}, nor{glm::normalize(nor[0]),
                                      glm::normalize(nor[1]),
                                      glm::normalize(nor[2])},
-      tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]} {
+      tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]}, mat{nullptr} {
     this->_init();
 }
 Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
@@ -17,13 +20,29 @@ Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
                    Color const &ca, Color const &cb, Color const &cc)
     : v{a, b, c}, nor{glm::normalize(na), glm::normalize(nb),
                       glm::normalize(nc)},
-      tex{ta, tb, tc}, col{ca, cb, cc} {
+      tex{ta, tb, tc}, col{ca, cb, cc}, mat{nullptr} {
     this->_init();
 }
 
-void Triangle::set_material(int const &mat_id) {
-    this->matid        = mat_id;
-    this->has_material = true;
+void Triangle::set_material(tinyobj::material_t const &m) {
+    if (this->mat) {
+        delete this->mat;
+    }
+    this->mat            = new Material;
+    this->mat->ambient   = vec3{m.ambient[0], m.ambient[1], m.ambient[2]};
+    this->mat->diffuse   = vec3{m.diffuse[0], m.diffuse[1], m.diffuse[2]};
+    this->mat->specular  = vec3{m.specular[0], m.specular[1], m.specular[2]};
+    this->mat->shineness = m.shininess;
+    if (m.unknown_parameter.size()) {
+        for (auto const &kv : m.unknown_parameter) {
+            if (kv.first == "Le") {
+                std::istringstream emit_input(kv.second);
+                emit_input >> this->mat->emission.x >>
+                    this->mat->emission.y >> this->mat->emission.z;
+                this->mat->has_emission = true;
+            }
+        }
+    }
 }
 
 vec3 const &Triangle::a() const { return this->v[0]; }
@@ -40,9 +59,9 @@ Color const &Triangle::cc() const { return this->col[2]; }
 
 BBox const &Triangle::boundingbox() const { return this->bbox; }
 
-int const &Triangle::material() const {
-    if (this->has_material) {
-        return this->matid;
+Material const *Triangle::material() const {
+    if (this->mat) {
+        return this->mat;
     } else {
         errorm("No material has been assigned to face\n");
     }
@@ -162,7 +181,6 @@ void Triangle::_init() {
     // Initialize facing direction.
     this->facing = glm::normalize(
         glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
-    has_material = false;
     // Initialize bounding box.
     this->bbox = BBox(this->v[0]) | BBox(this->v[1]) | BBox(this->v[2]);
 }

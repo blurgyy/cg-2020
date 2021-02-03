@@ -1,8 +1,7 @@
 #include "Scene.hpp"
 
 Scene::Scene() {}
-Scene::Scene(tinyobj::ObjReader const &loader)
-    : mats{loader.GetMaterials()}, root{nullptr} {
+Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
     auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
@@ -33,7 +32,7 @@ Scene::Scene(tinyobj::ObjReader const &loader)
             index_offset += numverts;
             int      matid = shape.mesh.material_ids[fi];
             Triangle newtri{vtx, nor, tex};
-            newtri.set_material(matid);
+            newtri.set_material(loader.GetMaterials()[matid]);
             this->orig_tris.push_back(newtri);
         }
     }
@@ -62,19 +61,17 @@ Color Scene::shoot(Ray const &ray) const {
     Intersection isect = this->intersect(ray);
 
     if (isect) {
-        tinyobj::material_t mat = this->materials()[isect.matid];
-        vec3                color =
-            vec3{mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]} * 255.0;
-        return Color(color[0], color[1], color[2]);
+        Material *mat = isect.tri->mat;
+
+        if (mat && mat->has_emission) {
+            return Color{255};
+        }
     }
 
     return ret;
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
-std::vector<tinyobj::material_t> const &Scene::materials() const {
-    return this->mats;
-}
 
 /* Private */
 

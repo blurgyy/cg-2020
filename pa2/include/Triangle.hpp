@@ -1,9 +1,11 @@
 #pragma once
 
+#include "global.hpp"
+
+#include "tinyobjloader/tiny_obj_loader.h"
+
 #include <array>
 #include <tuple>
-
-#include "global.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -17,8 +19,7 @@ class Triangle {
     std::array<vec2, 3>  tex; // Texture coordinates of the 3 vertices
     std::array<Color, 3> col; // Color values of the 3 vertices
 
-    bool has_material;
-    int  matid;
+    Material *mat;
 
     // Bounding box of this triangle.
     BBox bbox;
@@ -57,7 +58,7 @@ class Triangle {
                  Color{0},
              });
     // Set material
-    void set_material(int const &mat_id);
+    void set_material(tinyobj::material_t const &m);
 
     vec3 const &a() const; // Returns spatial location of the first vertex
     vec3 const &b() const; // Returns spatial location of the second vertex
@@ -79,7 +80,7 @@ class Triangle {
 
     BBox const &boundingbox() const;
 
-    int const &material() const;
+    Material const *material() const;
 
     // Returns area of the triangle's orthographic projection onto the xOy
     // plane (computes slightly slower than function Triangle::doublearea()).

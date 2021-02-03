@@ -117,8 +117,6 @@ class Scene {
     std::vector<Triangle> orig_tris;
     std::vector<Triangle> tris;
 
-    std::vector<tinyobj::material_t> mats;
-
     BVHNode *root;
 
   private:
@@ -134,8 +132,7 @@ class Scene {
 
     Color shoot(Ray const &ray) const;
 
-    std::vector<Triangle> const &           triangles() const;
-    std::vector<tinyobj::material_t> const &materials() const;
+    std::vector<Triangle> const &triangles() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

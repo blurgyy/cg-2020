@@ -5,28 +5,22 @@
 
 struct Intersection {
     Intersection()
-        : occurred{false}, matid{-1},
-          distance{std::numeric_limits<flt>::max()}, position{vec3{0}},
-          normal{vec3{0}}, emit{0, 0, 0}, tri{nullptr} {}
+        : occurred{false}, distance{std::numeric_limits<flt>::max()},
+          position{vec3{0}}, normal{vec3{0}}, tri{nullptr} {}
     void output() {
         printf("occurred: %s\n", this->occurred ? "true" : "false");
-        printf("matid:    %d\n", this->matid);
         printf("distance: %f\n", this->distance);
         printf("position: %f, %f, %f\n", this->position.x, this->position.y,
                this->position.z);
         printf("normal:   %f, %f, %f\n", this->normal.x, this->normal.y,
                this->normal.z);
-        printf("emit:     %u, %u, %u\n", this->emit.r, this->emit.g,
-               this->emit.b);
     }
     operator bool() const { return this->occurred; }
 
-    bool  occurred;
-    int   matid;
-    flt   distance;
-    vec3  position;
-    vec3  normal;
-    Color emit;
+    bool occurred;
+    flt  distance;
+    vec3 position;
+    vec3 normal;
 
     Triangle const *tri;
 };
@@ -86,7 +80,6 @@ inline Intersection Ray::intersect(Triangle const *t) const {
     }
 
     isect.occurred = true;
-    isect.matid    = t->matid;
     isect.position = isectpos;
     isect.normal   = berp(t->nor, b);
     isect.distance = glm::length(isect.position - this->origin);
