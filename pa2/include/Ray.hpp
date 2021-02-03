@@ -16,8 +16,8 @@ struct Intersection {
                this->position.z);
         printf("normal:   %f, %f, %f\n", this->normal.x, this->normal.y,
                this->normal.z);
-        printf("emit:     %u, %u, %u\n", this->emit.r(), this->emit.g(),
-               this->emit.b());
+        printf("emit:     %u, %u, %u\n", this->emit.r, this->emit.g,
+               this->emit.b);
     }
 
     bool  occurred;

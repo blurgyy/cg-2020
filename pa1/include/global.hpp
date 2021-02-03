@@ -58,15 +58,11 @@ struct Color {
           unsigned char const &b);
     Color(unsigned char const &x);
 
-    unsigned char &      r();
-    unsigned char &      g();
-    unsigned char &      b();
-    unsigned char const &r() const;
-    unsigned char const &g() const;
-    unsigned char const &b() const;
+    Color operator+=(Color const &rhs);
 
+  public:
     // Color values for corresponding channel
-    unsigned char red, green, blue;
+    unsigned char r, g, b;
 };
 
 // NOTE: Image data array has origin at lower left.

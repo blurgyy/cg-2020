@@ -86,15 +86,14 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     flt   cz            = this->v[2].z;
     flt   zv_reciprocal = 1.0 / z_viewspace;
     // r
-    flt red = .5 + (ca * a.red / az + cb * b.red / bz + cc * c.red / cz) /
-                       zv_reciprocal;
+    flt red =
+        .5 + (ca * a.r / az + cb * b.r / bz + cc * c.r / cz) / zv_reciprocal;
     // g
     flt green =
-        .5 + (ca * a.green / az + cb * b.green / bz + cc * c.green / cz) /
-                 zv_reciprocal;
+        .5 + (ca * a.g / az + cb * b.g / bz + cc * c.g / cz) / zv_reciprocal;
     // b
-    flt blue = .5 + (ca * a.blue / az + cb * b.blue / bz + cc * c.blue / cz) /
-                        zv_reciprocal;
+    flt blue =
+        .5 + (ca * a.b / az + cb * b.b / bz + cc * c.b / cz) / zv_reciprocal;
     return Color{
         static_cast<unsigned char>(red),
         static_cast<unsigned char>(green),
