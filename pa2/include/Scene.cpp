@@ -94,7 +94,7 @@ Intersection Scene::sample_light(Intersection const &isect) const {
     return ret;
 }
 
-Color Scene::shoot(Ray const &ray) const {
+vec3 Scene::shoot(Ray const &ray) const {
     vec3 l_dir{0}, l_indir{0};
 
     Intersection isect = this->intersect(ray);

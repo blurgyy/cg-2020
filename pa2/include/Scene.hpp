@@ -142,7 +142,7 @@ class Scene {
     // ray is not occluded.
     Intersection sample_light(Intersection const &isect) const;
 
-    Color shoot(Ray const &ray) const;
+    vec3 shoot(Ray const &ray) const;
 
     std::vector<Triangle> const &triangles() const;
 };

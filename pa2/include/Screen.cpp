@@ -17,16 +17,25 @@ void Screen::render(std::size_t const &spp) {
     flt yscale = std::tan(this->cam.fovy() / 2);
     flt xscale = yscale * this->cam.aspect_ratio();
 
+    flt pixel_w = 1.0 / this->w * xscale;
+    flt pixel_h = 1.0 / this->h * yscale;
+
     this->sce.to_camera_space(this->cam);
     this->sce.build_BVH();
     for (std::size_t i = 0; i < this->w; ++i) {
         for (std::size_t j = 0; j < this->h; ++j) {
             flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
             flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
-            debugm("pixel(%lu, %lu): shoot ray at (%.3f, %.3f, -1.0)\n", i, j,
-                   x, y);
-            Ray ray(vec3{0}, vec3{x, y, -1});
-            this->img(i, j) = this->sce.shoot(ray);
+            // debugm("pixel(%lu, %lu): shoot ray at (%.3f, %.3f, -1.0)\n", i,
+            // j, x, y);
+            vec3 colorvec{0};
+            for (std::size_t s = 0; s < spp; ++s) {
+                flt nx = x + (uniform() - 1) * pixel_w;
+                flt ny = y + (uniform() - 1) * pixel_h;
+                Ray ray{vec3{0}, vec3{nx, ny, -1}};
+                colorvec += this->sce.shoot(ray);
+            }
+            this->img(i, j) = Color{colorvec / static_cast<flt>(spp)};
         }
     }
 }
