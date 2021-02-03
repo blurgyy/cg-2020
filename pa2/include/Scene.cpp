@@ -107,21 +107,27 @@ vec3 Scene::shoot(Ray const &ray) const {
         }
         vec3 wo = -ray.direction;
 
-        isect.output();
         Intersection light_sample = this->sample_light(isect);
         if (light_sample) { // Calculate direct illumination
-            printf("testxxx\n");
             vec3 wi = glm::normalize(light_sample.position - isect.position);
             flt  pdf_light = 1.0 / light_sample.tri->area();
             vec3 emission  = light_sample.tri->material()->emission;
             vec3 fr        = isect.tri->material()->fr(wi, wo, isect.normal);
 
-            l_dir = 5.0 * emission * fr * glm::dot(wi, isect.normal) *
+            l_dir = emission * fr * glm::dot(wi, isect.normal) *
                     glm::dot(-wi, light_sample.normal) /
                     glm::dot(light_sample.position - isect.position,
                              light_sample.position - isect.position) /
                     pdf_light;
-            output(l_dir);
+        }
+        if (uniform() < 0.8) { // Russian roulette
+            vec3 wi =
+                isect.tri->material()->sample(-ray.direction, isect.normal);
+            Ray  nray{isect.position, wi};
+            vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
+            flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
+            l_indir += this->shoot(nray) * fr * glm::dot(wi, isect.normal) /
+                       pdf / 0.8;
         }
     }
 
