@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -159,6 +160,13 @@ value_type berp(std::array<value_type, 3> const &values,
 // is `0`, returns `-1` when x is negative.
 template <typename T> int constexpr sign(T const &x) {
     return ((T)0 < x) - (x < (T)0);
+}
+
+// Generate a random number with uniform probability in range [0, 1].
+inline flt uniform() {
+    std::random_device                  dev;
+    std::uniform_real_distribution<flt> rng{0, 1};
+    return rng(dev);
 }
 
 /*** debugging ***/
