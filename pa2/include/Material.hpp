@@ -9,6 +9,13 @@ struct Material {
     // BRDF.
     vec3 fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
 
+    // Sample incoming light direction.
+    vec3 sample(vec3 const &wo, vec3 const &normal) const;
+
+    // Get probability distribution function value of given incoming&outgoing
+    // light directions.
+    flt pdf(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
+
   public:
     vec3 ambient;
     vec3 diffuse;
