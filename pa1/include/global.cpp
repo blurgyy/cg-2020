@@ -16,6 +16,11 @@ Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
     : r{r}, g{g}, b{b} {}
 Color::Color(unsigned char const &x) : r{x}, g{x}, b{x} {}
+Color::Color(vec3 const &values) {
+    this->r = static_cast<unsigned char>(values.r * 255);
+    this->g = static_cast<unsigned char>(values.g * 255);
+    this->b = static_cast<unsigned char>(values.b * 255);
+}
 Color Color::operator+=(Color const &rhs) {
     this->r += rhs.r;
     this->b += rhs.b;

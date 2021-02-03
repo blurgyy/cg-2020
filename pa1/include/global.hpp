@@ -58,6 +58,7 @@ struct Color {
     Color(unsigned char const &r, unsigned char const &g,
           unsigned char const &b);
     Color(unsigned char const &x);
+    Color(vec3 const &values);
 
     Color operator+=(Color const &rhs);
 
