@@ -120,6 +120,8 @@ Triangle Triangle::operator*(mat4 const &m) const {
         ret.v[i].y = homo.y / homo.w;
         ret.v[i].z = homo.z / homo.w;
     }
+    // Note: Remember to update bbox and facing directions.
+    ret._init();
     return ret;
 }
 // Matrix right multiplication.
@@ -139,6 +141,8 @@ Triangle operator*(mat4 const &m, Triangle const &t) {
         ret.v[i].y = homo.y / homo.w;
         ret.v[i].z = homo.z / homo.w;
     }
+    // Note: Remember to update bbox and facing directions.
+    ret._init();
     return ret;
 }
 // Calculate barycentric coordinates of point 'pos' in triangle 't'

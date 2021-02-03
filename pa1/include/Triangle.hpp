@@ -99,6 +99,7 @@ class Triangle {
 
   public: // Operator overrides
     Triangle                  operator*(mat4 const &m) const;
+    Triangle friend           operator*(mat4 const &m, Triangle const &rhs);
     std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
 
