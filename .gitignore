@@ -6,6 +6,7 @@ build/
 
 # Render results
 *.ppm
+*.png
 
 # Submissions
 submit/
