@@ -131,9 +131,8 @@ struct BBox {
 };
 
 struct Material {
-    Material()
-        : ambient{0}, diffuse{0}, specular{0}, emission{0}, shineness{0},
-          has_emission{false} {}
+    Material();
+    void output() const;
 
   public:
     vec3 ambient;
