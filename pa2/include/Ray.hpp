@@ -107,6 +107,7 @@ inline bool Ray::intersect(BBox const &bbox) const {
         t_enter = std::max(t_enter, mint);
         t_exit  = std::min(t_exit, maxt);
     }
+    debugm("t_enter is %.2f, t_exit is %.2f\n", t_enter, t_exit);
     return sign(t_exit - t_enter) >= 0 && sign(t_exit) > 0;
 }
 

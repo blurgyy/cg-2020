@@ -97,16 +97,6 @@ struct BVHNode : Node<2> {
         }
         // If this node is a leaf node:
         if (this->isleaf) {
-            // auto t = this->tri;
-            // msg("Triangle:\n");
-            // output(t->v[0]);
-            // output(t->v[1]);
-            // output(t->v[2]);
-            // msg("Ray:\n");
-            // output(ray.origin);
-            // output(ray.direction);
-            // int xx;
-            // scanf("%d", &xx);
             return ray.intersect(this->tri);
         }
         // if this node is an intermediate node:
