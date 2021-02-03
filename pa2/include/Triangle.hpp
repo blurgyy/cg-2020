@@ -83,12 +83,11 @@ class Triangle {
 
     Material const *material() const;
 
-    // Returns area of the triangle's orthographic projection onto the xOy
-    // plane (computes slightly slower than function Triangle::doublearea()).
-    flt area() const;
-    // Returns area doubled of the triangle's orthographic projection onto the
-    // xOy plane.
+    // Returns area doubled of the triangle.
     flt doublearea() const;
+    // Returns area of the triangle (computes slightly slower than function
+    // Triangle::doublearea()).
+    flt area() const;
 
     // Determine whether this triangle has a vertex inside the canonical box.
     bool vert_in_canonical() const;

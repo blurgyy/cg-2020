@@ -68,8 +68,8 @@ Material const *Triangle::material() const {
 }
 
 flt Triangle::doublearea() const {
-    return fabs((v[1].x - v[0].x) * (v[2].y - v[0].y) -
-                (v[2].x - v[0].x) * (v[1].y - v[0].y));
+    return glm::length(
+        glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
 }
 flt Triangle::area() const { return .5 * this->doublearea(); }
 
