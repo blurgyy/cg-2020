@@ -129,8 +129,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
         }
 
         if (uniform() < rr) { // Russian roulette
-            vec3 wi =
-                isect.tri->material()->sample(-ray.direction, isect.normal);
+            vec3 wi = isect.tri->material()->sample(wo, isect.normal);
             Ray  nray{isect.position, wi};
             vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
             flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
