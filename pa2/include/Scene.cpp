@@ -96,16 +96,20 @@ Intersection Scene::sample_light(Intersection const &isect) const {
     return ret;
 }
 
-vec3 Scene::shoot(Ray const &ray, flt const &rr) const {
+vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
     vec3 l_dir{0}, l_indir{0};
 
     Intersection isect = this->intersect(ray);
 
     if (isect) {
         if (isect.tri->material()->has_emission) {
-            return isect.tri->material()->emission /
-                   glm::dot(ray.origin - isect.position,
-                            ray.origin - isect.position);
+            if (bounce) {
+                return vec3{0};
+            } else {
+                return isect.tri->material()->emission /
+                       glm::dot(ray.origin - isect.position,
+                                ray.origin - isect.position);
+            }
         }
         vec3 wo = -ray.direction;
 
@@ -128,7 +132,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr) const {
             Ray  nray{isect.position, wi};
             vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
             flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
-            l_indir  = this->shoot(nray, rr) * fr *
+            l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
                       glm::dot(wi, isect.normal) / pdf / rr;
         }
     }
