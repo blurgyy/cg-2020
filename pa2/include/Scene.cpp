@@ -103,7 +103,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
 
     if (isect) {
         if (isect.tri->material()->has_emission) {
-            if (bounce) {
+            if (bounce || sign(glm::dot(isect.normal, ray.direction)) >= 0) {
                 return vec3{0};
             } else {
                 return isect.tri->material()->emission /
@@ -111,6 +111,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
                                 ray.origin - isect.position);
             }
         }
+
         vec3 wo = -ray.direction;
 
         Intersection light_sample = this->sample_light(isect);
@@ -126,6 +127,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
                              light_sample.position - isect.position) /
                     pdf_light;
         }
+
         if (uniform() < rr) { // Russian roulette
             vec3 wi =
                 isect.tri->material()->sample(-ray.direction, isect.normal);
