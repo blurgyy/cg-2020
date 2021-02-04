@@ -17,15 +17,15 @@ int main(int argc, char **argv) {
     std::string camconf{"default.conf"};
 
     // Resolution (horizontal).
-    std::size_t width = 256;
+    std::size_t width = 784;
     // Resolution (vertical).
-    std::size_t height = 256;
+    std::size_t height = 784;
 
     // Field of view (in degrees).
     flt fovy = 45;
 
     // Sample(s) per pixel
-    std::size_t spp = 16;
+    std::size_t spp = 32;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
