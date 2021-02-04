@@ -74,11 +74,11 @@ flt Triangle::doublearea() const {
 flt Triangle::area() const { return .5 * this->doublearea(); }
 
 vec3 Triangle::sample() const {
-    flt                b1  = uniform();
-    flt                b2  = uniform();
-    flt                b3  = uniform();
-    flt                sum = b1 + b2 + b3;
-    std::array<flt, 3> b{b1 / sum, b2 / sum, b3 / sum};
+    flt                x = std::sqrt(uniform()), y = uniform();
+    flt                b0 = 1 - x;
+    flt                b1 = x * (1 - y);
+    flt                b2 = x * y;
+    std::array<flt, 3> b{b0, b1, b2};
     return berp(this->v, b);
 }
 
