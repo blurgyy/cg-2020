@@ -81,13 +81,12 @@ Intersection Scene::sample_light(Intersection const &isect) const {
             break;
         }
     }
-    Ray checker_ray{isect.position, light_pos - isect.position};
+    vec3 npos = isect.position + epsilon * isect.normal;
+    Ray  checker_ray{npos, light_pos - npos};
     ret = this->intersect(checker_ray);
-    while (ret.tri == isect.tri) {
-        checker_ray = Ray{ret.position, checker_ray.direction};
-        ret         = this->intersect(checker_ray);
-    }
-    if (!ret.tri->material()->has_emission) {
+    // if (sign(ret.distance - glm::length(light_pos - isect.position)) != 0)
+    // {
+    if (!equal(ret.distance, glm::length(light_pos - isect.position))) {
         // The sampled light ray is occluded.
         ret.occurred = false;
     } else {
