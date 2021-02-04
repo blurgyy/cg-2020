@@ -34,21 +34,21 @@ vec3 Material::sample(vec3 const &wo, vec3 const &normal) const {
     vec3 xaxis, yaxis;
     if (normal.x > normal.y) {
         flt invlen = 1.0 / (normal.x * normal.x + normal.z * normal.z);
-        xaxis      = glm::cross(normal, vec3{
-                                       normal.z * invlen,
-                                       0,
-                                       -normal.x * invlen,
-                                   });
+        xaxis      = vec3{
+            normal.z * invlen,
+            0,
+            -normal.x * invlen,
+        };
     } else {
         flt invlen = 1.0 / (normal.y * normal.y + normal.z * normal.z);
-        xaxis      = glm::cross(normal, vec3{
-                                       0,
-                                       normal.z * invlen,
-                                       -normal.y * invlen,
-                                   });
+        xaxis      = vec3{
+            0,
+            normal.z * invlen,
+            -normal.y * invlen,
+        };
     }
 
-    yaxis = glm::cross(xaxis, normal);
+    yaxis = glm::cross(normal, xaxis);
     return local.x * xaxis + local.y * yaxis + local.z * normal;
 }
 
