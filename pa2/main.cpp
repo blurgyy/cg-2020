@@ -38,6 +38,33 @@ int main(int argc, char **argv) {
                 break;
             }
             camconf = std::string{argv[i]};
+        } else if (!strcmp(argv[i], "-r") ||
+                   !strcmp(argv[i], "--resolution")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            width   = std::atoi(argv[i]);
+            int len = strlen(argv[i]);
+            for (int x = 0; x < len; ++x) {
+                if (!std::isdigit(argv[i][x])) {
+                    if (++x < len) {
+                        height = std::atoi(argv[i] + x);
+                    }
+                }
+            }
+        } else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--spp")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            spp = std::atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-rr")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            rr = clamp(std::atof(argv[i]), 0, 1);
         } else {
             objfile = std::string{argv[i]};
         }
@@ -45,6 +72,9 @@ int main(int argc, char **argv) {
     if (objfile.length() == 0) {
         errorm("No <model.obj> file specified\n");
     }
+    // Summary
+    msg("[ resolution: %zux%zu | spp: %zu | rr: %.3f ]\n", width, height, spp,
+        rr);
     /* [/Parse arguments] */
     flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
