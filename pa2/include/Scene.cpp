@@ -64,6 +64,9 @@ void Scene::build_BVH() {
 
 Intersection Scene::sample_light(Intersection const &isect) const {
     Intersection ret;
+    if (this->lights.size() == 0) {
+        return ret;
+    }
 
     vec3            light_pos;
     Triangle const *light_source;
