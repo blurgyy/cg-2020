@@ -16,9 +16,11 @@
 #endif
 #define debugm(fmt, ...)                                                     \
     do {                                                                     \
-        if (DEBUGGING)                                                       \
+        if (DEBUGGING) {                                                     \
             fprintf(stdout, " [*] %s::%d::%s(): " fmt, __FILE__, __LINE__,   \
                     __func__, ##__VA_ARGS__);                                \
+            fflush(stdout);                                                  \
+        }                                                                    \
     } while (0)
 #define errorm(fmt, ...)                                                     \
     do {                                                                     \
@@ -32,6 +34,7 @@
 #define msg(fmt, ...)                                                        \
     do {                                                                     \
         fprintf(stdout, " [v] " fmt, ##__VA_ARGS__);                         \
+        fflush(stdout);                                                      \
     } while (0)
 
 // Type definitions
@@ -165,9 +168,10 @@ template <typename T> int constexpr sign(T const &x) {
 
 // Generate a random number with uniform probability in range [0, 1].
 inline flt uniform() {
-    std::random_device                  dev;
+    thread_local std::random_device     dev;
+    thread_local std::mt19937           rngdev{dev()};
     std::uniform_real_distribution<flt> rng{0, 1};
-    return rng(dev);
+    return rng(rngdev);
 }
 
 /*** debugging ***/
