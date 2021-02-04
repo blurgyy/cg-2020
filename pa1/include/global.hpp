@@ -166,6 +166,10 @@ template <typename T> int constexpr sign(T const &x) {
     return ((T)0 < x) - (x < (T)0);
 }
 
+inline bool equal(flt const &lhs, flt const &rhs) {
+    return fabs(lhs - rhs) < epsilon;
+}
+
 // Generate a random number with uniform probability in range [0, 1].
 inline flt uniform() {
     thread_local std::random_device     dev;
