@@ -21,9 +21,6 @@ int main(int argc, char **argv) {
     // Resolution (vertical).
     std::size_t height = 784;
 
-    // Field of view (in degrees).
-    flt fovy = 45;
-
     // Sample(s) per pixel.
     std::size_t spp = 32;
 
@@ -96,7 +93,7 @@ int main(int argc, char **argv) {
     /* [/Load model] */
 
     /* [Spawn Camera] */
-    Camera camera(fovy, aspect_ratio);
+    Camera camera(aspect_ratio);
     camera.load(camconf);
     /* [/Spawn Camera] */
 
