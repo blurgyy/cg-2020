@@ -32,16 +32,18 @@ vec3 Material::sample(vec3 const &wo, vec3 const &normal) const {
     vec3 local{r * std::cos(theta), r * std::sin(theta), z};
     // Convert to view-space coordinates.
     vec3 xaxis, yaxis;
-    if (normal.x > normal.y) {
-        flt invlen = 1.0 / (normal.x * normal.x + normal.z * normal.z);
-        xaxis      = vec3{
+    if (std::fabs(normal.x) > std::fabs(normal.y)) {
+        flt invlen =
+            1.0 / std::sqrt(normal.x * normal.x + normal.z * normal.z);
+        xaxis = vec3{
             normal.z * invlen,
             0,
             -normal.x * invlen,
         };
     } else {
-        flt invlen = 1.0 / (normal.y * normal.y + normal.z * normal.z);
-        xaxis      = vec3{
+        flt invlen =
+            1.0 / std::sqrt(normal.y * normal.y + normal.z * normal.z);
+        xaxis = vec3{
             0,
             normal.z * invlen,
             -normal.y * invlen,
