@@ -16,7 +16,7 @@ void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
 void Screen::render(std::size_t const &spp, flt const &rr) {
-    flt yscale = std::tan(this->cam.fovy() / 2);
+    flt yscale = std::tan(this->cam.fovy() / 2 * degree);
     flt xscale = yscale * this->cam.aspect_ratio();
 
     flt pixel_w = 1.0 / this->w * xscale;
