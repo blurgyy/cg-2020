@@ -24,8 +24,11 @@ int main(int argc, char **argv) {
     // Field of view (in degrees).
     flt fovy = 45;
 
-    // Sample(s) per pixel
+    // Sample(s) per pixel.
     std::size_t spp = 32;
+
+    // Russian roulette.
+    flt rr = 0.8;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -77,7 +80,7 @@ int main(int argc, char **argv) {
     Timer timer;
     msg("Rendering scene ..\n");
     timer.start();
-    screen.render(spp);
+    screen.render(spp, rr);
     timer.end();
     msg("Elapsed %.2f ms \n", timer.elapsedms());
 

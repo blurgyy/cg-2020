@@ -97,7 +97,7 @@ Intersection Scene::sample_light(Intersection const &isect) const {
     return ret;
 }
 
-vec3 Scene::shoot(Ray const &ray) const {
+vec3 Scene::shoot(Ray const &ray, flt const &rr) const {
     vec3 l_dir{0}, l_indir{0};
 
     Intersection isect = this->intersect(ray);
@@ -123,14 +123,14 @@ vec3 Scene::shoot(Ray const &ray) const {
                              light_sample.position - isect.position) /
                     pdf_light;
         }
-        if (uniform() < 0.8) { // Russian roulette
+        if (uniform() < rr) { // Russian roulette
             vec3 wi =
                 isect.tri->material()->sample(-ray.direction, isect.normal);
             Ray  nray{isect.position, wi};
             vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
             flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
             l_indir += this->shoot(nray) * fr * glm::dot(wi, isect.normal) /
-                       pdf / 0.8;
+                       pdf / rr;
         }
     }
 

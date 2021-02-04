@@ -15,7 +15,7 @@ Screen::Screen(std::size_t const &width, std::size_t const &height,
 void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
-void Screen::render(std::size_t const &spp) {
+void Screen::render(std::size_t const &spp, flt const &rr) {
     flt yscale = std::tan(this->cam.fovy() / 2);
     flt xscale = yscale * this->cam.aspect_ratio();
 
@@ -36,7 +36,7 @@ void Screen::render(std::size_t const &spp) {
                 flt nx = x + (uniform() - 1) * pixel_w;
                 flt ny = y + (uniform() - 1) * pixel_h;
                 Ray ray{vec3{0}, vec3{nx, ny, -1}};
-                colorvec += this->sce.shoot(ray);
+                colorvec += this->sce.shoot(ray, rr);
             }
             this->img(i, j) = Color{colorvec / static_cast<flt>(spp)};
         }

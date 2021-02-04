@@ -26,7 +26,7 @@ class Screen {
     // Set up camera
     void set_cam(Camera const &cam);
 
-    void render(std::size_t const &spp = 16);
+    void render(std::size_t const &spp = 16, flt const &rr = 0.8);
 
     Image const &image() const;
 };
