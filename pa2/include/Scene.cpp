@@ -129,8 +129,8 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr) const {
             Ray  nray{isect.position, wi};
             vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
             flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
-            l_indir  = this->shoot(nray) * fr * glm::dot(wi, isect.normal) /
-                      pdf / rr;
+            l_indir  = this->shoot(nray, rr) * fr *
+                      glm::dot(wi, isect.normal) / pdf / rr;
         }
     }
 
