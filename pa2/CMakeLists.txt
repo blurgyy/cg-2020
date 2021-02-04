@@ -4,6 +4,7 @@ project("pbr") # Project name
 set(target_name "pbr") # Target name (target can be an executable or a library)
 set(sources "main.cpp") # Sources
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 set(CMAKE_C_FLAGS_DEBUG "-g -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-O2 -w -DNDEBUG")
 set(CMAKE_CXX_STANDARD 20)

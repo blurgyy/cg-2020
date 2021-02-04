@@ -1,6 +1,8 @@
 #include "Ray.hpp"
 #include "Screen.hpp"
 
+#include <omp.h>
+
 Screen::Screen() {}
 Screen::Screen(std::size_t const &width, std::size_t const &height,
                Scene const &world, Camera const &cam)
@@ -23,6 +25,7 @@ void Screen::render(std::size_t const &spp) {
     this->sce.to_camera_space(this->cam);
     this->sce.build_BVH();
     for (std::size_t i = 0; i < this->w; ++i) {
+#pragma omp parallel for
         for (std::size_t j = 0; j < this->h; ++j) {
             flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
             flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
@@ -37,7 +40,9 @@ void Screen::render(std::size_t const &spp) {
             }
             this->img(i, j) = Color{colorvec / static_cast<flt>(spp)};
         }
+        msg("Progress: [%zu/%zu]\r", i + 1, this->w);
     }
+    msg("\n");
 }
 
 Image const &Screen::image() const { return this->img; }
