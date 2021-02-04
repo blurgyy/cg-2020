@@ -53,7 +53,7 @@ vec3 Material::sample(vec3 const &wo, vec3 const &normal) const {
 }
 
 flt Material::pdf(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
-    if (sign(glm::dot(wo, normal) > 0)) {
+    if (sign(glm::dot(wi, normal) > 0)) {
         return 1.0 / twopi;
     } else {
         return 0;
