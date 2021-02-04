@@ -84,10 +84,11 @@ Intersection Scene::sample_light(Intersection const &isect) const {
     vec3 npos = isect.position + epsilon * isect.normal;
     Ray  checker_ray{npos, light_pos - npos};
     ret = this->intersect(checker_ray);
-    // if (sign(ret.distance - glm::length(light_pos - isect.position)) != 0)
-    // {
     if (!equal(ret.distance, glm::length(light_pos - isect.position))) {
         // The sampled light ray is occluded.
+        ret.occurred = false;
+    } else if (sign(glm::dot(ret.normal, checker_ray.direction)) >= 0) {
+        // The sampled light ray shoots the other way.
         ret.occurred = false;
     } else {
         // The sampled light ray is not occluded.
