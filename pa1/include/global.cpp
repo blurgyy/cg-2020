@@ -16,10 +16,17 @@ Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
     : r{r}, g{g}, b{b} {}
 Color::Color(unsigned char const &x) : r{x}, g{x}, b{x} {}
-Color::Color(vec3 const &values) {
-    this->r = static_cast<unsigned char>(clamp(values.r, 0, 1) * 255);
-    this->g = static_cast<unsigned char>(clamp(values.g, 0, 1) * 255);
-    this->b = static_cast<unsigned char>(clamp(values.b, 0, 1) * 255);
+Color::Color(vec3 const &values)
+    : r{static_cast<unsigned char>(clamp(values.r, 0, 1) * 256 - 0.5)},
+      g{static_cast<unsigned char>(clamp(values.g, 0, 1) * 256 - 0.5)},
+      b{static_cast<unsigned char>(clamp(values.b, 0, 1) * 256 - 0.5)} {}
+Color Color::correction(flt const &gamma) const {
+    vec3 values{
+        std::pow((static_cast<flt>(this->r) + 0.5) / 256, gamma),
+        std::pow((static_cast<flt>(this->g) + 0.5) / 256, gamma),
+        std::pow((static_cast<flt>(this->b) + 0.5) / 256, gamma),
+    };
+    return Color{values};
 }
 Color Color::operator+=(Color const &rhs) {
     this->r += rhs.r;
@@ -111,7 +118,8 @@ BBox BBox::operator|=(vec3 const &rhs) {
     return *this;
 }
 
-void write_ppm(std::string const &filename, Image const &img) {
+void write_ppm(std::string const &filename, Image const &img,
+               flt const &gamma) {
     debugm("Writing image (%zux%zu) to %s ..\n", img.w, img.h,
            filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
@@ -125,13 +133,13 @@ void write_ppm(std::string const &filename, Image const &img) {
 
     for (size_t j = 0; j < img.h; ++j) {
         for (size_t i = 0; i < img.w; ++i) {
-            Color const &col = img(i, img.h - 1 - j);
+            Color const &col = img(i, img.h - 1 - j).correction(gamma);
             f << (char)(col.r) << (char)(col.g) << (char)(col.b);
         }
     }
     f.close();
-    msg("Render result (%zux%zu) saved in %s\n", img.w, img.h,
-        filename.c_str());
+    msg("Render result (%zux%zu, gamma=%.2f) saved in %s\n", img.w, img.h,
+        gamma, filename.c_str());
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

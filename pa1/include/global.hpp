@@ -63,6 +63,8 @@ struct Color {
     Color(unsigned char const &x);
     Color(vec3 const &values);
 
+    Color correction(flt const &gamma) const;
+
     Color operator+=(Color const &rhs);
 
   public:
@@ -141,7 +143,8 @@ struct BBox {
 //  2. http://netpbm.sourceforge.net/doc/ppm.html#format
 // @param filename: name of the ppm image file
 // @param img: image data (of type Image)
-void write_ppm(std::string const &filename, Image const &img);
+void write_ppm(std::string const &filename, Image const &img,
+               flt const &gamma = 0.6);
 
 // Returns min(maxx, max(x, minx))
 template <typename T, typename T1, typename T2>
