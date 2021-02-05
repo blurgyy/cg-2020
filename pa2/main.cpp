@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     // Path to the obj file.
     std::string objfile{""};
     // Path to camera pose file.
-    std::string camconf{"default.conf"};
+    std::string camconf{""};
 
     // Resolution (horizontal).
     std::size_t width = 784;
@@ -77,6 +77,9 @@ int main(int argc, char **argv) {
     }
     if (objfile.length() == 0) {
         errorm("No <model.obj> file specified\n");
+    }
+    if (camconf.length() == 0) {
+        errorm("No <camera.conf> file specified\n");
     }
     // Summary
     msg("Summary:\n"
