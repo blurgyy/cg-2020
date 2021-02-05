@@ -7,6 +7,7 @@ set(sources
     Material.cpp
     Scene.cpp
     Screen.cpp
+    SkyBox.cpp
     Timer.cpp
     Triangle.cpp
     global.cpp
