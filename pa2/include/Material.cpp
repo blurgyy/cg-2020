@@ -21,7 +21,11 @@ vec3 Material::fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
     if (sign(glm::dot(wi, normal)) <= 0 || sign(glm::dot(wo, normal)) <= 0) {
         return vec3{0};
     }
-    return this->diffuse / pi;
+    return this->diffuse / pi +
+           (this->shineness + 2) * this->specular *
+               std::pow(glm::dot(glm::normalize(wi + wo), normal),
+                        this->shineness) /
+               twopi;
 }
 
 vec3 Material::sample(vec3 const &wo, vec3 const &normal) const {
