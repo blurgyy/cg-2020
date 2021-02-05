@@ -17,6 +17,7 @@ class SkyBox {
     SkyBox(std::string const &imgfile);
 
     vec3 operator()(std::size_t const &x, std::size_t const &y) const;
+    vec3 operator()(vec3 const &dir) const;
 
     std::size_t const &width() const;
     std::size_t const &height() const;
