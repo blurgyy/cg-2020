@@ -24,8 +24,11 @@ int main(int argc, char **argv) {
     // Sample(s) per pixel.
     std::size_t spp = 32;
 
-    // Russian roulette.
+    // Russian roulette probability.
     flt rr = 0.8;
+
+    // Gamma.
+    flt gamma = 0.6;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -62,6 +65,12 @@ int main(int argc, char **argv) {
                 break;
             }
             rr = clamp(std::atof(argv[i]), 0, 1);
+        } else if (!strcmp(argv[i], "-g") || !strcmp(argv[i], "--gamma")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            gamma = std::atof(argv[i]);
         } else {
             objfile = std::string{argv[i]};
         }
@@ -70,8 +79,14 @@ int main(int argc, char **argv) {
         errorm("No <model.obj> file specified\n");
     }
     // Summary
-    msg("[ resolution: %zux%zu | spp: %zu | rr: %.3f ]\n", width, height, spp,
-        rr);
+    msg("Summary:\n"
+        "          model: '%s'\n"
+        "         camera: '%s'\n"
+        "     resolution: %zux%zu\n"
+        "            spp: %zu\n"
+        "             rr: %.2f\n"
+        "          gamma: %.2f\n",
+        objfile.c_str(), camconf.c_str(), width, height, spp, rr, gamma);
     /* [/Parse arguments] */
     flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
@@ -111,7 +126,7 @@ int main(int argc, char **argv) {
     timer.end();
     msg("Elapsed %.2f ms \n", timer.elapsedms());
 
-    write_ppm("x.ppm", screen.image());
+    write_ppm("x.ppm", screen.image(), gamma);
 
     return 0;
 }
