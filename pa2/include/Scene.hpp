@@ -2,6 +2,7 @@
 
 #include "Camera.hpp"
 #include "Ray.hpp"
+#include "SkyBox.hpp"
 #include "Triangle.hpp"
 
 #include "tinyobjloader/tiny_obj_loader.h"
@@ -120,6 +121,8 @@ class Scene {
     std::vector<Triangle> lights;
     flt                   area_of_lights;
 
+    SkyBox sky;
+
     BVHNode *root;
 
   private:
@@ -128,6 +131,8 @@ class Scene {
   public:
     Scene();
     Scene(tinyobj::ObjReader const &loader);
+
+    void load_skybox(std::string const &imgfile);
 
     void to_camera_space(Camera const &cam);
 

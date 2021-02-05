@@ -12,9 +12,11 @@
 
 int main(int argc, char **argv) {
     // Path to the obj file.
-    std::string objfile{""};
+    std::string objmodel{""};
     // Path to camera pose file.
     std::string camconf{""};
+    // Path to skybox image file.
+    std::string skyboximg{""};
 
     // Resolution (horizontal).
     std::size_t width = 784;
@@ -38,6 +40,12 @@ int main(int argc, char **argv) {
                 break;
             }
             camconf = std::string{argv[i]};
+        } else if (!strcmp(argv[i], "-k") || !strcmp(argv[i], "--skybox")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            skyboximg = std::string{argv[i]};
         } else if (!strcmp(argv[i], "-r") ||
                    !strcmp(argv[i], "--resolution")) {
             ++i;
@@ -72,10 +80,10 @@ int main(int argc, char **argv) {
             }
             gamma = std::atof(argv[i]);
         } else {
-            objfile = std::string{argv[i]};
+            objmodel = std::string{argv[i]};
         }
     }
-    if (objfile.length() == 0) {
+    if (objmodel.length() == 0) {
         errorm("No <model.obj> file specified\n");
     }
     if (camconf.length() == 0) {
@@ -85,11 +93,13 @@ int main(int argc, char **argv) {
     msg("Summary:\n"
         "          model: '%s'\n"
         "         camera: '%s'\n"
+        "         skybox: '%s'\n"
         "     resolution: %zux%zu\n"
         "            spp: %zu\n"
         "             rr: %.2f\n"
         "          gamma: %.2f\n",
-        objfile.c_str(), camconf.c_str(), width, height, spp, rr, gamma);
+        objmodel.c_str(), camconf.c_str(), skyboximg.c_str(), width, height,
+        spp, rr, gamma);
     /* [/Parse arguments] */
     flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
@@ -103,12 +113,16 @@ int main(int argc, char **argv) {
     // Parse vertex colors, fill default color when no color is present in the
     // objfile.
     config.vertex_color = true;
-    loader.ParseFromFile(objfile, config);
+    loader.ParseFromFile(objmodel, config);
     /* [/Read object file] */
 
     /* [Load model] */
     Scene world(loader);
     /* [/Load model] */
+
+    /* [Setup scene] */
+    world.load_skybox(skyboximg);
+    /* [/Setup scene] */
 
     /* [Spawn Camera] */
     Camera camera(aspect_ratio);

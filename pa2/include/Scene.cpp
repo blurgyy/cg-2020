@@ -40,6 +40,10 @@ Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
 
 /* public */
 
+void Scene::load_skybox(std::string const &imgfile) {
+    this->sky = SkyBox{imgfile};
+}
+
 void Scene::to_camera_space(Camera const &cam) {
     this->tris.clear();
     this->lights.clear();
