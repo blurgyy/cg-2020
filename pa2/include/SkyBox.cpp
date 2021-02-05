@@ -29,9 +29,9 @@ vec3 SkyBox::operator()(vec3 const &dir) const {
         theta *= -1;
     }
     std::size_t x =
-        static_cast<std::size_t>((theta - -pi) * this->width() - 0.5);
+        static_cast<std::size_t>((theta - -pi) / twopi * this->width() - 0.5);
     std::size_t y =
-        static_cast<std::size_t>((phi - -pi / 2) * this->height() - 0.5);
+        static_cast<std::size_t>((phi - -pi / 2) / pi * this->height() - 0.5);
     return (*this)(x, y);
 }
 
