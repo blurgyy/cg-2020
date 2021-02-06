@@ -11,6 +11,22 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
+    // SkyBox sky{"../models/car/environment_day.hdr"};
+    // // SkyBox sky{"../models/diningroom_ref.jpg"};
+    // msg("%dx%d\n", sky.width(), sky.height());
+    // Image img(sky.width(), sky.height());
+    // for (int x = 0; x < sky.width(); ++x) {
+    // for (int y = 0; y < sky.height(); ++y) {
+    // flt  w = -2.0 + x * (4.0 / sky.width());
+    // flt  h = -2.0 + y * (4.0 / sky.height());
+    // vec3 dir{w, h, -1};
+    // // output(dir);
+    // // fflush(stdout);
+    // img(x, y) = Color{sky(dir)};
+    // }
+    // }
+    // write_ppm("dining.ppm", img);
+    // return 0;
     // Path to the obj file.
     std::string objmodel{""};
     // Path to camera pose file.
