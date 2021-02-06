@@ -21,11 +21,11 @@ vec3 Material::fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
     if (sign(glm::dot(wi, normal)) <= 0 || sign(glm::dot(wo, normal)) <= 0) {
         return vec3{0};
     }
-    vec3 d = this->diffuse / pi;
-    vec3 s =
-        (this->shineness + 2) * this->specular *
-        std::pow(glm::dot(glm::normalize(wi + wo), normal), this->shineness) /
-        twopi;
+    vec3 d            = this->diffuse / pi;
+    flt  coshalfalpha = glm::dot(glm::normalize(wi + wo), normal);
+    flt  cosalpha     = clamp(2 * coshalfalpha * coshalfalpha - 1, 0, 1);
+    vec3 s            = (this->shineness + 2) * this->specular *
+             std::pow(cosalpha, this->shineness) / twopi;
     return vec3{
         clamp(s.x + d.x, 0, 1.0 / pi),
         clamp(s.y + d.y, 0, 1.0 / pi),
