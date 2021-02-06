@@ -121,7 +121,7 @@ class Scene {
     std::vector<Triangle> lights;
     flt                   area_of_lights;
 
-    SkyBox sky;
+    SkyBox *sky;
 
     BVHNode *root;
 
@@ -150,6 +150,8 @@ class Scene {
     vec3 shoot(Ray const &ray, flt const &rr, int const &bounce = 0) const;
 
     std::vector<Triangle> const &triangles() const;
+    std::vector<Triangle> const &emissives() const;
+    SkyBox const *               skybox() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

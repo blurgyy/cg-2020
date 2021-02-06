@@ -1,7 +1,7 @@
 #include "Scene.hpp"
 
-Scene::Scene() {}
-Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
+Scene::Scene() : sky{nullptr} {}
+Scene::Scene(tinyobj::ObjReader const &loader) : sky{nullptr}, root{nullptr} {
     auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
@@ -41,7 +41,10 @@ Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
 /* public */
 
 void Scene::load_skybox(std::string const &imgfile) {
-    this->sky = SkyBox{imgfile};
+    if (this->skybox()) {
+        delete this->sky;
+    }
+    this->sky = new SkyBox{imgfile};
 }
 
 void Scene::to_camera_space(Camera const &cam) {
@@ -69,7 +72,7 @@ void Scene::build_BVH() {
 
 Intersection Scene::sample_light(Intersection const &isect) const {
     Intersection ret;
-    if (this->lights.size() == 0) {
+    if (this->emissives().size() == 0 && this->skybox() == nullptr) {
         return ret;
     }
 
@@ -78,7 +81,7 @@ Intersection Scene::sample_light(Intersection const &isect) const {
 
     flt threshold = uniform() * this->area_of_lights;
     flt acc_area  = 0;
-    for (Triangle const &t : this->lights) {
+    for (Triangle const &t : this->emissives()) {
         acc_area += t.area();
         if (acc_area >= threshold) {
             light_pos    = t.sample();
@@ -140,12 +143,17 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
                       glm::dot(wi, isect.normal) / pdf / rr;
         }
+    } else                    // The ray does not intersect with scene
+        if (this->skybox()) { // There is a skybox in the scene
+        return (*(this->skybox()))(ray.direction);
     }
 
     return l_dir + l_indir;
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
+std::vector<Triangle> const &Scene::emissives() const { return this->lights; }
+SkyBox const *               Scene::skybox() const { return this->sky; }
 
 /* Private */
 
