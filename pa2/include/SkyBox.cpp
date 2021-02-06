@@ -8,7 +8,7 @@ SkyBox::SkyBox(std::string const &imgfile) {
 }
 
 vec3 SkyBox::operator()(std::size_t const &x, std::size_t const &y) const {
-    Magick::ColorRGB mcol = this->data.pixelColor(x, this->h - 1 - y);
+    Magick::ColorRGB mcol = this->data.pixelColor(x, this->height() - 1 - y);
     return vec3{
         mcol.red(),
         mcol.green(),
@@ -18,20 +18,24 @@ vec3 SkyBox::operator()(std::size_t const &x, std::size_t const &y) const {
 
 vec3 SkyBox::operator()(vec3 const &dir) const {
     vec3 normed = glm::normalize(dir);
-    // \phi \in [0, \pi/2].
-    flt phi = std::acos(normed.z);
-    if (normed.z < 0) {
-        phi *= -1;
-    }
+    // Rotate
+    normed = vec3{-normed.z, normed.y, normed.x};
+    flt phi, theta;
+    // \phi \in [0, \pi].
+    phi = std::acos(normed.y);
     // \theta \in [-pi, pi].
-    flt theta = std::acos(normed.x / std::sin(phi));
-    if (sign(normed.y) != sign(std::sin(phi))) {
+    if (fabs(phi) < epsilon) {
+        theta = std::acos(normed.x);
+    } else {
+        theta = std::acos(clamp(normed.x / std::sin(phi), 0, 1));
+    }
+    if (sign(normed.z) < 0) {
         theta *= -1;
     }
     std::size_t x =
         static_cast<std::size_t>((theta - -pi) / twopi * this->width() - 0.5);
     std::size_t y =
-        static_cast<std::size_t>((phi - -pi / 2) / pi * this->height() - 0.5);
+        static_cast<std::size_t>((pi - phi) / pi * this->height() - 0.5);
     return (*this)(x, y);
 }
 
