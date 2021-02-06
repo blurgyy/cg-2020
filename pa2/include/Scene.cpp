@@ -49,7 +49,8 @@ void Scene::to_camera_space(Camera const &cam) {
     this->lights.clear();
     this->area_of_lights = 0;
     for (Triangle const &t : this->orig_tris) {
-        Triangle vt = t * cam.view_matrix();
+        Triangle vt =
+            t.transform(cam.rotation_matrix(), cam.translation_vector());
         this->tris.push_back(vt);
         if (vt.material()->has_emission) {
             this->lights.push_back(vt);

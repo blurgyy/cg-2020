@@ -16,7 +16,8 @@ class Camera {
 
     // Multiply this matrix with world-space object to get its corresponding
     // camera-space coordinate.
-    mat4 view;
+    mat3 rot;
+    vec3 trans;
 
   private:
     void _init_view_matrix();
@@ -49,8 +50,10 @@ class Camera {
     flt const &znear() const;
     // Get Far clipping plane's z coordinate
     flt const &zfar() const;
-    // Get view matrix
-    mat4 const &view_matrix() const;
+    // Get rotation matrix
+    mat3 const &rotation_matrix() const;
+    // Get translation vector
+    vec3 const &translation_vector() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

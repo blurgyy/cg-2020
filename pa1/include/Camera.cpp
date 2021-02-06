@@ -73,27 +73,27 @@ flt const & Camera::fovy() const { return this->fov; }
 flt const & Camera::aspect_ratio() const { return this->ar; }
 flt const & Camera::znear() const { return this->near; }
 flt const & Camera::zfar() const { return this->far; }
-mat4 const &Camera::view_matrix() const { return this->view; }
+mat3 const &Camera::rotation_matrix() const { return this->rot; }
+vec3 const &Camera::translation_vector() const { return this->trans; }
 
 /* Private */
 
 void Camera::_init_view_matrix() {
     vec3 right = glm::cross(this->gaze(), this->up());
     // clang-format off
-    mat4 translation{
-        1, 0, 0, -this->pos().x,
-        0, 1, 0, -this->pos().y,
-        0, 0, 1, -this->pos().z,
-        0, 0, 0,              1,
-    };
-    mat4 rotation{
-                right.x,         right.y,         right.z, 0,
-           this->up().x,    this->up().y,    this->up().z, 0,
-        -this->gaze().x, -this->gaze().y, -this->gaze().z, 0,
-                      0,               0,               0, 1,
+    mat3 rotation{
+                right.x,         right.y,         right.z,
+           this->up().x,    this->up().y,    this->up().z,
+        -this->gaze().x, -this->gaze().y, -this->gaze().z,
     };
     // clang-format on
-    this->view = translation * rotation;
+    // this->view = translation * rotation;
+    this->rot   = rotation;
+    this->trans = vec3{
+        -this->pos().x,
+        -this->pos().y,
+        -this->pos().z,
+    };
 }
 
 // Author: Blurgy <gy@blurgy.xyz>
