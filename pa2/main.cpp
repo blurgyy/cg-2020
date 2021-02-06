@@ -35,9 +35,9 @@ int main(int argc, char **argv) {
     std::string skyboximg{""};
 
     // Resolution (horizontal).
-    std::size_t width = 784;
+    std::size_t width = 1920;
     // Resolution (vertical).
-    std::size_t height = 784;
+    std::size_t height = 1080;
 
     // Sample(s) per pixel.
     std::size_t spp = 32;
