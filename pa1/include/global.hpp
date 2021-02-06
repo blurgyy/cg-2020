@@ -148,7 +148,7 @@ void write_ppm(std::string const &filename, Image const &img,
 
 // Returns min(maxx, max(x, minx))
 template <typename T, typename T1, typename T2>
-T constexpr clamp(T x, T1 minx, T2 maxx) {
+T constexpr clamp(T const &x, T1 const &minx, T2 const &maxx) {
     return std::min(static_cast<T>(maxx), std::max(x, static_cast<T>(minx)));
 }
 
