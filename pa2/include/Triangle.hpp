@@ -102,9 +102,10 @@ class Triangle {
     Color color_at(flt const &ca, flt const &cb, flt const &cc,
                    flt const &z_viewspace) const;
 
-  public: // Operator overrides
-    Triangle                  operator*(mat4 const &m) const;
-    Triangle friend           operator*(mat4 const &m, Triangle const &rhs);
+    // Return this triangle rotates by matrix `r` and translates by vector
+    // `t`.
+    Triangle transform(mat3 const &r, vec3 const &t) const;
+
     std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
 

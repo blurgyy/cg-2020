@@ -129,49 +129,27 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     };
 }
 
-/*** Operator overrides ***/
-// Matrix left multiplication.
-// Caveat: glm implements matrix multiplication in reversed order.
-Triangle Triangle::operator*(mat4 const &m) const {
+Triangle Triangle::transform(mat3 const &r, vec3 const &t) const {
+    Triangle ret;
     // Assign color values and indices of each vertex to the returned
-    // triangle.  Positions of vertices are overwritten, normal directons
-    // of vertices doesn't matter.
-    Triangle ret(*this);
+    // triangle.  Positions of vertices are overwritten.
+    ret.tex = std::array<vec2, 3>{this->tex};
+    ret.col = std::array<Color, 3>{this->col};
+    ret.mat = this->mat;
     for (int i = 0; i < 3; ++i) {
-        auto const &v            = ret.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
+        vec3 const &v  = this->v[i];
+        vec3        nv = v * r + t;
+        ret.v[i]       = nv;
 
-        homo       = homo * m;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
+        vec3 const &n  = this->nor[i];
+        vec3        nn = n * r;
+        ret.nor[i]     = nn;
     }
     // Note: Remember to update bbox and facing directions.
     ret._init();
     return ret;
 }
-// Matrix right multiplication.
-// Caveat: glm implements matrix multiplication in reversed order.
-Triangle operator*(mat4 const &m, Triangle const &t) {
-    // Assign color values and indices of each vertex to the returned
-    // triangle.  Positions of vertices are overwritten, normal directons
-    // of vertices doesn't matter.
-    Triangle ret(t);
-    for (int i = 0; i < 3; ++i) {
-        auto const &v            = t.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
 
-        homo       = m * homo;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
-    }
-    // Note: Remember to update bbox and facing directions.
-    ret._init();
-    return ret;
-}
 // Calculate barycentric coordinates of point 'pos' in triangle 't'
 std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
     // Point position `pos` should be inside the triangle `t`
