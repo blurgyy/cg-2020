@@ -16,13 +16,20 @@ void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
 void Screen::render(std::size_t const &spp, flt const &rr) {
+    this->sce.to_camera_space(this->cam);
+    if (this->sce.skybox() == nullptr && this->sce.emissives().size() == 0) {
+        // There is no light source or skybox in the scene whatsoever, abort
+        // meaningless rendering.
+        msg("Scene has no light source or skybox, returning dark image.\n");
+        return;
+    }
+
     flt yscale = std::tan(this->cam.fovy() / 2 * degree);
     flt xscale = yscale * this->cam.aspect_ratio();
 
     flt pixel_w = 1.0 / this->w * xscale;
     flt pixel_h = 1.0 / this->h * yscale;
 
-    this->sce.to_camera_space(this->cam);
     this->sce.build_BVH();
     for (std::size_t i = 0; i < this->w; ++i) {
 #pragma omp parallel for
