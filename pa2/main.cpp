@@ -105,6 +105,10 @@ int main(int argc, char **argv) {
     if (camconf.length() == 0) {
         errorm("No <camera.conf> file specified\n");
     }
+    if (skyboximg.length() > 0 &&
+        !std::filesystem::is_regular_file(skyboximg)) {
+        errorm("The given <skybox> path is not valid\n");
+    }
     // Summary
     msg("Summary:\n"
         "          model: '%s'\n"
@@ -137,7 +141,9 @@ int main(int argc, char **argv) {
     /* [/Load model] */
 
     /* [Setup scene] */
-    world.load_skybox(skyboximg);
+    if (skyboximg.length() > 0) {
+        world.load_skybox(skyboximg);
+    }
     /* [/Setup scene] */
 
     /* [Spawn Camera] */
