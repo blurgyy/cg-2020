@@ -137,13 +137,8 @@ Triangle Triangle::transform(mat3 const &r, vec3 const &t) const {
     ret.col = std::array<Color, 3>{this->col};
     ret.mat = this->mat;
     for (int i = 0; i < 3; ++i) {
-        vec3 const &v  = this->v[i];
-        vec3        nv = v * r + t;
-        ret.v[i]       = nv;
-
-        vec3 const &n  = this->nor[i];
-        vec3        nn = n * r;
-        ret.nor[i]     = nn;
+        ret.v[i]   = (this->v[i] + t) * r;
+        ret.nor[i] = this->nor[i] * r;
     }
     // Note: Remember to update bbox and facing directions.
     ret._init();
