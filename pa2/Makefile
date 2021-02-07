@@ -2,14 +2,16 @@ proj = pbr
 srcs = main.cpp
 builddir = build
 
-makeflags = -j$(shell expr $(shell nproc) - 1) # Parallel compiling
-ifeq (${makeflags}, 0)
-	makeflags = 1 # `-j` does not take 0 as a valid jobs count
+nprocs = $(shell expr $(shell nproc) - 1) # Parallel compiling
+ifeq ($(strip ${nprocs}), 0)
+	nprocs = 1 # `-j` does not take 0 as a valid jobs count
 endif
+makeflags = -j${nprocs}
 
 deafult: release
 
 release: ${srcs} CMakeLists.txt
+	echo ${nprocs}
 	cmake -S . -B ${builddir} -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-DCMAKE_BUILD_TYPE="Release"
 	@make -C ${builddir} ${makeflags}
