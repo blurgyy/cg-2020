@@ -114,41 +114,49 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
         if (isect.tri->material()->has_emission) {
             if (bounce || sign(glm::dot(isect.normal, ray.direction)) >= 0) {
                 return vec3{0};
-            } else {
+            } else { // a.k.a: bounce == 0 && dot(isect.normal, ray.dir) < 0.
                 return isect.tri->material()->emission;
             }
         }
 
-        vec3 wo = -ray.direction;
-
-        Intersection light_sample = this->sample_light(isect);
-        if (light_sample) { // Calculate direct illumination
-            vec3 wi = glm::normalize(light_sample.position - isect.position);
-            flt  pdf_light = 1.0 / light_sample.tri->area();
-            vec3 emission  = light_sample.tri->material()->emission;
-            vec3 fr        = isect.tri->material()->fr(wi, wo, isect.normal);
-
-            l_dir = emission * fr * glm::dot(wi, isect.normal) *
-                    glm::dot(-wi, light_sample.normal) /
-                    glm::dot(light_sample.position - isect.position,
-                             light_sample.position - isect.position) /
-                    pdf_light;
+        flt p_emit = 0;
+        if (isect.tri->material()->has_emission) {
+            p_emit = 0.9;
         }
+        if (uniform() < p_emit) {
+            return isect.tri->material()->emission / p_emit;
+        } else {
+            vec3 wo = -ray.direction;
 
-        if (uniform() < rr) { // Russian roulette
-            vec3 wi = isect.tri->material()->sample(wo, isect.normal);
-            Ray  nray{isect.position, wi};
-            vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
-            flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
-            l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
-                      glm::dot(wi, isect.normal) / pdf / rr;
+            Intersection light_sample = this->sample_light(isect);
+            if (light_sample) { // Calculate direct illumination
+                vec3 wi =
+                    glm::normalize(light_sample.position - isect.position);
+                flt  pdf_light = 1.0 / light_sample.tri->area();
+                vec3 emission  = light_sample.tri->material()->emission;
+                vec3 fr = isect.tri->material()->fr(wi, wo, isect.normal);
+
+                l_dir = emission * fr * glm::dot(wi, isect.normal) *
+                        glm::dot(-wi, light_sample.normal) /
+                        glm::dot(light_sample.position - isect.position,
+                                 light_sample.position - isect.position) /
+                        pdf_light;
+            }
+
+            if (uniform() < rr) { // Russian roulette
+                vec3 wi = isect.tri->material()->sample(wo, isect.normal);
+                Ray  nray{isect.position, wi};
+                vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
+                flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
+                l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
+                          glm::dot(wi, isect.normal) / pdf / rr;
+            }
+            return (l_dir + l_indir) / (1 - p_emit);
         }
     } else                    // The ray does not intersect with scene
         if (this->skybox()) { // There is a skybox in the scene
         return (*(this->skybox()))(ray.direction);
     }
-
-    return l_dir + l_indir;
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
