@@ -143,13 +143,26 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             }
 
             if (uniform() < rr) { // Russian roulette
-                vec3 wi =
-                    isect.tri->material()->sample_uniform(wo, isect.normal);
-                Ray  nray{isect.position, wi};
-                vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
-                flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
-                l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
-                          glm::dot(wi, isect.normal) / pdf / rr;
+                flt             r         = uniform();
+                Material const *isect_mat = isect.tri->material();
+                if (r < isect_mat->diffuse_amount()) {
+                    vec3 wi = isect_mat->sample_diffuse(wo, isect.normal);
+                    Ray  nray(isect.position, wi);
+                    flt  pdf = glm::dot(wi, isect.normal) / pi;
+                    vec3 fr  = isect_mat->fr_diffuse(wi, wo, isect.normal);
+                    l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
+                              glm::dot(wi, isect.normal) / pdf / rr;
+                } else if (r < isect_mat->specular_amount()) {
+                    vec3 wi = isect_mat->sample_specular(wo, isect.normal);
+                    Ray  nray(isect.position, wi);
+                    flt  cosalpha =
+                        glm::dot(isect.normal, glm::normalize(wi + wo));
+                    flt pdf = (isect_mat->shineness + 1) / twopi *
+                              std::pow(cosalpha, isect_mat->shineness);
+                    vec3 fr = isect_mat->fr_specular(wi, wo, isect.normal);
+                    l_indir = this->shoot(nray, rr, bounce + 1) * fr *
+                              glm::dot(wi, isect.normal) / pdf / rr;
+                }
             }
             return (l_dir + l_indir) / (1 - p_emit);
         }

@@ -9,6 +9,12 @@ struct Material {
     // BRDF.
     vec3 fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
 
+    // Lambertian BRDF.
+    vec3 fr_diffuse(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
+    // Phong BRDF.
+    vec3 fr_specular(vec3 const &wi, vec3 const &wo,
+                     vec3 const &normal) const;
+
     // Sample incoming light direction.
     vec3 sample_uniform(vec3 const &wo, vec3 const &normal) const;
 
@@ -16,6 +22,9 @@ struct Material {
     vec3 sample_diffuse(vec3 const &wo, vec3 const &normal) const;
     // Sample specular reflection direction.
     vec3 sample_specular(vec3 const &wo, vec3 const &normal) const;
+
+    flt diffuse_amount() const;
+    flt specular_amount() const;
 
     // Convert locally sampled ray direction to viewspace coordinate,
     // according to a surface normal direction in viespace.

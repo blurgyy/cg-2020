@@ -32,6 +32,15 @@ vec3 Material::fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
         clamp(s.z + d.z, 0, 1.0 / pi),
     };
 }
+vec3 Material::fr_diffuse(vec3 const &wi, vec3 const &wo,
+                          vec3 const &normal) const {
+    return this->diffuse / pi;
+}
+vec3 Material::fr_specular(vec3 const &wi, vec3 const &wo,
+                           vec3 const &normal) const {
+    flt cosalpha = glm::dot(normal, glm::normalize(wi + wo));
+    return this->specular * (this->shineness + 2) / twopi * cosalpha;
+}
 
 vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     /* Uniformly sample the hemisphere */
@@ -54,6 +63,8 @@ vec3 Material::sample_specular(vec3 const &wo, vec3 const &normal) const {
     flt theta = uniform() * twopi;
     return this->to_viewspace(polar_to_cartesian(alpha, theta), normal);
 }
+flt Material::diffuse_amount() const { return glm::length(this->diffuse); }
+flt Material::specular_amount() const { return glm::length(this->specular); }
 
 vec3 Material::to_viewspace(vec3 const &local, vec3 const &normal) const {
     vec3 xaxis, yaxis;
