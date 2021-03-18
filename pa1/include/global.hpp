@@ -177,6 +177,7 @@ inline vec3 polar_to_cartesian(flt const &phi, flt const &theta) {
 template <typename T> int constexpr sign(T const &x) {
     return ((T)0 < x) - (x < (T)0);
 }
+template <typename T> int constexpr sq(T const &x) { return x * x; }
 
 inline bool equal(flt const &lhs, flt const &rhs) {
     return fabs(lhs - rhs) < epsilon;

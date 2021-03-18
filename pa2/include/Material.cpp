@@ -38,7 +38,7 @@ vec3 Material::fr_diffuse(vec3 const &wi, vec3 const &wo,
 }
 vec3 Material::fr_specular(vec3 const &wi, vec3 const &wo,
                            vec3 const &normal) const {
-    flt cosalpha = glm::dot(normal, glm::normalize(wi + wo));
+    flt cosalpha = 2 * sq(glm::dot(normal, glm::normalize(wi + wo))) - 1;
     return this->specular * (this->shineness + 2) / twopi *
            std::pow(cosalpha, this->shineness);
 }

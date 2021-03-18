@@ -156,8 +156,9 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
                 } else {
                     vec3 wi = isect_mat->sample_specular(wo, isect.normal);
                     Ray  nray(isect.position, wi);
-                    flt  cosalpha =
-                        glm::dot(isect.normal, glm::normalize(wi + wo));
+                    flt  cosalpha = 2 * sq(glm::dot(isect.normal,
+                                                   glm::normalize(wi + wo))) -
+                                   1;
                     flt pdf = (isect_mat->shineness + 1) / twopi *
                               std::pow(cosalpha, isect_mat->shineness);
                     vec3 fr = isect_mat->fr_specular(wi, wo, isect.normal);
