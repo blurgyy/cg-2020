@@ -11,7 +11,6 @@ makeflags = -j${nprocs}
 deafult: release
 
 release: ${srcs} CMakeLists.txt
-	echo ${nprocs}
 	cmake -S . -B ${builddir} -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-DCMAKE_BUILD_TYPE="Release"
 	@make -C ${builddir} ${makeflags}
