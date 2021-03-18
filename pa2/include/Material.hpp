@@ -25,6 +25,7 @@ struct Material {
 
     flt diffuse_amount() const;
     flt specular_amount() const;
+    flt reflected_sum() const;
 
     // Convert locally sampled ray direction to viewspace coordinate,
     // according to a surface normal direction in viespace.

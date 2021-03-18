@@ -145,14 +145,15 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             if (uniform() < rr) { // Russian roulette
                 flt             r         = uniform();
                 Material const *isect_mat = isect.tri->material();
-                if (r < isect_mat->diffuse_amount()) {
+                if (r < isect_mat->diffuse_amount() /
+                            isect_mat->reflected_sum()) {
                     vec3 wi = isect_mat->sample_diffuse(wo, isect.normal);
                     Ray  nray(isect.position, wi);
                     flt  pdf = glm::dot(wi, isect.normal) / pi;
                     vec3 fr  = isect_mat->fr_diffuse(wi, wo, isect.normal);
                     l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
                               glm::dot(wi, isect.normal) / pdf / rr;
-                } else if (r < isect_mat->specular_amount()) {
+                } else {
                     vec3 wi = isect_mat->sample_specular(wo, isect.normal);
                     Ray  nray(isect.position, wi);
                     flt  cosalpha =
