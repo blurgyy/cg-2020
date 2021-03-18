@@ -52,25 +52,25 @@ inline Intersection Ray::intersect(Triangle const *t) const {
     vec3         s1    = glm::cross(this->direction, e2);
     flt          denom = glm::dot(s1, e1);
     if (sign(denom) == 0) {
-        debugm("barycentric#1\n");
+        // debugm("barycentric#1\n");
         return isect;
     }
     vec3 s  = this->origin - t->v[0];
     flt  b1 = glm::dot(s1, s);
     if (sign(b1) != sign(denom)) {
-        debugm("barycentric#2\n");
+        // debugm("barycentric#2\n");
         return isect;
     }
     vec3 s2 = glm::cross(s, e1);
     flt  b2 = glm::dot(s2, this->direction);
     if (sign(b2) != sign(denom)) {
-        debugm("barycentric#3\n");
+        // debugm("barycentric#3\n");
         return isect;
     }
     b1 /= denom;
     b2 /= denom;
     if (sign(1 - b1 - b2) < 0) {
-        debugm("barycentric#4\n");
+        // debugm("barycentric#4\n");
         return isect;
     }
     std::array<flt, 3> b = {1 - b1 - b2, b1, b2};
@@ -81,7 +81,7 @@ inline Intersection Ray::intersect(Triangle const *t) const {
         sign(isectpos.z - this->origin.z) != sign(this->direction.z)) {
         // Ignore intersections behind ray origin (according to ray
         // direction).
-        debugm("Intersetion point is behind ray origin\n");
+        // debugm("Intersetion point is behind ray origin\n");
         return isect;
     }
 
