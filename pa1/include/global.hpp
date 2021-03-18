@@ -163,6 +163,15 @@ value_type berp(std::array<value_type, 3> const &values,
     return ret;
 }
 
+// @param `phi` angle between returned vector and `+z` direction.
+// @param `theta` angle between returned vector and `+x` direction.
+inline vec3 polar_to_cartesian(flt const &phi, flt const &theta) {
+    flt x = std::sin(phi) * std::cos(theta);
+    flt y = std::sin(phi) * std::sin(theta);
+    flt z = std::cos(phi);
+    return vec3(x, y, z);
+}
+
 // Fast sign function.  Returns `1` when `x` is positive; returns `0` when `x`
 // is `0`, returns `-1` when x is negative.
 template <typename T> int constexpr sign(T const &x) {

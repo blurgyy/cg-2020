@@ -121,7 +121,8 @@ class Scene {
     std::vector<Triangle> lights;
     flt                   area_of_lights;
 
-    SkyBox *sky;
+    SkyBox sky;
+    bool   has_sky;
 
     BVHNode *root;
 
@@ -151,7 +152,8 @@ class Scene {
 
     std::vector<Triangle> const &triangles() const;
     std::vector<Triangle> const &emissives() const;
-    SkyBox const *               skybox() const;
+    SkyBox const &               skybox() const;
+    bool const &                 has_skybox() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

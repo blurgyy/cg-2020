@@ -1,7 +1,8 @@
 #include "Scene.hpp"
 
-Scene::Scene() : sky{nullptr} {}
-Scene::Scene(tinyobj::ObjReader const &loader) : sky{nullptr}, root{nullptr} {
+Scene::Scene() : has_sky{false} {}
+Scene::Scene(tinyobj::ObjReader const &loader)
+    : has_sky{false}, root{nullptr} {
     auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
@@ -41,10 +42,8 @@ Scene::Scene(tinyobj::ObjReader const &loader) : sky{nullptr}, root{nullptr} {
 /* public */
 
 void Scene::load_skybox(std::string const &imgfile) {
-    if (this->skybox()) {
-        delete this->sky;
-    }
-    this->sky = new SkyBox{imgfile};
+    this->sky     = SkyBox(imgfile);
+    this->has_sky = true;
 }
 
 void Scene::to_camera_space(Camera const &cam) {
@@ -72,7 +71,7 @@ void Scene::build_BVH() {
 
 Intersection Scene::sample_light(Intersection const &isect) const {
     Intersection ret;
-    if (this->emissives().size() == 0 && this->skybox() == nullptr) {
+    if (this->emissives().size() == 0 && !this->has_skybox()) {
         return ret;
     }
 
@@ -144,7 +143,8 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             }
 
             if (uniform() < rr) { // Russian roulette
-                vec3 wi = isect.tri->material()->sample(wo, isect.normal);
+                vec3 wi =
+                    isect.tri->material()->sample_uniform(wo, isect.normal);
                 Ray  nray{isect.position, wi};
                 vec3 fr  = isect.tri->material()->fr(wi, wo, isect.normal);
                 flt  pdf = isect.tri->material()->pdf(wi, wo, isect.normal);
@@ -153,15 +153,16 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             }
             return (l_dir + l_indir) / (1 - p_emit);
         }
-    } else                    // The ray does not intersect with scene
-        if (this->skybox()) { // There is a skybox in the scene
-        return (*(this->skybox()))(ray.direction);
+    } else                        // The ray does not intersect with scene
+        if (this->has_skybox()) { // There is a skybox in the scene
+        return this->skybox()(ray.direction);
     }
 }
 
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
 std::vector<Triangle> const &Scene::emissives() const { return this->lights; }
-SkyBox const *               Scene::skybox() const { return this->sky; }
+SkyBox const &               Scene::skybox() const { return this->sky; }
+bool const &Scene::has_skybox() const { return this->has_sky; }
 
 /* Private */
 

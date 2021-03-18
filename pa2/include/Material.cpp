@@ -33,13 +33,29 @@ vec3 Material::fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
     };
 }
 
-vec3 Material::sample(vec3 const &wo, vec3 const &normal) const {
+vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     /* Uniformly sample the hemisphere */
     flt  z     = uniform();
     flt  theta = uniform() * twopi;
     flt  r     = std::sqrt(1 - z * z);
     vec3 local{r * std::cos(theta), r * std::sin(theta), z};
     // Convert to view-space coordinates.
+    return this->to_viewspace(local, normal);
+}
+
+vec3 Material::sample_diffuse(vec3 const &wo, vec3 const &normal) const {
+    flt theta = uniform() * twopi;
+    flt phi   = std::acos(std::sqrt(uniform()));
+    return this->to_viewspace(polar_to_cartesian(phi, theta), normal);
+}
+
+vec3 Material::sample_specular(vec3 const &wo, vec3 const &normal) const {
+    flt alpha = std::acos(std::pow(uniform(), 1.0 / (this->shineness + 1)));
+    flt theta = uniform() * twopi;
+    return this->to_viewspace(polar_to_cartesian(alpha, theta), normal);
+}
+
+vec3 Material::to_viewspace(vec3 const &local, vec3 const &normal) const {
     vec3 xaxis, yaxis;
     if (std::fabs(normal.x) > std::fabs(normal.y)) {
         flt invlen =

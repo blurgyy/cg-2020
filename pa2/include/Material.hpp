@@ -10,7 +10,16 @@ struct Material {
     vec3 fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
 
     // Sample incoming light direction.
-    vec3 sample(vec3 const &wo, vec3 const &normal) const;
+    vec3 sample_uniform(vec3 const &wo, vec3 const &normal) const;
+
+    // Sample diffuse reflection direction.
+    vec3 sample_diffuse(vec3 const &wo, vec3 const &normal) const;
+    // Sample specular reflection direction.
+    vec3 sample_specular(vec3 const &wo, vec3 const &normal) const;
+
+    // Convert locally sampled ray direction to viewspace coordinate,
+    // according to a surface normal direction in viespace.
+    vec3 to_viewspace(vec3 const &local, vec3 const &normal) const;
 
     // Get probability distribution function value of given incoming&outgoing
     // light directions.

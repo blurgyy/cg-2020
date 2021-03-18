@@ -17,7 +17,7 @@ void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
 void Screen::render(std::size_t const &spp, flt const &rr) {
     this->sce.to_camera_space(this->cam);
-    if (this->sce.skybox() == nullptr && this->sce.emissives().size() == 0) {
+    if (this->sce.has_skybox() && this->sce.emissives().size() == 0) {
         // There is no light source or skybox in the scene whatsoever, abort
         // meaningless rendering.
         msg("Scene has no light source or skybox, returning dark image.\n");
