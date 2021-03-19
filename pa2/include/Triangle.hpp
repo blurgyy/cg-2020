@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Material.hpp"
+#include "global.hpp"
+
+#include "tinyobjloader/tiny_obj_loader.h"
+
 #include <array>
 #include <tuple>
-
-#include "global.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -17,8 +20,7 @@ class Triangle {
     std::array<vec2, 3>  tex; // Texture coordinates of the 3 vertices
     std::array<Color, 3> col; // Color values of the 3 vertices
 
-    bool has_material;
-    int  matid;
+    Material *mat;
 
     // Bounding box of this triangle.
     BBox bbox;
@@ -57,7 +59,7 @@ class Triangle {
                  Color{0},
              });
     // Set material
-    void set_material(int const &mat_id);
+    void set_material(tinyobj::material_t const &m);
 
     vec3 const &a() const; // Returns spatial location of the first vertex
     vec3 const &b() const; // Returns spatial location of the second vertex
@@ -79,14 +81,17 @@ class Triangle {
 
     BBox const &boundingbox() const;
 
-    int const &material() const;
+    Material const *material() const;
 
-    // Returns area of the triangle's orthographic projection onto the xOy
-    // plane (computes slightly slower than function Triangle::doublearea()).
-    flt area() const;
-    // Returns area doubled of the triangle's orthographic projection onto the
-    // xOy plane.
+    // Returns area doubled of the triangle.
     flt doublearea() const;
+    // Returns area of the triangle (computes slightly slower than function
+    // Triangle::doublearea()).
+    flt area() const;
+
+    // Randomly selects a point inside this triangle, and returns its spatial
+    // coordinate.
+    vec3 sample() const;
 
     // Determine whether this triangle has a vertex inside the canonical box.
     bool vert_in_canonical() const;
@@ -97,9 +102,10 @@ class Triangle {
     Color color_at(flt const &ca, flt const &cb, flt const &cc,
                    flt const &z_viewspace) const;
 
-  public: // Operator overrides
-    Triangle                  operator*(mat4 const &m) const;
-    Triangle friend           operator*(mat4 const &m, Triangle const &rhs);
+    // Return this triangle rotates by matrix `r` and translates by vector
+    // `t`.
+    Triangle transform(mat3 const &r, vec3 const &t) const;
+
     std::tuple<flt, flt, flt> operator%(vec3 const &pos) const;
 };
 

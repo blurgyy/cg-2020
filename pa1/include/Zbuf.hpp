@@ -89,7 +89,7 @@ class Zbuf {
     // Initialize a zbuffer object with given scene
     Zbuf(Scene const &s);
     // Initialize a zbuffer object with given scene and viewport size
-    Zbuf(Scene const &s, size_t const &height, size_t const &width);
+    Zbuf(Scene const &s, size_t const &width, size_t const &height);
 
     // Reset member variables to an initial state for next rendering. This
     // function:
@@ -113,7 +113,7 @@ class Zbuf {
     //               specified.
     void set_model_transformation(mat4 const &model = glm::identity<mat4>());
     // Set viewport transformation matrix
-    void init_viewport(size_t const &height, size_t const &width);
+    void init_viewport(size_t const &width, size_t const &height);
 
     // Render scene
     void render(rendering_method const &type);

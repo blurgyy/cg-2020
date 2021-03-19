@@ -6,9 +6,13 @@ build/
 
 # Render results
 *.ppm
+*.png
 
 # Submissions
 submit/
+
+# Documents
+*.pdf
 
 # Author: Blurgy <gy@blurgy.xyz>
 # Date:   Nov 18 2020, 17:26 [CST]

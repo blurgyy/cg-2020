@@ -4,35 +4,47 @@
 #include <fstream>
 
 // Constants
-flt const pi        = std::acos(-1.0);
-flt const twopi     = pi * 2.0;
-flt const halfpi    = pi / 2.0;
-flt const piover180 = pi / 180.0;
-flt const epsilon   = 1e-7;
+flt const pi      = std::acos(-1.0);
+flt const twopi   = pi * 2.0;
+flt const halfpi  = pi / 2.0;
+flt const degree  = pi / 180.0;
+flt const epsilon = 1e-7;
 
 // struct Color
-Color::Color() : red{0}, green{0}, blue{0} {}
+Color::Color() : r{0}, g{0}, b{0} {}
 Color::Color(unsigned char const &r, unsigned char const &g,
              unsigned char const &b)
-    : red{r}, green{g}, blue{b} {}
-Color::Color(unsigned char const &x) : red{x}, green{x}, blue{x} {}
-unsigned char &      Color::r() { return this->red; }
-unsigned char &      Color::g() { return this->green; }
-unsigned char &      Color::b() { return this->blue; }
-unsigned char const &Color::r() const { return this->red; }
-unsigned char const &Color::g() const { return this->green; }
-unsigned char const &Color::b() const { return this->blue; }
+    : r{r}, g{g}, b{b} {}
+Color::Color(unsigned char const &x) : r{x}, g{x}, b{x} {}
+Color::Color(vec3 const &values)
+    : r{static_cast<unsigned char>(clamp(values.r, 0, 1) * 256 - 0.5)},
+      g{static_cast<unsigned char>(clamp(values.g, 0, 1) * 256 - 0.5)},
+      b{static_cast<unsigned char>(clamp(values.b, 0, 1) * 256 - 0.5)} {}
+Color Color::correction(flt const &gamma) const {
+    vec3 values{
+        std::pow((static_cast<flt>(this->r) + 0.5) / 256, gamma),
+        std::pow((static_cast<flt>(this->g) + 0.5) / 256, gamma),
+        std::pow((static_cast<flt>(this->b) + 0.5) / 256, gamma),
+    };
+    return Color{values};
+}
+Color Color::operator+=(Color const &rhs) {
+    this->r += rhs.r;
+    this->b += rhs.b;
+    this->g += rhs.g;
+    return (*this);
+}
 
 // struct Image
 Image::Image() {}
-Image::Image(size_t const &height, size_t const &width)
-    : h{height}, w{width} {
-    this->data.resize(this->h * this->w);
+Image::Image(size_t const &width, size_t const &height)
+    : w{width}, h{height} {
+    this->data.resize(this->w * this->h);
 }
-void Image::init(const size_t &height, const size_t &width) {
-    this->h    = height;
+void Image::init(const size_t &width, const size_t &height) {
     this->w    = width;
-    this->data = std::vector<Color>(this->h * this->w);
+    this->h    = height;
+    this->data = std::vector<Color>(this->w * this->h);
 }
 void Image::fill(Color const &value) {
     std::fill(this->data.begin(), this->data.end(), value);
@@ -44,7 +56,70 @@ Color const &Image::operator()(size_t const &x, size_t const &y) const {
     return this->data[this->w * y + x];
 }
 
-void write_ppm(std::string const &filename, Image const &img) {
+// struct BBox
+BBox::BBox()
+    : minp{std::numeric_limits<flt>::max()},
+      maxp{std::numeric_limits<flt>::lowest()} {}
+BBox::BBox(vec3 const &p) : minp{p}, maxp{p} {}
+BBox::BBox(vec3 const &p1, vec3 const &p2)
+    : minp{std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z)},
+      maxp{std::max(p1.x, p2.x), std::max(p1.y, p2.y), std::max(p1.z, p2.z)} {
+}
+BBox BBox::operator|(BBox const &rhs) const { // Merged BBox
+    vec3 nminp{
+        std::min(this->minp.x, rhs.minp.x),
+        std::min(this->minp.y, rhs.minp.y),
+        std::min(this->minp.z, rhs.minp.z),
+    };
+    vec3 nmaxp{
+        std::max(this->maxp.x, rhs.maxp.x),
+        std::max(this->maxp.y, rhs.maxp.y),
+        std::max(this->maxp.z, rhs.maxp.z),
+    };
+    return BBox(nminp, nmaxp);
+}
+BBox BBox::operator|(vec3 const &rhs) const { // Merged BBox
+    vec3 nminp{
+        std::min(this->minp.x, rhs.x),
+        std::min(this->minp.y, rhs.y),
+        std::min(this->minp.z, rhs.z),
+    };
+    vec3 nmaxp{
+        std::max(this->maxp.x, rhs.x),
+        std::max(this->maxp.y, rhs.y),
+        std::max(this->maxp.z, rhs.z),
+    };
+    return BBox(nminp, nmaxp);
+}
+BBox BBox::operator|=(BBox const &rhs) {
+    this->minp = vec3{
+        std::min(this->minp.x, rhs.minp.x),
+        std::min(this->minp.y, rhs.minp.y),
+        std::min(this->minp.z, rhs.minp.z),
+    };
+    this->maxp = vec3{
+        std::max(this->maxp.x, rhs.maxp.x),
+        std::max(this->maxp.y, rhs.maxp.y),
+        std::max(this->maxp.z, rhs.maxp.z),
+    };
+    return *this;
+}
+BBox BBox::operator|=(vec3 const &rhs) {
+    this->minp = vec3{
+        std::min(this->minp.x, rhs.x),
+        std::min(this->minp.y, rhs.y),
+        std::min(this->minp.z, rhs.z),
+    };
+    this->maxp = vec3{
+        std::max(this->maxp.x, rhs.x),
+        std::max(this->maxp.y, rhs.y),
+        std::max(this->maxp.z, rhs.z),
+    };
+    return *this;
+}
+
+void write_ppm(std::string const &filename, Image const &img,
+               flt const &gamma) {
     debugm("Writing image (%zux%zu) to %s ..\n", img.w, img.h,
            filename.c_str());
     std::ofstream f(filename, std::ios_base::out | std::ios_base::binary);
@@ -58,13 +133,13 @@ void write_ppm(std::string const &filename, Image const &img) {
 
     for (size_t j = 0; j < img.h; ++j) {
         for (size_t i = 0; i < img.w; ++i) {
-            Color const &col = img(i, img.h - 1 - j);
-            f << (char)(col.r()) << (char)(col.g()) << (char)(col.b());
+            Color const &col = img(i, img.h - 1 - j).correction(gamma);
+            f << (char)(col.r) << (char)(col.g) << (char)(col.b);
         }
     }
     f.close();
-    msg("Render result (%zux%zu) saved in %s\n", img.w, img.h,
-        filename.c_str());
+    msg("Render result (%zux%zu, gamma=%.2f) saved in %s\n", img.w, img.h,
+        gamma, filename.c_str());
 }
 
 // Author: Blurgy <gy@blurgy.xyz>

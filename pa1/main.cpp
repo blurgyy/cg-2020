@@ -128,14 +128,14 @@ int main(int argc, char **argv) {
     Scene world{loader.LoadedMeshes[0]};
 
     // Create a renderer on scene
-    Zbuf zbuf{world, static_cast<size_t>(height), static_cast<size_t>(width)};
+    Zbuf zbuf{world, static_cast<size_t>(width), static_cast<size_t>(height)};
 
     // Set fragment shader
     zbuf.set_shader(selected_fragment_shader);
 
     // Camera extrinsincs
     auto [eye, gaze, up] = world.generate_camera();
-    flt aspect_ratio     = 1.0 * height / width;
+    flt aspect_ratio     = 1.0 * width / height;
     flt znear            = -.1;
     flt zfar             = -50;
     // Camera

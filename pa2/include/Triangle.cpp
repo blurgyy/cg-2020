@@ -1,6 +1,9 @@
 #include "Triangle.hpp"
 
-Triangle::Triangle() { this->_init(); }
+#include <iostream>
+#include <sstream>
+
+Triangle::Triangle() : mat{nullptr} { this->_init(); }
 Triangle::Triangle(std::array<vec3, 3> const & vtx,
                    std::array<vec3, 3> const & nor,
                    std::array<vec2, 3> const & tex,
@@ -8,7 +11,7 @@ Triangle::Triangle(std::array<vec3, 3> const & vtx,
     : v{vtx[0], vtx[1], vtx[2]}, nor{glm::normalize(nor[0]),
                                      glm::normalize(nor[1]),
                                      glm::normalize(nor[2])},
-      tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]} {
+      tex{tex[0], tex[1], tex[2]}, col{col[0], col[1], col[2]}, mat{nullptr} {
     this->_init();
 }
 Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
@@ -17,13 +20,29 @@ Triangle::Triangle(vec3 const &a, vec3 const &b, vec3 const &c,
                    Color const &ca, Color const &cb, Color const &cc)
     : v{a, b, c}, nor{glm::normalize(na), glm::normalize(nb),
                       glm::normalize(nc)},
-      tex{ta, tb, tc}, col{ca, cb, cc} {
+      tex{ta, tb, tc}, col{ca, cb, cc}, mat{nullptr} {
     this->_init();
 }
 
-void Triangle::set_material(int const &mat_id) {
-    this->matid        = mat_id;
-    this->has_material = true;
+void Triangle::set_material(tinyobj::material_t const &m) {
+    if (this->mat) {
+        delete this->mat;
+    }
+    this->mat            = new Material;
+    this->mat->ambient   = vec3{m.ambient[0], m.ambient[1], m.ambient[2]};
+    this->mat->diffuse   = vec3{m.diffuse[0], m.diffuse[1], m.diffuse[2]};
+    this->mat->specular  = vec3{m.specular[0], m.specular[1], m.specular[2]};
+    this->mat->shineness = m.shininess;
+    if (m.unknown_parameter.size()) {
+        for (auto const &kv : m.unknown_parameter) {
+            if (kv.first == "Le") {
+                std::istringstream emit_input(kv.second);
+                emit_input >> this->mat->emission.x >>
+                    this->mat->emission.y >> this->mat->emission.z;
+                this->mat->has_emission = true;
+            }
+        }
+    }
 }
 
 vec3 const &Triangle::a() const { return this->v[0]; }
@@ -40,19 +59,28 @@ Color const &Triangle::cc() const { return this->col[2]; }
 
 BBox const &Triangle::boundingbox() const { return this->bbox; }
 
-int const &Triangle::material() const {
-    if (this->has_material) {
-        return this->matid;
+Material const *Triangle::material() const {
+    if (this->mat) {
+        return this->mat;
     } else {
         errorm("No material has been assigned to face\n");
     }
 }
 
 flt Triangle::doublearea() const {
-    return fabs((v[1].x - v[0].x) * (v[2].y - v[0].y) -
-                (v[2].x - v[0].x) * (v[1].y - v[0].y));
+    return glm::length(
+        glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
 }
 flt Triangle::area() const { return .5 * this->doublearea(); }
+
+vec3 Triangle::sample() const {
+    flt                x = std::sqrt(uniform()), y = uniform();
+    flt                b0 = 1 - x;
+    flt                b1 = x * (1 - y);
+    flt                b2 = x * y;
+    std::array<flt, 3> b{b0, b1, b2};
+    return berp(this->v, b);
+}
 
 bool Triangle::vert_in_canonical() const {
     for (int i = 0; i < 3; ++i) {
@@ -101,51 +129,22 @@ Color Triangle::color_at(flt const &ca, flt const &cb, flt const &cc,
     };
 }
 
-/*** Operator overrides ***/
-// Matrix left multiplication.
-// Caveat: glm implements matrix multiplication in reversed order.
-Triangle Triangle::operator*(mat4 const &m) const {
+Triangle Triangle::transform(mat3 const &r, vec3 const &t) const {
+    Triangle ret;
     // Assign color values and indices of each vertex to the returned
-    // triangle.  Positions of vertices are overwritten, normal directons
-    // of vertices doesn't matter.
-    Triangle ret(*this);
+    // triangle.  Positions of vertices are overwritten.
+    ret.tex = std::array<vec2, 3>{this->tex};
+    ret.col = std::array<Color, 3>{this->col};
+    ret.mat = this->mat;
     for (int i = 0; i < 3; ++i) {
-        auto const &v            = ret.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
-
-        homo       = homo * m;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
+        ret.v[i]   = (this->v[i] + t) * r;
+        ret.nor[i] = this->nor[i] * r;
     }
-    // !! Do not update facing direction when converting to view space.
-    // // Note: Remember to update bbox and facing directions.
-    // ret._init();
+    // Note: Remember to update bbox and facing directions.
+    ret._init();
     return ret;
 }
-// Matrix right multiplication.
-// Caveat: glm implements matrix multiplication in reversed order.
-Triangle operator*(mat4 const &m, Triangle const &t) {
-    // Assign color values and indices of each vertex to the returned
-    // triangle.  Positions of vertices are overwritten, normal directons
-    // of vertices doesn't matter.
-    Triangle ret(t);
-    for (int i = 0; i < 3; ++i) {
-        auto const &v            = t.v[i];
-        flt         homo_value[] = {v.x, v.y, v.z, 1};
-        vec4        homo         = glm::make_vec4(homo_value);
 
-        homo       = m * homo;
-        ret.v[i].x = homo.x / homo.w;
-        ret.v[i].y = homo.y / homo.w;
-        ret.v[i].z = homo.z / homo.w;
-    }
-    // !! Do not update facing direction when converting to view space.
-    // // Note: Remember to update bbox and facing directions.
-    // ret._init();
-    return ret;
-}
 // Calculate barycentric coordinates of point 'pos' in triangle 't'
 std::tuple<flt, flt, flt> Triangle::operator%(vec3 const &pos) const {
     // Point position `pos` should be inside the triangle `t`
@@ -164,7 +163,6 @@ void Triangle::_init() {
     // Initialize facing direction.
     this->facing = glm::normalize(
         glm::cross(this->v[1] - this->v[0], this->v[2] - this->v[1]));
-    has_material = false;
     // Initialize bounding box.
     this->bbox = BBox(this->v[0]) | BBox(this->v[1]) | BBox(this->v[2]);
 }
