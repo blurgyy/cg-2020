@@ -118,13 +118,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             }
         }
 
-        flt p_emit = 0;
-        if (isect.tri->material()->has_emission) {
-            p_emit = 0.9;
-        }
-        if (uniform() < p_emit) {
-            return isect.tri->material()->emission / p_emit;
-        } else {
+        {
             vec3 wo = -ray.direction;
 
             Intersection light_sample = this->sample_light(isect);
@@ -142,31 +136,20 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
                         pdf_light;
             }
 
+            // return l_dir;
+
             if (uniform() < rr) { // Russian roulette
-                flt             r         = uniform();
                 Material const *isect_mat = isect.tri->material();
-                if (r < isect_mat->diffuse_amount() /
-                            isect_mat->reflected_sum()) {
-                    vec3 wi = isect_mat->sample_diffuse(wo, isect.normal);
+                {
+                    vec3 wi = isect_mat->sample_uniform(wo, isect.normal);
                     Ray  nray(isect.position, wi);
                     flt  pdf = glm::dot(wi, isect.normal) / pi;
-                    vec3 fr  = isect_mat->fr_diffuse(wi, wo, isect.normal);
+                    vec3 fr  = isect_mat->fr(wi, wo, isect.normal);
                     l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
-                              glm::dot(wi, isect.normal) / pdf / rr;
-                } else {
-                    vec3 wi = isect_mat->sample_specular(wo, isect.normal);
-                    Ray  nray(isect.position, wi);
-                    flt  cosalpha = 2 * sq(glm::dot(isect.normal,
-                                                   glm::normalize(wi + wo))) -
-                                   1;
-                    flt pdf = (isect_mat->shineness + 1) / twopi *
-                              std::pow(cosalpha, isect_mat->shineness);
-                    vec3 fr = isect_mat->fr_specular(wi, wo, isect.normal);
-                    l_indir = this->shoot(nray, rr, bounce + 1) * fr *
                               glm::dot(wi, isect.normal) / pdf / rr;
                 }
             }
-            return (l_dir + l_indir) / (1 - p_emit);
+            return (l_dir + l_indir);
         }
     } else                        // The ray does not intersect with scene
         if (this->has_skybox()) { // There is a skybox in the scene

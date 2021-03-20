@@ -9,11 +9,8 @@ struct Material {
     // BRDF.
     vec3 fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
 
-    // Lambertian BRDF.
-    vec3 fr_diffuse(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
-    // Phong BRDF.
-    vec3 fr_specular(vec3 const &wi, vec3 const &wo,
-                     vec3 const &normal) const;
+    // Fresnel
+    flt fresnel() const;
 
     // Sample incoming light direction.
     vec3 sample_uniform(vec3 const &wo, vec3 const &normal) const;
@@ -41,6 +38,7 @@ struct Material {
     vec3 specular;
     vec3 emission;
     flt  shineness;
+    flt  roughness;
     bool has_emission;
 };
 

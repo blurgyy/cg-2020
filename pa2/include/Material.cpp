@@ -18,30 +18,28 @@ void Material::output() const {
 }
 
 vec3 Material::fr(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
-    if (sign(glm::dot(wi, normal)) <= 0 || sign(glm::dot(wo, normal)) <= 0) {
-        return vec3{0};
-    }
-    vec3 d            = this->diffuse / pi;
-    flt  coshalfalpha = glm::dot(glm::normalize(wi + wo), normal);
-    flt  cosalpha     = clamp(2 * coshalfalpha * coshalfalpha - 1, 0, 1);
-    vec3 s            = (this->shineness + 2) * this->specular *
-             std::pow(cosalpha, this->shineness) / twopi;
-    return vec3{
-        clamp(s.x + d.x, 0, 1.0 / pi),
-        clamp(s.y + d.y, 0, 1.0 / pi),
-        clamp(s.z + d.z, 0, 1.0 / pi),
-    };
+    vec3 f_lambert = this->diffuse / pi;
+
+    vec3 h      = glm::normalize(wi + wo);
+    flt  alpha2 = sq(this->roughness);
+    flt  nh     = glm::dot(normal, h);
+    flt  D      = alpha2 / (pi * sq(sq(nh) * (alpha2 - 1) + 1));
+
+    flt F = this->fresnel();
+
+    flt nv = glm::dot(normal, wo);
+    flt nl = glm::dot(normal, wi);
+    flt k  = sq(this->roughness + 1) / 8;
+    flt Gv = nv / (nv * (1 - k) + k);
+    flt Gl = nl / (nl * (1 - k) + k);
+    flt G  = Gv * Gl;
+
+    flt f_cook = D * F * G / (4 * nv * nl);
+
+    return this->diffuse * f_lambert + this->specular * f_cook;
 }
-vec3 Material::fr_diffuse(vec3 const &wi, vec3 const &wo,
-                          vec3 const &normal) const {
-    return this->diffuse / pi;
-}
-vec3 Material::fr_specular(vec3 const &wi, vec3 const &wo,
-                           vec3 const &normal) const {
-    flt cosalpha = 2 * sq(glm::dot(normal, glm::normalize(wi + wo))) - 1;
-    return this->specular * (this->shineness + 2) / twopi *
-           std::pow(cosalpha, this->shineness);
-}
+
+flt Material::fresnel() const { return 0.2; }
 
 vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     /* Uniformly sample the hemisphere */
