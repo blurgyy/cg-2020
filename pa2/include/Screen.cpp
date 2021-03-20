@@ -1,6 +1,8 @@
 #include "Ray.hpp"
 #include "Screen.hpp"
 
+#include <atomic>
+
 #include <omp.h>
 
 Screen::Screen() {}
@@ -31,8 +33,9 @@ void Screen::render(std::size_t const &spp, flt const &rr) {
     flt pixel_h = 1.0 / this->h * yscale;
 
     this->sce.build_BVH();
-    for (std::size_t i = 0; i < this->w; ++i) {
+    std::atomic<std::size_t> progress{0};
 #pragma omp parallel for
+    for (std::size_t i = 0; i < this->w; ++i) {
         for (std::size_t j = 0; j < this->h; ++j) {
             flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
             flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
@@ -47,7 +50,7 @@ void Screen::render(std::size_t const &spp, flt const &rr) {
             }
             this->img(i, j) = Color{colorvec / static_cast<flt>(spp)};
         }
-        msg("Progress: [%zu/%zu]\r", i + 1, this->w);
+        msg("Progress: [%zu/%zu]\r", ++progress, this->w);
     }
     msg("\n");
 }
