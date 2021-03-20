@@ -20,12 +20,15 @@ add_executable(${target_name} "${sources}")
 
 # Magick++ (ImageMagick)
 find_package(ImageMagick COMPONENTS Magick++)
-include_directories(${ImageMagick_INCLUDE_DIRS})
-target_link_libraries(${target_name}
-    ${ImageMagick_LIBRARIES}
-)
-add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
-add_definitions(-DMAGICKCORE_HDRI_ENABLE=1)
+if(${ImageMagick_FOUND})
+    include_directories(${ImageMagick_INCLUDE_DIRS})
+    target_link_libraries(${target_name} ${ImageMagick_LIBRARIES})
+    add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
+    add_definitions(-DMAGICKCORE_HDRI_ENABLE=1)
+else()
+    include_directories(/usr/include/ImageMagick-7)
+    target_link_libraries(${target_name} Magick++-7.Q16HDRI)
+endif()
 
 # tinyobjloader
 add_subdirectory(extern/tinyobjloader)
