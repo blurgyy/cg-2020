@@ -143,7 +143,7 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
                 {
                     vec3 wi = isect_mat->sample_uniform(wo, isect.normal);
                     Ray  nray(isect.position, wi);
-                    flt  pdf = glm::dot(wi, isect.normal) / pi;
+                    flt  pdf = 0.5 / pi;
                     vec3 fr  = isect_mat->fr(wi, wo, isect.normal);
                     l_indir  = this->shoot(nray, rr, bounce + 1) * fr *
                               glm::dot(wi, isect.normal) / pdf / rr;
