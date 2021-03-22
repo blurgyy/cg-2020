@@ -43,10 +43,13 @@ flt Material::fresnel() const { return 0.2; }
 
 vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     /* Uniformly sample the hemisphere */
-    flt  z     = uniform();
+    flt  phi   = std::acos(std::fabs(1 - 2 * uniform()));
     flt  theta = uniform() * twopi;
-    flt  r     = std::sqrt(1 - z * z);
-    vec3 local{r * std::cos(theta), r * std::sin(theta), z};
+    vec3 local{
+        std::sin(phi) * std::cos(theta),
+        std::sin(phi) * std::sin(theta),
+        std::cos(phi),
+    };
     // Convert to view-space coordinates.
     return this->to_viewspace(local, normal);
 }
