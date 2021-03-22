@@ -30,14 +30,14 @@ void Triangle::set_material(tinyobj::material_t const &m) {
     }
     this->mat           = new Material;
     this->mat->ambient  = vec3{m.ambient[0], m.ambient[1], m.ambient[2]};
-    this->mat->diffuse  = vec3{m.diffuse[0], m.diffuse[1], m.diffuse[2]};
-    this->mat->specular = vec3{
-        std::min(1 - m.diffuse[0], m.specular[0]),
-        std::min(1 - m.diffuse[1], m.specular[1]),
-        std::min(1 - m.diffuse[2], m.specular[2]),
+    this->mat->specular = vec3{m.specular[0], m.specular[1], m.specular[2]};
+    this->mat->diffuse  = vec3{
+        std::min(1 - m.specular[0], m.diffuse[0]),
+        std::min(1 - m.specular[1], m.diffuse[1]),
+        std::min(1 - m.specular[2], m.diffuse[2]),
     };
     this->mat->shineness = m.shininess;
-    this->mat->roughness = m.shininess > epsilon ? 1.0 / m.shininess : 1;
+    this->mat->roughness = 1 / m.shininess;
     if (m.unknown_parameter.size()) {
         for (auto const &kv : m.unknown_parameter) {
             if (kv.first == "Le") {
