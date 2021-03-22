@@ -75,16 +75,14 @@ Intersection Scene::sample_light(Intersection const &isect) const {
         return ret;
     }
 
-    vec3            light_pos;
-    Triangle const *light_source;
+    vec3 light_pos;
 
     flt threshold = uniform() * this->area_of_lights;
     flt acc_area  = 0;
     for (Triangle const &t : this->emissives()) {
         acc_area += t.area();
         if (acc_area >= threshold) {
-            light_pos    = t.sample();
-            light_source = &t;
+            light_pos = t.sample();
             break;
         }
     }
