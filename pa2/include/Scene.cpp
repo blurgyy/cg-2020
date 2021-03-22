@@ -143,7 +143,8 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
             l_indir             = this->shoot(nray, rr, bounce + 1) * fr *
                       glm::dot(wi, isect.normal) / pdf / rr;
         }
-        return (l_dir + l_indir);
+        // return clamp(l_dir + l_indir, vec3(0), vec3(1));
+        return l_dir + l_indir;
     } else                        // The ray does not intersect with scene
         if (this->has_skybox()) { // There is a skybox in the scene
         return this->skybox()(ray.direction);

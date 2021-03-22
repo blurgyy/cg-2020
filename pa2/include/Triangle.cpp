@@ -36,6 +36,7 @@ void Triangle::set_material(tinyobj::material_t const &m) {
         std::min(1 - m.specular[1], m.diffuse[1]),
         std::min(1 - m.specular[2], m.diffuse[2]),
     };
+    // this->mat->diffuse  = vec3{m.diffuse[0], m.diffuse[1], m.diffuse[2]};
     this->mat->shineness = m.shininess;
     this->mat->roughness = 1 / m.shininess;
     if (m.unknown_parameter.size()) {

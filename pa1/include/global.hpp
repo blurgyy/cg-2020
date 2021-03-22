@@ -151,6 +151,13 @@ template <typename T, typename T1, typename T2>
 T constexpr clamp(T const &x, T1 const &minx, T2 const &maxx) {
     return std::min(static_cast<T>(maxx), std::max(x, static_cast<T>(minx)));
 }
+vec3 constexpr clamp(vec3 const &v, vec3 const &minv, vec3 const &maxv) {
+    return vec3{
+        clamp(v.x, minv.x, maxv.x),
+        clamp(v.y, minv.y, maxv.y),
+        clamp(v.z, minv.z, maxv.z),
+    };
+}
 
 // Barycentric interpolation.
 template <typename value_type>
