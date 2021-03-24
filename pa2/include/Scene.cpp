@@ -136,11 +136,11 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
 
         if (uniform() < rr) { // Russian roulette
             Material const *isect_mat = isect.tri->material();
-            vec3            wi = isect_mat->sample_uniform(wo, isect.normal);
+            vec3            wi  = isect_mat->sample_uniform(wo, isect.normal);
+            flt             pdf = isect_mat->pdf(wi, wo, isect.normal);
             Ray             nray(isect.position, wi);
-            flt             pdf = 0.5 / pi;
-            vec3            fr  = isect_mat->fr(wi, wo, isect.normal);
-            l_indir             = this->shoot(nray, rr, bounce + 1) * fr *
+            vec3            fr = isect_mat->fr(wi, wo, isect.normal);
+            l_indir            = this->shoot(nray, rr, bounce + 1) * fr *
                       glm::dot(wi, isect.normal) / pdf / rr;
         }
         // return clamp(l_dir + l_indir, vec3(0), vec3(1));
