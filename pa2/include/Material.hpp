@@ -14,6 +14,7 @@ struct Material {
 
     // Sample incoming light direction.
     vec3 sample_uniform(vec3 const &wo, vec3 const &normal) const;
+    vec3 sample_importance(vec3 const &wo, vec3 const &normal) const;
 
     // Sample diffuse reflection direction.
     vec3 sample_diffuse(vec3 const &wo, vec3 const &normal) const;
@@ -31,6 +32,8 @@ struct Material {
     // Get probability distribution function value of given incoming&outgoing
     // light directions.
     flt pdf(vec3 const &wi, vec3 const &wo, vec3 const &normal) const;
+    flt pdf_importance(vec3 const &wi, vec3 const &wo,
+                       vec3 const &normal) const;
 
   public:
     vec3 ambient;

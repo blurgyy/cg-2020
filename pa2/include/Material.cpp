@@ -54,6 +54,20 @@ vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     return this->to_viewspace(local, normal);
 }
 
+/* Reference: https://schuttejoe.github.io/post/ggximportancesamplingpart1/ */
+vec3 Material::sample_importance(vec3 const &wo, vec3 const &normal) const {
+    flt  r0 = uniform(), r1 = uniform();
+    flt  alpha2 = sq(this->roughness);
+    flt  phi    = std::acos(std::sqrt((1 - r0) / ((r0 * (alpha2 - 1) + 1))));
+    flt  theta  = twopi * r1;
+    flt  x      = std::sin(phi) * std::cos(theta);
+    flt  y      = std::sin(phi) * std::sin(theta);
+    flt  z      = std::cos(phi);
+    vec3 half   = this->to_viewspace(vec3(x, y, z), normal);
+    vec3 wi     = 2 * glm::dot(half, wo) * half - wo;
+    return wi;
+}
+
 vec3 Material::sample_diffuse(vec3 const &wo, vec3 const &normal) const {
     flt theta = uniform() * twopi;
     flt phi   = std::acos(std::sqrt(uniform()));
@@ -96,8 +110,25 @@ vec3 Material::to_viewspace(vec3 const &local, vec3 const &normal) const {
 }
 
 flt Material::pdf(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
-    if (sign(glm::dot(wi, normal) > 0)) {
+    if (sign(glm::dot(wi, normal) > 0) && sign(glm::dot(wo, normal)) > 0) {
         return 1.0 / twopi;
+    } else {
+        return 0;
+    }
+}
+
+/* Reference: https://schuttejoe.github.io/post/ggximportancesamplingpart1/ */
+flt Material::pdf_importance(vec3 const &wi, vec3 const &wo,
+                             vec3 const &normal) const {
+    if (sign(glm::dot(wi, normal)) > 0 && sign(glm::dot(wo, normal)) > 0) {
+        vec3 wm      = glm::normalize(wi + wo);
+        flt  alpha2  = sq(this->roughness);
+        flt  cotheta = glm::dot(normal, wm);
+        flt  exp     = (alpha2 - 1) * sq(cotheta) + 1;
+        flt  D       = alpha2 / pi * sq(exp);
+        flt  p       = (D * cotheta) / (4 * glm::dot(wo, wm));
+        // printf("D = %f, pdf = %f, cos(theta) = %f\n", D, p, cotheta);
+        return p;
     } else {
         return 0;
     }
