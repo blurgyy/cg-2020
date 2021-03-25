@@ -34,7 +34,7 @@ void Screen::render(std::size_t const &spp, flt const &rr) {
 
     this->sce.build_BVH();
     std::atomic<std::size_t> progress{0};
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic)
     for (std::size_t i = 0; i < this->w; ++i) {
         for (std::size_t j = 0; j < this->h; ++j) {
             flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
