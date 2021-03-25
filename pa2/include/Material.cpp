@@ -125,7 +125,7 @@ flt Material::pdf_importance(vec3 const &wi, vec3 const &wo,
         flt  alpha2  = sq(this->roughness);
         flt  cotheta = glm::dot(normal, wm);
         flt  exp     = (alpha2 - 1) * sq(cotheta) + 1;
-        flt  D       = alpha2 / pi * sq(exp);
+        flt  D       = alpha2 / (pi * sq(exp));
         flt  p       = (D * cotheta) / (4 * glm::dot(wo, wm));
         // printf("D = %f, pdf = %f, cos(theta) = %f\n", D, p, cotheta);
         return p;
