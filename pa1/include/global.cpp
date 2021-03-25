@@ -8,7 +8,7 @@ flt const pi      = std::acos(-1.0);
 flt const twopi   = pi * 2.0;
 flt const halfpi  = pi / 2.0;
 flt const degree  = pi / 180.0;
-flt const epsilon = 1e-7;
+flt const epsilon = 1e-5;
 
 // struct Color
 Color::Color() : r{0}, g{0}, b{0} {}
