@@ -20,12 +20,6 @@ void Screen::set_gamma(flt const &gamma) { this->gamma = gamma; }
 
 void Screen::render(flt const &rr, std::string const &outputfile) {
     this->sce.to_camera_space(this->cam);
-    if (!this->sce.has_skybox() && this->sce.emissives().size() == 0) {
-        // There is no light source or skybox in the scene whatsoever, abort
-        // meaningless rendering.
-        msg("Scene has no light source or skybox, returning dark image.\n");
-        return;
-    }
 
     flt yscale = std::tan(this->cam.fovy() / 2 * degree);
     flt xscale = yscale * this->cam.aspect_ratio();
@@ -55,14 +49,6 @@ void Screen::render(flt const &rr, std::string const &outputfile) {
             msg("Iteration#%d - Progress: [%zu/%zu]\r", this->iter,
                 ++progress, this->w);
         }
-        /* Rectify color values */
-        // #pragma omp parallel for schedule(dynamic)
-        // for (int i = 0; i < this->w; ++i) {
-        // for (int j = 0; j < this->h; ++j) {
-        // this->img(i, j) =
-        // clamp(this->img(i, j), vec3(0), vec3(this->iter));
-        // }
-        // }
         ++this->iter;
         write_ppm(outputfile, this->image(), this->gamma);
     }

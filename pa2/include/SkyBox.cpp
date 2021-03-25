@@ -1,6 +1,6 @@
 #include "SkyBox.hpp"
 
-SkyBox::SkyBox() {}
+SkyBox::SkyBox() : w(-1), h(-1) {}
 SkyBox::SkyBox(std::string const &imgfile) {
     this->data.read(imgfile);
     this->w = this->data.columns();
@@ -8,7 +8,12 @@ SkyBox::SkyBox(std::string const &imgfile) {
 }
 
 vec3 SkyBox::operator()(std::size_t const &x, std::size_t const &y) const {
-    Magick::ColorRGB mcol = this->data.pixelColor(x, this->height() - 1 - y);
+    Magick::ColorRGB mcol;
+    if (this->w == -1 || this->h == -1) {
+        mcol = Magick::ColorRGB{1, 1, 1};
+    } else {
+        mcol = this->data.pixelColor(x, this->height() - 1 - y);
+    }
     return vec3{
         mcol.red(),
         mcol.green(),

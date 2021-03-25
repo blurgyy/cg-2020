@@ -1,8 +1,7 @@
 #include "Scene.hpp"
 
-Scene::Scene() : has_sky{false} {}
-Scene::Scene(tinyobj::ObjReader const &loader)
-    : has_sky{false}, root{nullptr} {
+Scene::Scene() {}
+Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
     auto const &attrib = loader.GetAttrib();
     for (tinyobj::shape_t const &shape : loader.GetShapes()) {
         std::size_t index_offset = 0;
@@ -42,8 +41,7 @@ Scene::Scene(tinyobj::ObjReader const &loader)
 /* public */
 
 void Scene::load_skybox(std::string const &imgfile) {
-    this->sky     = SkyBox(imgfile);
-    this->has_sky = true;
+    this->sky = SkyBox(imgfile);
 }
 
 void Scene::to_camera_space(Camera const &cam) {
@@ -71,11 +69,7 @@ void Scene::build_BVH() {
 
 Intersection Scene::sample_light(Intersection const &isect) const {
     Intersection ret;
-    if (this->emissives().size() == 0 && !this->has_skybox()) {
-        return ret;
-    }
-
-    vec3 light_pos;
+    vec3         light_pos;
 
     flt threshold = uniform() * this->area_of_lights;
     flt acc_area  = 0;
@@ -161,7 +155,6 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
 std::vector<Triangle> const &Scene::triangles() const { return this->tris; }
 std::vector<Triangle> const &Scene::emissives() const { return this->lights; }
 SkyBox const &               Scene::skybox() const { return this->sky; }
-bool const &Scene::has_skybox() const { return this->has_sky; }
 
 /* Private */
 
