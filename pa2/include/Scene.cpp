@@ -103,9 +103,9 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
 
     if (isect) {
         if (isect.tri->material()->has_emission) {
-            if (bounce || sign(glm::dot(isect.normal, ray.direction)) >= 0) {
+            if (sign(glm::dot(isect.normal, ray.direction)) >= 0) {
                 return vec3{0};
-            } else { // a.k.a: bounce == 0 && dot(isect.normal, ray.dir) < 0.
+            } else {
                 return isect.tri->material()->emission;
             }
         }
