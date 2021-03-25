@@ -45,7 +45,6 @@ void Triangle::set_material(tinyobj::material_t const &m) {
                 std::istringstream emit_input(kv.second);
                 emit_input >> this->mat->emission.x >>
                     this->mat->emission.y >> this->mat->emission.z;
-                this->mat->emission *= 3;
                 this->mat->has_emission = true;
             }
         }
