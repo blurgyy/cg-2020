@@ -7,26 +7,14 @@
 
 #include "tinyobjloader/tiny_obj_loader.h"
 
+#include <csignal>
 #include <filesystem>
 #include <iostream>
+#include <thread>
+
+#include <fmt/core.h>
 
 int main(int argc, char **argv) {
-    // SkyBox sky{"../models/car/environment_day.hdr"};
-    // // SkyBox sky{"../models/diningroom_ref.jpg"};
-    // msg("%dx%d\n", sky.width(), sky.height());
-    // Image img(sky.width(), sky.height());
-    // for (int x = 0; x < sky.width(); ++x) {
-    // for (int y = 0; y < sky.height(); ++y) {
-    // flt  w = -2.0 + x * (4.0 / sky.width());
-    // flt  h = -2.0 + y * (4.0 / sky.height());
-    // vec3 dir{w, h, -1};
-    // // output(dir);
-    // // fflush(stdout);
-    // img(x, y) = Color{sky(dir)};
-    // }
-    // }
-    // write_ppm("dining.ppm", img);
-    // return 0;
     // Path to the obj file.
     std::string objmodel{""};
     // Path to camera pose file.
@@ -38,9 +26,6 @@ int main(int argc, char **argv) {
     std::size_t width = 1920;
     // Resolution (vertical).
     std::size_t height = 1080;
-
-    // Sample(s) per pixel.
-    std::size_t spp = 32;
 
     // Russian roulette probability.
     flt rr = 0.8;
@@ -77,12 +62,6 @@ int main(int argc, char **argv) {
                     }
                 }
             }
-        } else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--spp")) {
-            ++i;
-            if (i >= argc) {
-                break;
-            }
-            spp = std::atoi(argv[i]);
         } else if (!strcmp(argv[i], "-rr")) {
             ++i;
             if (i >= argc) {
@@ -115,11 +94,10 @@ int main(int argc, char **argv) {
         "         camera: '%s'\n"
         "         skybox: '%s'\n"
         "     resolution: %zux%zu\n"
-        "            spp: %zu\n"
         "             rr: %.2f\n"
         "          gamma: %.2f\n",
         objmodel.c_str(), camconf.c_str(), skyboximg.c_str(), width, height,
-        spp, rr, gamma);
+        rr, gamma);
     /* [/Parse arguments] */
     flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
@@ -161,7 +139,11 @@ int main(int argc, char **argv) {
     Timer timer;
     msg("Rendering scene ..\n");
     timer.start();
-    screen.render(spp, rr);
+    screen.render(rr, std::filesystem::path(objmodel)
+                              .filename()
+                              .replace_extension()
+                              .string() +
+                          ".ppm");
     timer.end();
     msg("Elapsed %.2f ms \n", timer.elapsedms());
 

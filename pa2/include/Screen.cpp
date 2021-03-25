@@ -5,10 +5,10 @@
 
 #include <omp.h>
 
-Screen::Screen() {}
+Screen::Screen() : iter(0) {}
 Screen::Screen(std::size_t const &width, std::size_t const &height,
                Scene const &world, Camera const &cam)
-    : w(width), h(height), sce(world), cam(cam) {
+    : w(width), h(height), iter(0), sce(world), cam(cam) {
     this->_init();
 }
 
@@ -17,7 +17,7 @@ Screen::Screen(std::size_t const &width, std::size_t const &height,
 void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 
-void Screen::render(std::size_t const &spp, flt const &rr) {
+void Screen::render(flt const &rr, std::string const &outputfile) {
     this->sce.to_camera_space(this->cam);
     if (!this->sce.has_skybox() && this->sce.emissives().size() == 0) {
         // There is no light source or skybox in the scene whatsoever, abort
@@ -33,29 +33,49 @@ void Screen::render(std::size_t const &spp, flt const &rr) {
     flt pixel_h = 1.0 / this->h * yscale;
 
     this->sce.build_BVH();
-    std::atomic<std::size_t> progress{0};
+    this->iter = 0;
+    while (true) {
+        std::atomic<std::size_t> progress{0};
 #pragma omp parallel for schedule(dynamic)
-    for (std::size_t i = 0; i < this->w; ++i) {
-        for (std::size_t j = 0; j < this->h; ++j) {
-            flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
-            flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
-            // debugm("pixel(%lu, %lu): shoot ray at (%.3f, %.3f, -1.0)\n", i,
-            // j, x, y);
-            vec3 colorvec{0};
-            for (std::size_t s = 0; s < spp; ++s) {
-                flt nx = x + (uniform() - 1) * pixel_w;
-                flt ny = y + (uniform() - 1) * pixel_h;
-                Ray ray{vec3{0}, vec3{nx, ny, -1}};
-                colorvec += this->sce.shoot(ray, rr);
+        for (std::size_t i = 0; i < this->w; ++i) {
+            for (std::size_t j = 0; j < this->h; ++j) {
+                flt x = (2 * (i + 0.5) / this->w - 1) * xscale;
+                flt y = (2 * (j + 0.5) / this->h - 1) * yscale;
+                // debugm("pixel(%lu, %lu): shoot ray at (%.3f, %.3f,
+                // -1.0)\n", i, j, x, y);
+                vec3 colorvec{0};
+                flt  nx = x + (uniform() - 0.5) * pixel_w;
+                flt  ny = y + (uniform() - 0.5) * pixel_h;
+                Ray  ray{vec3{0}, vec3{nx, ny, -1}};
+                vec3 color = this->sce.shoot(ray, rr);
+                color      = clamp(color); // Is this needed?
+                this->img(i, j) += color;
             }
-            this->img(i, j) = Color{colorvec / static_cast<flt>(spp)};
+            msg("Iteration#%d - Progress: [%zu/%zu]\r", this->iter,
+                ++progress, this->w);
         }
-        msg("Progress: [%zu/%zu]\r", ++progress, this->w);
+        /* Rectify color values */
+        // #pragma omp parallel for schedule(dynamic)
+        // for (int i = 0; i < this->w; ++i) {
+        // for (int j = 0; j < this->h; ++j) {
+        // this->img(i, j) =
+        // clamp(this->img(i, j), vec3(0), vec3(this->iter));
+        // }
+        // }
+        ++this->iter;
+        write_ppm(outputfile, this->image());
     }
-    msg("\n");
 }
 
-Image const &Screen::image() const { return this->img; }
+Image Screen::image() const {
+    Image ret(this->w, this->h);
+    for (int i = 0; i < this->w; ++i) {
+        for (int j = 0; j < this->h; ++j) {
+            ret(i, j) = Color(this->img(i, j) / static_cast<flt>(this->iter));
+        }
+    }
+    return ret;
+}
 
 /* Private */
 

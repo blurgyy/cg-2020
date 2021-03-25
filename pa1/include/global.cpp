@@ -35,27 +35,6 @@ Color Color::operator+=(Color const &rhs) {
     return (*this);
 }
 
-// struct Image
-Image::Image() {}
-Image::Image(size_t const &width, size_t const &height)
-    : w{width}, h{height} {
-    this->data.resize(this->w * this->h);
-}
-void Image::init(const size_t &width, const size_t &height) {
-    this->w    = width;
-    this->h    = height;
-    this->data = std::vector<Color>(this->w * this->h);
-}
-void Image::fill(Color const &value) {
-    std::fill(this->data.begin(), this->data.end(), value);
-}
-Color &Image::operator()(size_t const &x, size_t const &y) {
-    return this->data[this->w * y + x];
-}
-Color const &Image::operator()(size_t const &x, size_t const &y) const {
-    return this->data[this->w * y + x];
-}
-
 // struct BBox
 BBox::BBox()
     : minp{std::numeric_limits<flt>::max()},

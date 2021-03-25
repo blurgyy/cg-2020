@@ -7,11 +7,12 @@
 class Screen {
   private:
     std::size_t w, h;
+    std::size_t iter;
 
     Scene  sce;
     Camera cam;
 
-    Image img;
+    Image_t<vec3> img;
 
   private:
     void _init();
@@ -26,9 +27,9 @@ class Screen {
     // Set up camera
     void set_cam(Camera const &cam);
 
-    void render(std::size_t const &spp, flt const &rr);
+    void render(flt const &rr, std::string const &outputfile);
 
-    Image const &image() const;
+    Image image() const;
 };
 
 // Author: Blurgy <gy@blurgy.xyz>

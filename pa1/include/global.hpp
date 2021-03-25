@@ -73,21 +73,34 @@ struct Color {
 };
 
 // NOTE: Image data array has origin at lower left.
-struct Image {
-    Image();
-    Image(size_t const &width, size_t const &height);
+template <typename value_type> struct Image_t {
+    Image_t() {}
+    Image_t(size_t const &width, size_t const &height) : w{width}, h{height} {
+        this->data.resize(this->w * this->h);
+    }
 
     // Initialize data array
-    void         init(size_t const &width, size_t const &height);
-    void         fill(Color const &value = Color{0});
-    Color &      operator()(size_t const &x, size_t const &y);
-    Color const &operator()(size_t const &x, size_t const &y) const;
+    void init(size_t const &width, size_t const &height) {
+        this->w    = width;
+        this->h    = height;
+        this->data = std::vector<value_type>(this->w * this->h);
+    }
+    void fill(value_type const &value = value_type{0}) {
+        std::fill(this->data.begin(), this->data.end(), value);
+    }
+    value_type &operator()(size_t const &x, size_t const &y) {
+        return this->data[this->w * y + x];
+    }
+    value_type const &operator()(size_t const &x, size_t const &y) const {
+        return this->data[this->w * y + x];
+    }
 
-    // Store color in this array
-    std::vector<Color> data;
+    // Store value in this array
+    std::vector<value_type> data;
     // Width and height
     size_t w, h;
 };
+using Image = Image_t<Color>;
 
 template <size_t _order> struct Node {
     Node() : tdep{0}, isleaf{false} {};
@@ -148,10 +161,11 @@ void write_ppm(std::string const &filename, Image const &img,
 
 // Returns min(maxx, max(x, minx))
 template <typename T, typename T1, typename T2>
-T constexpr clamp(T const &x, T1 const &minx, T2 const &maxx) {
+T constexpr clamp(T const &x, T1 const &minx = 0, T2 const &maxx = 1) {
     return std::min(static_cast<T>(maxx), std::max(x, static_cast<T>(minx)));
 }
-vec3 constexpr clamp(vec3 const &v, vec3 const &minv, vec3 const &maxv) {
+vec3 constexpr clamp(vec3 const &v, vec3 const &minv = vec3(0),
+                     vec3 const &maxv = vec3(1)) {
     return vec3{
         clamp(v.x, minv.x, maxv.x),
         clamp(v.y, minv.y, maxv.y),
