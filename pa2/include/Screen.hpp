@@ -8,6 +8,7 @@ class Screen {
   private:
     std::size_t w, h;
     std::size_t iter;
+    flt         gamma;
 
     Scene  sce;
     Camera cam;
@@ -26,6 +27,7 @@ class Screen {
     void attach_scene(Scene const &world);
     // Set up camera
     void set_cam(Camera const &cam);
+    void set_gamma(flt const &gamma);
 
     void render(flt const &rr, std::string const &outputfile);
 

@@ -28,10 +28,10 @@ int main(int argc, char **argv) {
     std::size_t height = 1080;
 
     // Russian roulette probability.
-    flt rr = 0.8;
+    flt rr = 0.85;
 
     // Gamma.
-    flt gamma = 0.6;
+    flt gamma = 0.5;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -131,23 +131,18 @@ int main(int argc, char **argv) {
 
     /* [Initialize screen] */
     Screen screen(width, height);
+    screen.set_gamma(gamma);
     /* [/Initialize screen] */
 
     screen.attach_scene(world);
     screen.set_cam(camera);
 
-    Timer timer;
     msg("Rendering scene ..\n");
-    timer.start();
     screen.render(rr, std::filesystem::path(objmodel)
                               .filename()
                               .replace_extension()
                               .string() +
                           ".ppm");
-    timer.end();
-    msg("Elapsed %.2f ms \n", timer.elapsedms());
-
-    write_ppm("x.ppm", screen.image(), gamma);
 
     return 0;
 }

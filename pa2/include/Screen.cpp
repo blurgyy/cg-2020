@@ -5,10 +5,10 @@
 
 #include <omp.h>
 
-Screen::Screen() : iter(0) {}
+Screen::Screen() : iter(0), gamma(1) {}
 Screen::Screen(std::size_t const &width, std::size_t const &height,
                Scene const &world, Camera const &cam)
-    : w(width), h(height), iter(0), sce(world), cam(cam) {
+    : w(width), h(height), iter(0), gamma(1), sce(world), cam(cam) {
     this->_init();
 }
 
@@ -16,6 +16,7 @@ Screen::Screen(std::size_t const &width, std::size_t const &height,
 
 void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
+void Screen::set_gamma(flt const &gamma) { this->gamma = gamma; }
 
 void Screen::render(flt const &rr, std::string const &outputfile) {
     this->sce.to_camera_space(this->cam);
@@ -63,7 +64,7 @@ void Screen::render(flt const &rr, std::string const &outputfile) {
         // }
         // }
         ++this->iter;
-        write_ppm(outputfile, this->image());
+        write_ppm(outputfile, this->image(), this->gamma);
     }
 }
 
