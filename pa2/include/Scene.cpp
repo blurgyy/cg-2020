@@ -153,10 +153,8 @@ vec3 Scene::shoot(Ray const &ray, flt const &rr, int const &bounce) const {
         }
 
         return l_dir + l_indir;
-    } else                        // The ray does not intersect with scene
-        if (this->has_skybox()) { // There is a skybox in the scene
-        return static_cast<flt>(bounce == 0 ? 1 : 4) *
-               this->skybox()(ray.direction);
+    } else { // The ray does not intersect with scene
+        return this->skybox()(ray.direction);
     }
 }
 
