@@ -68,23 +68,6 @@ vec3 Material::sample_importance(vec3 const &wo, vec3 const &normal) const {
     return wi;
 }
 
-vec3 Material::sample_diffuse(vec3 const &wo, vec3 const &normal) const {
-    flt theta = uniform() * twopi;
-    flt phi   = std::acos(std::sqrt(uniform()));
-    return this->to_viewspace(polar_to_cartesian(phi, theta), normal);
-}
-
-vec3 Material::sample_specular(vec3 const &wo, vec3 const &normal) const {
-    flt alpha = std::acos(std::pow(uniform(), 1.0 / (this->shineness + 1)));
-    flt theta = uniform() * twopi;
-    return this->to_viewspace(polar_to_cartesian(alpha, theta), normal);
-}
-flt Material::diffuse_amount() const { return glm::length(this->diffuse); }
-flt Material::specular_amount() const { return glm::length(this->specular); }
-flt Material::reflected_sum() const {
-    return this->diffuse_amount() + this->specular_amount();
-}
-
 vec3 Material::to_viewspace(vec3 const &local, vec3 const &normal) const {
     vec3 xaxis, yaxis;
     if (std::fabs(normal.x) > std::fabs(normal.y)) {

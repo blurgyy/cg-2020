@@ -16,11 +16,6 @@ struct Material {
     vec3 sample_uniform(vec3 const &wo, vec3 const &normal) const;
     vec3 sample_importance(vec3 const &wo, vec3 const &normal) const;
 
-    // Sample diffuse reflection direction.
-    vec3 sample_diffuse(vec3 const &wo, vec3 const &normal) const;
-    // Sample specular reflection direction.
-    vec3 sample_specular(vec3 const &wo, vec3 const &normal) const;
-
     flt diffuse_amount() const;
     flt specular_amount() const;
     flt reflected_sum() const;
