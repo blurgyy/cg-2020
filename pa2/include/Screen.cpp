@@ -46,7 +46,7 @@ void Screen::render(flt const &rr, std::string const &outputfile) {
                 color      = clamp(color); // Is this needed?
                 this->img(i, j) += color;
             }
-            msg("Iteration#%d - Progress: [%zu/%zu]\r", this->iter,
+            msg("Iteration#%d - Progress: [%zu/%zu]\r", this->iter + 1,
                 ++progress, this->w);
         }
         ++this->iter;
