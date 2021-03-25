@@ -54,11 +54,13 @@ vec3 Material::sample_uniform(vec3 const &wo, vec3 const &normal) const {
     return this->to_viewspace(local, normal);
 }
 
-/* Reference: https://schuttejoe.github.io/post/ggximportancesamplingpart1/ */
+/* Reference:
+ *  - https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf/
+ */
 vec3 Material::sample_importance(vec3 const &wo, vec3 const &normal) const {
     flt  r0 = uniform(), r1 = uniform();
     flt  alpha2 = sq(this->roughness);
-    flt  phi    = std::acos(std::sqrt((1 - r0) / ((r0 * (alpha2 - 1) + 1))));
+    flt  phi    = std::acos(std::sqrt((1 - r0) / (r0 * (alpha2 - 1) + 1)));
     flt  theta  = twopi * r1;
     flt  x      = std::sin(phi) * std::cos(theta);
     flt  y      = std::sin(phi) * std::sin(theta);
@@ -100,17 +102,19 @@ flt Material::pdf(vec3 const &wi, vec3 const &wo, vec3 const &normal) const {
     }
 }
 
-/* Reference: https://schuttejoe.github.io/post/ggximportancesamplingpart1/ */
+/* Reference:
+ *  - https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf/
+ */
 flt Material::pdf_importance(vec3 const &wi, vec3 const &wo,
                              vec3 const &normal) const {
     if (sign(glm::dot(wi, normal)) > 0 && sign(glm::dot(wo, normal)) > 0) {
-        vec3 wm      = glm::normalize(wi + wo);
-        flt  alpha2  = sq(this->roughness);
-        flt  cotheta = glm::dot(normal, wm);
-        flt  exp     = (alpha2 - 1) * sq(cotheta) + 1;
-        flt  D       = alpha2 / (pi * sq(exp));
-        flt  p       = (D * cotheta) / (4 * glm::dot(wo, wm));
-        // printf("D = %f, pdf = %f, cos(theta) = %f\n", D, p, cotheta);
+        vec3 wm     = glm::normalize(wi + wo);
+        flt  alpha2 = sq(this->roughness);
+        flt  cophi  = glm::dot(normal, wm);
+        flt  siphi  = std::sqrt(1 - sq(cophi));
+        flt  p      = (2 * alpha2 * cophi * siphi) /
+                sq(sq(cophi) * (alpha2 - 1) + 1) / (4 * glm::dot(wo, wm));
+
         return p;
     } else {
         return 0;
