@@ -10,7 +10,7 @@ SkyBox::SkyBox(std::string const &imgfile) {
 vec3 SkyBox::operator()(std::size_t const &x, std::size_t const &y) const {
     Magick::ColorRGB mcol;
     if (this->w == -1 || this->h == -1) {
-        mcol = Magick::ColorRGB{1, 1, 1};
+        mcol = Magick::ColorRGB{0, 0, 0};
     } else {
         mcol = this->data.pixelColor(x, this->height() - 1 - y);
     }
