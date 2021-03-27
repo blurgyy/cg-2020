@@ -13,15 +13,14 @@
 #include <thread>
 
 void usage(char *const executable) {
-    fprintf(stderr, "%s: Monte Carlo Path Tracer\n", executable);
+    fprintf(stderr, "%s: Monte Carlo Path Tracer\n\n", executable);
     fprintf(stderr,
-            "    Usage: %s <objfile> -c <camera.conf>\n"
-            "                       [-k|--skybox <skyboximagefile>]\n"
-            "                       [-k|--skybox <skyboximagefile>]\n"
-            "                       [-r|--resolution <width>x<height>]\n"
-            "                       [-g|--gamma <gamma>]\n"
-            "                       [-i|--iterations <iterations>]\n"
-            "                       [-rr <probability>]\n",
+            "Usage: %s <objfile> -c|--config <camera.conf>\n"
+            "                   [-k|--skybox <skyboximagefile>]\n"
+            "                   [-r|--resolution <width>x<height>]\n"
+            "                   [-g|--gamma <gamma>]\n"
+            "                   [-i|--iterations <iterations>]\n"
+            "                   [-rr <probability>]\n",
             executable);
 }
 
