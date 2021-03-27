@@ -106,4 +106,4 @@ SkyBox, 输出时的伽玛矫正指数使用 `0.3`, 经过 `32` 次迭代后结�
   ![](./img/diningroom.png)
 
 > Author: Blurgy <gy@blurgy.xyz>
-> Date:   Mar 26 2021, 12:24 [CST]k
+> Date:   Mar 26 2021, 12:24 [CST]
