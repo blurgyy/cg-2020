@@ -12,7 +12,24 @@
 #include <iostream>
 #include <thread>
 
+void usage(char *const executable) {
+    fprintf(stderr, "%s: Monte Carlo Path Tracer\n", executable);
+    fprintf(stderr,
+            "    Usage: %s <objfile> -c <camera.conf>\n"
+            "                       [-k|--skybox <skyboximagefile>]\n"
+            "                       [-k|--skybox <skyboximagefile>]\n"
+            "                       [-r|--resolution <width>x<height>]\n"
+            "                       [-g|--gamma <gamma>]\n"
+            "                       [-rr <probability>]\n",
+            executable);
+}
+
 int main(int argc, char **argv) {
+    if (argc == 1) {
+        usage(argv[0]);
+        return 1;
+    }
+
     // Path to the obj file.
     std::string objmodel{""};
     // Path to camera pose file.
