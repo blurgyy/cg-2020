@@ -9,11 +9,7 @@
 
 ## 文件结构
 
-使用的外部库有 [`glm`](./exter/glm), [`tinyobjloader`](./extern/tinyobjloader)
-和 [`Magick++`]().  [include](./include) 文件夹下是蒙特卡洛路径追踪的相关功能
-和数据结构等的实现, [`main.cpp`](./main.cpp) 是主函数所在的文件,
-[`CMakeLists.txt`](./CMakeLists.txt) 和 [`Makefile`](./Makefile) 是用于构建项
-目的工程文件.  文件夹 [`cameras`](./cameras) 下的文件是所给场景的相机参数.
+使用的外部库有 [`glm`](./exter/glm), [`tinyobjloader`](./extern/tinyobjloader) 和 [`Magick++`]().  [include](./include) 文件夹下是蒙特卡洛路径追踪的相关功能和数据结构等的实现, [`main.cpp`](./main.cpp) 是主函数所在的文件, [`CMakeLists.txt`](./CMakeLists.txt) 和 [`Makefile`](./Makefile) 是用于构建项目的工程文件.  文件夹 [`cameras`](./cameras) 下的文件是所给场景的相机参数.
 
 ## 使用方法
 
@@ -43,8 +39,7 @@ $ cmake -S . -B build && make -C build
 $ ./build/pbr cornellbox.obj -c cameras/cornellbox
 ```
 
-其中 `cornellbox.obj` 是模型文件路径, `cameras/cornellbox` 是相机参数, 使
-用 `-c` 传递.  相机参数文件内容示例:
+其中 `cornellbox.obj` 是模型文件路径, `cameras/cornellbox` 是相机参数, 使用 `-c` 传递.  相机参数文件内容示例:
 
     # Cornell box
     position    0 0 2.5
@@ -74,9 +69,7 @@ $ ./build/pbr car.obj \
               -rr 0.6
 ```
 
-将读取 `cameras/car-front` 内的相机配置, 以图像 `environment_day.hdr` 作为
-SkyBox, 输出时的伽玛矫正指数使用 `0.3`, 经过 `32` 次迭代后结束, 每次在表面反射
-的概率为 `0.6`.
+将读取 `cameras/car-front` 内的相机配置, 以图像 `environment_day.hdr` 作为 SkyBox, 输出时的伽玛矫正指数使用 `0.3`, 经过 `32` 次迭代后结束, 每次在表面反射的概率为 `0.6`.
 
 ## 说明
 
@@ -85,9 +78,7 @@ SkyBox, 输出时的伽玛矫正指数使用 `0.3`, 经过 `32` 次迭代后结�
 1. 在一次绘制中, 对每一个像素做多次采样, 绘制一次, 对所有采样取平均;
 2. 在一次绘制中, 对每一个像素做一次采样, 绘制多次, 对所有绘制结果取平均.
 
-我使用了第二种方式, 即迭代 `n` 次 `spp=1` 的绘制, 最后对所有绘制图像求平均图像
-作为输出.  这样的好处是能够迅速看到结果, 也可以随时结束绘制并保留当前结果.  下
-面是 Cornell Box 模型在不同迭代次数下的对比:
+我使用了第二种方式, 即迭代 `n` 次 `spp=1` 的绘制, 最后对所有绘制图像求平均图像作为输出.  这样的好处是能够迅速看到结果, 也可以随时结束绘制并保留当前结果.  下面是 Cornell Box 模型在不同迭代次数下的对比:
 
 |迭代次数|1|4|16|256|
 |:---:|:---:|:---:|:---:|:---:|
