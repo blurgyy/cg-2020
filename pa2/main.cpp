@@ -20,6 +20,7 @@ void usage(char *const executable) {
             "                       [-k|--skybox <skyboximagefile>]\n"
             "                       [-r|--resolution <width>x<height>]\n"
             "                       [-g|--gamma <gamma>]\n"
+            "                       [-i|--iterations <iterations>]\n"
             "                       [-rr <probability>]\n",
             executable);
 }
@@ -47,6 +48,8 @@ int main(int argc, char **argv) {
 
     // Gamma.
     flt gamma = 0.5;
+
+    int iterations = 8;
 
     /* [Parse arguments] */
     for (int i = 1; i < argc; ++i) {
@@ -89,6 +92,13 @@ int main(int argc, char **argv) {
                 break;
             }
             gamma = std::atof(argv[i]);
+        } else if (!strcmp(argv[i], "-i") ||
+                   !strcmp(argv[i], "--iterations")) {
+            ++i;
+            if (i >= argc) {
+                break;
+            }
+            iterations = std::atoi(argv[i]);
         } else {
             objmodel = std::string{argv[i]};
         }
@@ -110,9 +120,11 @@ int main(int argc, char **argv) {
         "         skybox: '%s'\n"
         "     resolution: %zux%zu\n"
         "             rr: %.2f\n"
-        "          gamma: %.2f\n",
+        "          gamma: %.2f\n"
+        "     iterations: %d\n"
+        "\n",
         objmodel.c_str(), camconf.c_str(), skyboximg.c_str(), width, height,
-        rr, gamma);
+        rr, gamma, iterations);
     /* [/Parse arguments] */
     flt aspect_ratio = static_cast<flt>(width) / static_cast<flt>(height);
 
@@ -153,11 +165,13 @@ int main(int argc, char **argv) {
     screen.set_cam(camera);
 
     msg("Rendering scene ..\n");
-    screen.render(rr, std::filesystem::path(objmodel)
-                              .filename()
-                              .replace_extension()
-                              .string() +
-                          ".ppm");
+    screen.render(rr,
+                  std::filesystem::path(objmodel)
+                          .filename()
+                          .replace_extension()
+                          .string() +
+                      ".ppm",
+                  iterations);
 
     return 0;
 }

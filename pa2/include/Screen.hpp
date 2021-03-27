@@ -29,7 +29,8 @@ class Screen {
     void set_cam(Camera const &cam);
     void set_gamma(flt const &gamma);
 
-    void render(flt const &rr, std::string const &outputfile);
+    void render(flt const &rr, std::string const &outputfile,
+                int const &iterations);
 
     Image image() const;
 };

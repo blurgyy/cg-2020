@@ -18,7 +18,8 @@ void Screen::attach_scene(Scene const &world) { this->sce = world; }
 void Screen::set_cam(Camera const &cam) { this->cam = cam; }
 void Screen::set_gamma(flt const &gamma) { this->gamma = gamma; }
 
-void Screen::render(flt const &rr, std::string const &outputfile) {
+void Screen::render(flt const &rr, std::string const &outputfile,
+                    int const &iterations) {
     this->sce.to_camera_space(this->cam);
 
     flt yscale = std::tan(this->cam.fovy() / 2 * degree);
@@ -29,7 +30,7 @@ void Screen::render(flt const &rr, std::string const &outputfile) {
 
     this->sce.build_BVH();
     this->iter = 0;
-    while (true) {
+    while (this->iter < iterations) {
         std::atomic<std::size_t> progress{0};
 #pragma omp parallel for schedule(dynamic)
         for (std::size_t i = 0; i < this->w; ++i) {
