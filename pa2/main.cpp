@@ -12,8 +12,6 @@
 #include <iostream>
 #include <thread>
 
-#include <fmt/core.h>
-
 int main(int argc, char **argv) {
     // Path to the obj file.
     std::string objmodel{""};
