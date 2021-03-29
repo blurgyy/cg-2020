@@ -1,0 +1,8 @@
+# Planes
+position    2 7 13
+lookat      2 1 1
+up          0 2 -1
+fov         60
+
+# Author: Blurgy <gy@blurgy.xyz>
+# Date:   Feb 01 2021, 16:39 [CST]
