@@ -95,6 +95,9 @@ $ ./build/pbr car.obj \
     |front|![](./img/car-front-day.png)|![](./img/car-front-dusk.png)|
 - Dining Room
   ![](./img/diningroom.png)
+- 其他结果
+  ![](./img/planes.png)
+  下面四个平面上反射的是四个光源后面的平面.
 
 > Author: Blurgy <gy@blurgy.xyz>
 > Date:   Mar 26 2021, 12:24 [CST]
