@@ -87,7 +87,7 @@ inline Intersection Ray::intersect(Triangle const *t) const {
 
     isect.occurred = true;
     isect.position = isectpos;
-    isect.normal   = berp(t->nor, b);
+    isect.normal   = glm::normalize(berp(t->nor, b));
     isect.distance = glm::length(isect.position - this->origin);
     isect.tri      = t;
     return isect;
