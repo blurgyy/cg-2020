@@ -20,14 +20,18 @@ Scene::Scene(tinyobj::ObjReader const &loader) : root{nullptr} {
                 flt vx = attrib.vertices[3 * idx.vertex_index + 0];
                 flt vy = attrib.vertices[3 * idx.vertex_index + 1];
                 flt vz = attrib.vertices[3 * idx.vertex_index + 2];
-                flt nx = attrib.normals[3 * idx.vertex_index + 0];
-                flt ny = attrib.normals[3 * idx.vertex_index + 1];
-                flt nz = attrib.normals[3 * idx.vertex_index + 2];
-                flt tu = attrib.texcoords[2 * idx.vertex_index + 0];
-                flt tv = attrib.texcoords[2 * idx.vertex_index + 1];
                 vtx[v] = vec3{vx, vy, vz};
-                nor[v] = vec3{nx, ny, nz};
-                tex[v] = vec2{tu, tv};
+                if (idx.normal_index >= 0) {
+                    flt nx = attrib.normals[3 * idx.normal_index + 0];
+                    flt ny = attrib.normals[3 * idx.normal_index + 1];
+                    flt nz = attrib.normals[3 * idx.normal_index + 2];
+                    nor[v] = vec3{nx, ny, nz};
+                }
+                if (idx.texcoord_index >= 0) {
+                    flt tu = attrib.texcoords[2 * idx.texcoord_index + 0];
+                    flt tv = attrib.texcoords[2 * idx.texcoord_index + 1];
+                    tex[v] = vec2{tu, tv};
+                }
             }
             index_offset += numverts;
             int      matid = shape.mesh.material_ids[fi];
