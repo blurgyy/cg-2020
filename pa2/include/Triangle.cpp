@@ -36,18 +36,20 @@ void Triangle::set_material(tinyobj::material_t const &m) {
         std::min(1 - m.specular[1], m.diffuse[1]),
         std::min(1 - m.specular[2], m.diffuse[2]),
     };
-    // this->mat->diffuse  = vec3{m.diffuse[0], m.diffuse[1], m.diffuse[2]};
     this->mat->shineness = m.shininess;
     this->mat->roughness = 1 / m.shininess;
+    this->mat->emission  = vec3{m.emission[0], m.emission[1], m.emission[2]};
     if (m.unknown_parameter.size()) {
         for (auto const &kv : m.unknown_parameter) {
             if (kv.first == "Le") {
                 std::istringstream emit_input(kv.second);
                 emit_input >> this->mat->emission.x >>
                     this->mat->emission.y >> this->mat->emission.z;
-                this->mat->has_emission = true;
             }
         }
+    }
+    if (sign(glm::length(this->mat->emission)) > 0) {
+        this->mat->has_emission = true;
     }
 }
 
