@@ -80,14 +80,14 @@ $ ./build/pbr car.obj \
 
 我使用了第二种方式, 即迭代 `n` 次 `spp=1` 的绘制, 最后对所有绘制图像求平均图像作为输出.  这样的好处是能够迅速看到结果, 也可以随时结束绘制并保留当前结果.  下面是 Cornell Box 模型在不同迭代次数下的对比:
 
-|迭代次数|1|4|16|256|
-|:---:|:---:|:---:|:---:|:---:|
-||![](./img/cb-1.png)|![](./img/cb-4.png)|![](./img/cb-16.png)|![](./img/cb-256.png)|
+![](img/cornellbox.gif)
 
 ## 结果
 
 - Cornell Box
   ![cornellbox](./img/cornellbox.png)
+- Cornell Box (Specular)
+  ![cornellbox-specular](./img/cornellbox-specular.png)
 - Car
     |viewpoint \ skybox| day | dusk |
     |:---:|:---:|:---:|
